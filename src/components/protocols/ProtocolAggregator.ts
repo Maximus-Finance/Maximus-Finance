@@ -1,6 +1,8 @@
 import { BenqiService, BenqiData } from './BenqiService';
 import { GoGoPoolService, GoGoPoolData } from './GoGoPoolService';
 import { AvantService, AvantData } from './AvantService';
+import { PangolinService, PangolinData } from './PangolinService';
+import { SiloService, SiloData } from './SiloService';
 
 export interface YieldOpportunity {
   id: string;
@@ -20,6 +22,8 @@ export interface AggregatedData {
   benqi?: BenqiData;
   gogopool?: GoGoPoolData;
   avant?: AvantData;
+  pangolin?: PangolinData;
+  silo?: SiloData;
   lastUpdated: Date;
 }
 
@@ -27,18 +31,24 @@ export class ProtocolAggregator {
   private benqiService: BenqiService;
   private gogoPoolService: GoGoPoolService;
   private avantService: AvantService;
+  private pangolinService: PangolinService;
+  private siloService: SiloService;
 
   constructor() {
     this.benqiService = new BenqiService();
     this.gogoPoolService = new GoGoPoolService();
     this.avantService = new AvantService();
+    this.pangolinService = new PangolinService();
+    this.siloService = new SiloService();
   }
 
   async fetchAllProtocolData(): Promise<AggregatedData> {
-    const [benqiData, gogopoolData, avantData] = await Promise.allSettled([
+    const [benqiData, gogopoolData, avantData, pangolinData, siloData] = await Promise.allSettled([
       this.benqiService.fetchData(),
       this.gogoPoolService.fetchData(),
-      this.avantService.fetchData()
+      this.avantService.fetchData(),
+      this.pangolinService.fetchData(),
+      this.siloService.fetchData()
     ]);
 
     const result: AggregatedData = {
@@ -53,6 +63,12 @@ export class ProtocolAggregator {
     }
     if (avantData.status === 'fulfilled') {
       result.avant = avantData.value;
+    }
+    if (pangolinData.status === 'fulfilled') {
+      result.pangolin = pangolinData.value;
+    }
+    if (siloData.status === 'fulfilled') {
+      result.silo = siloData.value;
     }
 
     return result;
@@ -235,6 +251,82 @@ export class ProtocolAggregator {
       }
     }
 
+    // Format Pangolin data
+    if (data.pangolin) {
+      // High-yield liquidity pairs
+      data.pangolin.pairs.forEach((pair) => {
+        opportunities.push({
+          id: `pangolin-${pair.id}`,
+          protocol: 'Pangolin',
+          category: 'Yield Farming',
+          pair: `${pair.token0}-${pair.token1} LP`,
+          apy: `${pair.apr.toFixed(2)}%`,
+          tvl: `$${(pair.tvl / 1000000).toFixed(1)}M`,
+          risk: pair.apr > 20 ? 'High' : pair.apr > 10 ? 'Medium' : 'Low',
+          icon: '🥞',
+          url: 'https://app.pangolin.exchange/#/pool',
+          isLive: true,
+          features: ['DEX LP', 'Trading Fees', 'Impermanent Loss Risk']
+        });
+      });
+
+      // Yield farming opportunities
+      data.pangolin.farms.forEach((farm) => {
+        opportunities.push({
+          id: `pangolin-farm-${farm.id}`,
+          protocol: 'Pangolin',
+          category: 'Yield Farming',
+          pair: `${farm.token0}-${farm.token1} Farm`,
+          apy: `${farm.apr.toFixed(2)}%`,
+          tvl: `$${(farm.tvl / 1000000).toFixed(1)}M`,
+          risk: farm.apr > 30 ? 'High' : farm.apr > 15 ? 'Medium' : 'Low',
+          icon: '🚜',
+          url: 'https://app.pangolin.exchange/#/png/1',
+          isLive: true,
+          features: ['LP Staking', 'PNG Rewards', farm.rewardTokens.length > 1 ? 'Multi-Token Rewards' : 'Single Reward']
+        });
+      });
+    }
+
+    // Format Silo data
+    if (data.silo) {
+      data.silo.markets.forEach((market) => {
+        // Add lending opportunities
+        if (market.depositAPY > 1) {
+          opportunities.push({
+            id: `silo-${market.assetSymbol.toLowerCase()}-deposit`,
+            protocol: 'Silo Finance',
+            category: 'Lending',
+            pair: `${market.assetSymbol} (Supply)`,
+            apy: `${market.depositAPY.toFixed(2)}%`,
+            tvl: `$${(market.tvl / 1000000).toFixed(1)}M`,
+            risk: market.utilizationRate > 85 ? 'High' : market.utilizationRate > 65 ? 'Medium' : 'Low',
+            icon: '🏛️',
+            url: 'https://app.silo.finance',
+            isLive: true,
+            features: ['Isolated Lending', 'No Liquidation Risk', `${market.utilizationRate.toFixed(1)}% Utilization`]
+          });
+        }
+
+        // Add borrowing opportunities
+        if (market.borrowAPY > 0.1) {
+          opportunities.push({
+            id: `silo-${market.assetSymbol.toLowerCase()}-borrow`,
+            protocol: 'Silo Finance',
+            category: 'Borrowing',
+            pair: `${market.assetSymbol} (Borrow)`,
+            apy: `${market.borrowAPY.toFixed(2)}%`,
+            tvl: `$${(market.totalBorrows * (data.silo?.prices[market.assetSymbol.toLowerCase()] || 1) / 1000000).toFixed(1)}M`,
+            risk: market.utilizationRate > 85 ? 'High' : market.utilizationRate > 65 ? 'Medium' : 'Low',
+            icon: '🏛️',
+            url: 'https://app.silo.finance',
+            isLive: true,
+            features: ['Isolated Borrowing', 'Single Asset Risk', 'Variable Rate']
+          });
+        }
+      });
+    }
+
     return opportunities;
   }
 
@@ -310,6 +402,37 @@ export class ProtocolAggregator {
         totalAPY += 4.50; // Base stable yield
         apyCount++;
       }
+    }
+
+    if (data.pangolin) {
+      activeProtocols++;
+      
+      // Add Pangolin pairs TVL and APR
+      data.pangolin.pairs.forEach(pair => {
+        totalTVL += pair.tvl;
+        totalAPY += pair.apr;
+        apyCount++;
+      });
+      
+      // Add Pangolin farms TVL and APR
+      data.pangolin.farms.forEach(farm => {
+        totalTVL += farm.tvl;
+        totalAPY += farm.apr;
+        apyCount++;
+      });
+    }
+
+    if (data.silo) {
+      activeProtocols++;
+      
+      // Add Silo markets TVL and APY
+      data.silo.markets.forEach(market => {
+        totalTVL += market.tvl;
+        if (market.depositAPY > 1) {
+          totalAPY += market.depositAPY;
+          apyCount++;
+        }
+      });
     }
 
     const averageAPY = apyCount > 0 ? totalAPY / apyCount : 0;

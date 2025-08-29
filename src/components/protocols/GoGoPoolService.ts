@@ -19,40 +19,6 @@ export const GOGOPOOL_CONTRACTS = {
   ClaimNodeOp: '0xb42CfaD450B46FDc9cAC5FBF14Bc2e6091AfC35c'
 };
 
-// GoGoPool ABIs
-const GOGOPOOL_ABIS = {
-  GGAVAX: [
-    'function totalSupply() view returns (uint256)',
-    'function totalAssets() view returns (uint256)',
-    'function convertToAssets(uint256 shares) view returns (uint256)',
-    'function convertToShares(uint256 assets) view returns (uint256)',
-    'function balanceOf(address account) view returns (uint256)',
-    'function previewRedeem(uint256 shares) view returns (uint256)',
-    'function asset() view returns (address)'
-  ],
-  STAKING: [
-    'function getAVAXStake(address stakerAddr) view returns (uint256)',
-    'function getGGPStake(address stakerAddr) view returns (uint256)',
-    'function getStakerCount() view returns (uint256)',
-    'function getGGPPrice() view returns (uint256)',
-    'function getTotalGGPCirculatingSupply() view returns (uint256)'
-  ],
-  MINIPOOL_MANAGER: [
-    'function getMinipoolCount() view returns (uint256)',
-    'function getMinipool(int256 index) view returns (address, uint32, uint256, uint256, uint256, uint256, uint256, uint8)',
-    'function getMinipools(bytes32 status, uint256 offset, uint256 limit) view returns (tuple(address,uint32,uint256,uint256,uint256,uint256,uint256,uint8)[])'
-  ],
-  REWARDS_POOL: [
-    'function getRewardsCycleTotal() view returns (uint256)',
-    'function getInflationAmt() view returns (uint256)',
-    'function getClaimingContractPct(string calldata contractName) view returns (uint256)'
-  ],
-  ERC20: [
-    'function totalSupply() view returns (uint256)',
-    'function symbol() view returns (string)',
-    'function decimals() view returns (uint8)'
-  ]
-};
 
 // GoGoPool API endpoints
 export const GOGOPOOL_API = {
@@ -113,73 +79,57 @@ export class GoGoPoolService {
 
   async fetchData(): Promise<GoGoPoolData> {
     try {
-      const provider = await this.getProvider();
-      
       // Get live token prices
       const prices = await priceService.getTokenPrices(['AVAX', 'GGP']);
       
-      // Contract instances
-      const ggAvaxContract = new ethers.Contract(GOGOPOOL_CONTRACTS.TokenggAVAX, GOGOPOOL_ABIS.GGAVAX, provider);
-      const stakingContract = new ethers.Contract(GOGOPOOL_CONTRACTS.Staking, GOGOPOOL_ABIS.STAKING, provider);
-      const minipoolManagerContract = new ethers.Contract(GOGOPOOL_CONTRACTS.MinipoolManager, GOGOPOOL_ABIS.MINIPOOL_MANAGER, provider);
-      const ggpContract = new ethers.Contract(GOGOPOOL_CONTRACTS.TokenGGP, GOGOPOOL_ABIS.ERC20, provider);
-
-      // Fetch liquid staking data
-      const [totalAssets, totalSupply] = await Promise.all([
-        ggAvaxContract.totalAssets().catch(() => ethers.BigNumber.from('8500000000000000000000000')),
-        ggAvaxContract.totalSupply().catch(() => ethers.BigNumber.from('8200000000000000000000000'))
-      ]);
-
-      const totalAssetsFloat = parseFloat(totalAssets.toString()) / 1e18;
-      const totalSupplyFloat = parseFloat(totalSupply.toString()) / 1e18;
-      const exchangeRate = totalAssetsFloat / totalSupplyFloat;
-
-      // Fetch GGP staking data
-      const [stakerCount, ggpTotalSupply] = await Promise.all([
-        stakingContract.getStakerCount().catch(() => ethers.BigNumber.from('250')),
-        ggpContract.totalSupply().catch(() => ethers.BigNumber.from('22500000000000000000000000'))
-      ]);
-
-      // Fetch minipool data
-      const [minipoolCount] = await Promise.all([
-        minipoolManagerContract.getMinipoolCount().catch(() => ethers.BigNumber.from('180'))
-      ]);
-
-      // Calculate metrics
-      const stakerCountFloat = parseFloat(stakerCount.toString());
-      const ggpTotalSupplyFloat = parseFloat(ggpTotalSupply.toString()) / 1e18;
-      const minipoolCountFloat = parseFloat(minipoolCount.toString());
-
-      // Try to get live APY from API, fallback to calculation
-      const [apiMetrics] = await Promise.all([
+      // Fetch live data from GoGoPool official API
+      const [metricsResponse, ggAvaxResponse] = await Promise.allSettled([
         fetch(`${GOGOPOOL_API.BASE_URL}${GOGOPOOL_API.endpoints.metrics}`)
+          .then(r => r.json()),
+        fetch(`${GOGOPOOL_API.BASE_URL}${GOGOPOOL_API.endpoints.ggAvax}`)
           .then(r => r.json())
-          .catch(() => null)
       ]);
 
-      const liquidStakingAPR = apiMetrics?.stAvaxApy || 6.2;
-      const ggpStakingAPY = 12.5; // Estimated based on GGP inflation and staking rewards
-      const minipoolAPY = 7.8; // Average minipool validation rewards
+      // Extract metrics data with fallbacks
+      const metrics = metricsResponse.status === 'fulfilled' ? metricsResponse.value : null;
+      const ggAvaxData = ggAvaxResponse.status === 'fulfilled' ? ggAvaxResponse.value : null;
+
+      // Liquid staking data from API
+      const liquidStakingAPR = ggAvaxData?.apy || metrics?.liquidStakingApy || 6.2;
+      const totalAssets = ggAvaxData?.totalAssets || metrics?.ggAvaxTotalAssets || 8500000;
+      const totalSupply = ggAvaxData?.totalSupply || metrics?.ggAvaxTotalSupply || 8200000;
+      const exchangeRate = totalAssets / totalSupply;
+      const tvl = totalAssets * prices.avax;
+
+      // GGP staking data from API  
+      const ggpStakingAPY = metrics?.ggpStakingApy || 12.5;
+      const totalGGPStaked = metrics?.totalGGPStaked || 7875000; // 35% of 22.5M supply
+      const stakerCount = metrics?.stakerCount || 250;
+
+      // Minipool data from API
+      const activeMinipools = metrics?.activeMinipools || 144; // 80% of 180 total
+      const totalMinipools = metrics?.totalMinipools || 180;
+      const minipoolAPY = metrics?.minipoolApy || 7.8;
 
       return {
         protocol: 'GOGOPOOL',
         liquidStaking: {
-          totalAssets: totalAssetsFloat,
-          totalSupply: totalSupplyFloat,
-          exchangeRate: exchangeRate,
-          tvl: totalAssetsFloat * prices.avax,
+          totalAssets,
+          totalSupply,
+          exchangeRate,
+          tvl,
           apr: liquidStakingAPR
         },
         ggpStaking: {
-          totalGGPStaked: ggpTotalSupplyFloat * 0.35, // Estimated 35% of supply staked
-          stakerCount: stakerCountFloat,
+          totalGGPStaked,
+          stakerCount,
           ggpPrice: prices.ggp,
           stakingAPY: ggpStakingAPY,
-          totalSupply: ggpTotalSupplyFloat
+          totalSupply: 22500000 // Fixed GGP total supply
         },
         minipools: {
-          active: minipoolCountFloat * 0.8, // Estimated 80% active
-          total: minipoolCountFloat,
+          active: activeMinipools,
+          total: totalMinipools,
           avgAPY: minipoolAPY
         },
         prices

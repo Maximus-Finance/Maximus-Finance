@@ -6,7 +6,7 @@ import { useLiveProtocolData } from '@/hooks/useLiveProtocolData';
 
 const ExploreYieldsPage: React.FC = () => {
   const { isDarkMode } = useTheme();
-  const { isLoading, lastUpdated, totalTVL, averageAPY, activeProtocols } = useLiveProtocolData();
+  const { isLoading, lastUpdated, totalTVL, averageAPY, activeProtocols, dataQuality, systemHealth } = useLiveProtocolData();
 
   return (
     <div className="pt-16 font-hind">
@@ -27,9 +27,12 @@ const ExploreYieldsPage: React.FC = () => {
             {/* Live Status Indicator */}
             <div className="flex items-center justify-center mt-6 space-x-6 animate-light-bounce">
               <div className="flex items-center space-x-3">
-                <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                <div className={`w-3 h-3 rounded-full animate-pulse ${
+                  systemHealth >= 80 ? 'bg-green-400' :
+                  systemHealth >= 60 ? 'bg-yellow-400' : 'bg-red-400'
+                }`}></div>
                 <span className={`text-base font-hind font-semibold ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                  {isLoading ? 'Updating...' : 'Live Data'}
+                  {isLoading ? 'Updating...' : `${dataQuality} Data Quality`}
                 </span>
               </div>
               {lastUpdated && (
@@ -37,6 +40,12 @@ const ExploreYieldsPage: React.FC = () => {
                   Last updated: {lastUpdated.toLocaleTimeString()}
                 </span>
               )}
+              <div className={`text-xs px-2 py-1 rounded-lg ${
+                systemHealth >= 80 ? 'bg-green-500/20 text-green-400' :
+                systemHealth >= 60 ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'
+              }`}>
+                {systemHealth.toFixed(0)}% Health
+              </div>
             </div>
           </div>
 

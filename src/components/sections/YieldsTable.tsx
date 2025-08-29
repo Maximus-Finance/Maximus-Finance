@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import { useLiveProtocolData } from '@/hooks/useLiveProtocolData';
 import LiveDataIndicator from '@/components/ui/LiveDataIndicator';
+import DataQualityIndicator from '@/components/ui/DataQualityIndicator';
 
 interface YieldsTableProps {
   isDarkMode: boolean;
@@ -11,7 +12,7 @@ interface YieldsTableProps {
 
 const YieldsTable: React.FC<YieldsTableProps> = ({ isDarkMode }) => {
   const [selectedFilter, setSelectedFilter] = useState('All');
-  const { opportunities, isLoading, error, lastUpdated } = useLiveProtocolData();
+  const { opportunities, isLoading, error, lastUpdated, dataQuality, systemHealth, alerts } = useLiveProtocolData();
   
   const filters = ['All', 'Liquid Staking', 'Lending', 'Borrowing', 'Token Staking', 'Validator Staking', 'Yield Farming'];
 
@@ -90,11 +91,17 @@ const YieldsTable: React.FC<YieldsTableProps> = ({ isDarkMode }) => {
       </div>
 
       {/* Live Data Indicator */}
-      <div className="flex justify-center">
+      <div className="flex justify-center space-x-6">
         <LiveDataIndicator 
           lastUpdated={lastUpdated} 
           isLoading={isLoading} 
           error={error} 
+        />
+        <DataQualityIndicator 
+          quality={dataQuality}
+          systemHealth={systemHealth}
+          alerts={alerts}
+          isDarkMode={isDarkMode}
         />
       </div>
 
