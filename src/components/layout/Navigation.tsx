@@ -22,10 +22,10 @@ const Navigation: React.FC<NavigationProps> = ({
   ];
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${
       isDarkMode 
-        ? 'bg-black/90 backdrop-blur-xl border-b border-gray-800/50' 
-        : 'bg-white/90 backdrop-blur-xl border-b border-gray-200/50'
+        ? 'glass-3d-dark animate-background-shift' 
+        : 'glass-3d animate-background-shift'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -37,12 +37,12 @@ const Navigation: React.FC<NavigationProps> = ({
               <button
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
-                className={`px-4 py-2 rounded-xl transition-all duration-300 font-space-grotesk font-medium ${
+                className={`px-6 py-3 rounded-2xl transition-all duration-300 font-hind font-semibold hover-light ${
                   currentPage === item.id
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
+                    ? 'bg-gradient-to-r from-purple-600 via-blue-600 to-purple-700 text-white shadow-2xl animate-subtle-glow'
                     : isDarkMode
-                    ? 'text-gray-300 hover:text-white hover:bg-gray-800/80 hover:shadow-lg'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 hover:shadow-lg'
+                    ? 'text-gray-300 hover:text-white glass-3d-dark'
+                    : 'text-gray-600 hover:text-gray-900 glass-3d'
                 }`}
               >
                 {item.label}
@@ -57,7 +57,9 @@ const Navigation: React.FC<NavigationProps> = ({
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 rounded-xl hover:bg-gray-800/20 transition-all duration-300"
+              className={`md:hidden p-3 rounded-2xl transition-all duration-300 hover-light ${
+                isDarkMode ? 'glass-3d-dark' : 'glass-3d'
+              }`}
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -67,7 +69,9 @@ const Navigation: React.FC<NavigationProps> = ({
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className={`md:hidden ${isDarkMode ? 'bg-black/95' : 'bg-white/95'} border-t ${isDarkMode ? 'border-gray-800/50' : 'border-gray-200/50'} backdrop-blur-xl`}>
+        <div className={`md:hidden transition-all duration-300 animate-smooth-entrance ${
+          isDarkMode ? 'glass-3d-dark' : 'glass-3d'
+        }`}>
           <div className="px-2 pt-2 pb-3 space-y-1">
             {navItems.map((item) => (
               <button
@@ -76,12 +80,12 @@ const Navigation: React.FC<NavigationProps> = ({
                   onNavigate(item.id); 
                   setIsMenuOpen(false); 
                 }}
-                className={`block w-full text-left px-3 py-2 rounded-xl font-space-grotesk font-medium transition-all duration-300 ${
+                className={`block w-full text-left px-4 py-3 rounded-2xl font-hind font-medium transition-all duration-300 hover-light ${
                   currentPage === item.id 
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
+                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white animate-subtle-glow' 
                     : isDarkMode 
-                    ? 'text-gray-300 hover:bg-gray-800' 
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'text-gray-300 glass-3d-dark' 
+                    : 'text-gray-600 glass-3d'
                 }`}
               >
                 {item.label}

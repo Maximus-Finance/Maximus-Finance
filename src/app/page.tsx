@@ -26,8 +26,10 @@ export default function Home() {
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${
-      isDarkMode ? 'dark bg-gray-900 text-white' : 'bg-white text-gray-900'
+    <div className={`min-h-screen transition-all duration-500 font-hind ${
+      isDarkMode 
+        ? 'dark bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900 text-white' 
+        : 'bg-gradient-to-br from-white via-blue-50/30 to-white text-gray-900'
     }`}>
       <Navigation 
         currentPage={currentPage}

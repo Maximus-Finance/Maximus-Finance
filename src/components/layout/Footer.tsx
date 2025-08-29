@@ -15,8 +15,10 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
   ];
 
   return (
-    <footer className={`py-12 border-t ${
-      isDarkMode ? 'bg-gray-900 border-gray-800' : 'bg-gray-50 border-gray-200'
+    <footer className={`py-16 ${
+      isDarkMode 
+        ? 'glass-3d-dark animate-background-shift' 
+        : 'glass-3d animate-background-shift'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-center">
@@ -30,15 +32,15 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
                   isDarkMode 
                     ? 'text-gray-400 hover:text-white' 
                     : 'text-gray-600 hover:text-gray-900'
-                } transition-colors duration-200 font-space-grotesk`}
+                } transition-all duration-300 font-hind font-semibold hover-light`}
               >
                 {link.label}
               </a>
             ))}
           </div>
         </div>
-        <div className={`mt-8 pt-8 border-t text-center font-space-grotesk ${
-          isDarkMode ? 'border-gray-800 text-gray-400' : 'border-gray-200 text-gray-600'
+        <div className={`mt-8 pt-8 text-center font-hind animate-fade-in ${
+          isDarkMode ? 'text-gray-400' : 'text-gray-600'
         }`}>
           <p>&copy; 2025 Maximus Finance. All rights reserved. Built for the Avalanche ecosystem.</p>
         </div>

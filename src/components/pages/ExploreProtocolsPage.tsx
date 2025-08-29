@@ -2,7 +2,6 @@
 
 import { useTheme } from '@/hooks/useTheme';
 import ProtocolsGrid from '@/components/sections/ProtocolsGrid';
-import { TrendingUp } from 'lucide-react';
 import { PageType } from '@/types';
 
 interface ExploreProtocolsPageProps {
@@ -13,18 +12,18 @@ const ExploreProtocolsPage: React.FC<ExploreProtocolsPageProps> = ({ onNavigate 
   const { isDarkMode } = useTheme();
 
   return (
-    <div className="pt-16">
-      <section className={`min-h-screen py-20 ${
+    <div className="pt-16 font-hind">
+      <section className={`min-h-screen py-20 perspective-container ${
         isDarkMode 
-          ? 'bg-gradient-radial from-black via-gray-900 to-black' 
-          : 'bg-gradient-radial from-white via-gray-50 to-white'
+          ? 'bg-gradient-to-br from-gray-900 via-purple-900/20 to-black' 
+          : 'bg-gradient-to-br from-white via-blue-50/30 to-gray-50'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h1 className={`text-4xl md:text-6xl font-bold mb-6 font-space-grotesk ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              Avalanche <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent animate-gradient">DeFi Protocols</span>
+            <h1 className={`text-5xl md:text-7xl font-bold mb-8 font-hind animate-card-entrance hover-3d ${isDarkMode ? 'text-white animate-text-glow' : 'text-gray-900'}`}>
+              Avalanche <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent animate-gradient animate-text-glow">DeFi Protocols</span>
             </h1>
-            <p className={`text-xl font-space-grotesk ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+            <p className={`text-xl font-hind animate-float3d ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               Discover the leading protocols in the Avalanche ecosystem
             </p>
           </div>
@@ -33,7 +32,7 @@ const ExploreProtocolsPage: React.FC<ExploreProtocolsPageProps> = ({ onNavigate 
 
           {/* Featured Protocols */}
           <div className="mt-20">
-            <h2 className={`text-3xl font-bold text-center mb-12 font-space-grotesk ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            <h2 className={`text-4xl font-bold text-center mb-16 font-hind hover-3d ${isDarkMode ? 'text-white animate-text-glow' : 'text-gray-900'}`}>
               Featured Protocols
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -44,16 +43,16 @@ const ExploreProtocolsPage: React.FC<ExploreProtocolsPageProps> = ({ onNavigate 
               ].map((protocol, index) => (
                 <div 
                   key={index}
-                  className={`p-8 rounded-2xl text-center shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 animate-slide-in ${
-                    isDarkMode ? 'bg-gray-800' : 'bg-white'
+                  className={`p-10 rounded-3xl text-center hover-3d animate-card-entrance shadow-2xl transform hover:scale-110 transition-all duration-500 ${
+                    isDarkMode ? 'glass-3d-dark animate-float3d' : 'glass-3d animate-bubble'
                   }`}
-                  style={{ animationDelay: `${index * 0.1}s` }}
+                  style={{ animationDelay: `${index * 0.3}s` }}
                 >
                   <div className="text-4xl mb-4">{protocol.icon}</div>
                   <h3 className={`text-xl font-bold mb-2 font-space-grotesk ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                     {protocol.name}
                   </h3>
-                  <p className={`font-space-grotesk ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <p className={`font-hind text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                     {protocol.desc}
                   </p>
                   <p className={`text-lg font-semibold mt-2 font-space-grotesk ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>
@@ -66,42 +65,46 @@ const ExploreProtocolsPage: React.FC<ExploreProtocolsPageProps> = ({ onNavigate 
 
           {/* Features Section */}
           <div className="mt-20">
-            <h2 className={`text-3xl font-bold text-center mb-12 font-space-grotesk ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            <h2 className={`text-4xl font-bold text-center mb-16 font-hind hover-light ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
               Why Choose Our Platform?
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className={`p-8 rounded-2xl shadow-lg animate-slide-in ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`} style={{ animationDelay: '0.1s' }}>
-                <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mr-4">
-                    <span className="text-white text-xl">⚡</span>
+              <div className={`p-10 rounded-3xl hover-light animate-smooth-entrance shadow-2xl transition-all duration-300 ${
+                isDarkMode ? 'glass-3d-dark animate-light-float' : 'glass-3d animate-light-bounce'
+              }`} style={{ animationDelay: '0.1s' }}>
+                <div className="flex items-center mb-8">
+                  <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mr-6 hover-light animate-gentle-rotate shadow-2xl">
+                    <span className="text-white text-2xl animate-light-float">⚡</span>
                   </div>
                   <div>
-                    <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium font-space-grotesk">TODAY</span>
-                    <h3 className={`text-2xl font-bold mt-2 font-space-grotesk ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <span className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-bold font-hind hover-light animate-light-bounce">TODAY</span>
+                    <h3 className={`text-3xl font-bold mt-3 font-hind hover-light ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                       Instant Yield Access
                     </h3>
                   </div>
                 </div>
-                <p className={`font-space-grotesk ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                <p className={`font-hind text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                   Currently, we direct you to the top-performing Avalanche yield platforms so you can 
                   start earning right away.
                 </p>
               </div>
 
-              <div className={`p-8 rounded-2xl shadow-lg animate-slide-in ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`} style={{ animationDelay: '0.1s' }}>
-                <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mr-4">
-                    <span className="text-white text-xl">🏛️</span>
+              <div className={`p-10 rounded-3xl hover-3d animate-card-entrance shadow-2xl transition-all duration-500 ${
+                isDarkMode ? 'glass-3d-dark animate-bubble' : 'glass-3d animate-float3d'
+              }`} style={{ animationDelay: '0.4s' }}>
+                <div className="flex items-center mb-8">
+                  <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mr-6 hover-3d animate-rotate3d shadow-2xl">
+                    <span className="text-white text-2xl animate-bubble">🏛️</span>
                   </div>
                   <div>
-                    <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium font-space-grotesk">TOMORROW</span>
-                    <h3 className={`text-2xl font-bold mt-2 font-space-grotesk ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <span className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full text-sm font-bold font-hind hover-3d animate-float3d">TOMORROW</span>
+                    <h3 className={`text-3xl font-bold mt-3 font-hind hover-3d ${isDarkMode ? 'text-white animate-text-glow' : 'text-gray-900'}`}>
                       One-Click Auto-Staking
                     </h3>
                   </div>
                 </div>
-                <p className={`font-space-grotesk ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                  Deposit with us, and we'll stake your funds across protocols automatically—
+                <p className={`font-hind text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  Deposit with us, and we&apos;ll stake your funds across protocols automatically—
                   optimizing returns without you lifting a finger.
                 </p>
               </div>

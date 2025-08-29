@@ -9,6 +9,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
+        'hind': ['Hind', 'sans-serif'],
         'space-grotesk': ['Space Grotesk', 'sans-serif'],
         'jetbrains': ['JetBrains Mono', 'monospace'],
       },

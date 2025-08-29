@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
+import { useTheme } from '@/hooks/useTheme';
 
 interface ButtonProps {
   children: ReactNode;
@@ -19,25 +20,38 @@ const Button: React.FC<ButtonProps> = ({
   className = '',
   disabled = false,
 }) => {
-  const baseClasses = 'font-space-grotesk font-semibold transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed';
+  const { isDarkMode } = useTheme();
   
-  const variantClasses = {
-    primary: 'bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 hover:from-purple-700 hover:via-blue-700 hover:to-cyan-600 text-white shadow-lg',
-    secondary: 'bg-gray-800 hover:bg-gray-700 text-white border border-gray-700',
-    outline: 'border-2 border-gray-700 text-gray-300 hover:bg-gray-800/50 hover:border-purple-500',
+  const baseClasses = 'font-hind font-semibold transition-all duration-500 hover-3d focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed animate-bubble';
+  
+  const getVariantClasses = () => {
+    switch (variant) {
+      case 'primary':
+        return 'bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 hover:from-purple-700 hover:via-blue-700 hover:to-cyan-600 text-white shadow-2xl animate-glow';
+      case 'secondary':
+        return isDarkMode 
+          ? 'glass-3d-dark text-white hover:text-gray-100' 
+          : 'glass-3d text-gray-700 hover:text-gray-900';
+      case 'outline':
+        return isDarkMode
+          ? 'glass-3d-dark text-gray-300 hover:text-white border-2 border-purple-500/50 hover:border-purple-400'
+          : 'glass-3d text-gray-700 hover:text-gray-900 border-2 border-blue-500/50 hover:border-blue-400';
+      default:
+        return '';
+    }
   };
   
   const sizeClasses = {
-    sm: 'px-4 py-2 text-sm rounded-lg',
-    md: 'px-6 py-3 text-base rounded-xl',
-    lg: 'px-8 py-4 text-lg rounded-xl',
+    sm: 'px-5 py-3 text-sm rounded-xl',
+    md: 'px-8 py-4 text-base rounded-2xl',
+    lg: 'px-10 py-5 text-lg rounded-2xl',
   };
 
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      className={`${baseClasses} ${getVariantClasses()} ${sizeClasses[size]} ${className}`}
     >
       {children}
     </button>

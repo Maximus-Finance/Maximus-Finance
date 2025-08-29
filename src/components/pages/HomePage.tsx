@@ -4,7 +4,6 @@ import { useTheme } from '@/hooks/useTheme';
 import HeroSection from '@/components/sections/HeroSection';
 import StatsSection from '@/components/sections/StatsSection';
 import FeaturesSection from '@/components/sections/FeaturesSection';
-import Button from '@/components/ui/Button';
 import { PageType } from '@/types';
 
 interface HomePageProps {

@@ -74,97 +74,163 @@ export class ProtocolAggregator {
           tvl: `$${(data.benqi.liquidStaking.tvl / 1000000).toFixed(1)}M`,
           risk: 'Low',
           icon: '🔥',
-          url: 'https://benqi.fi/stake',
+          url: 'https://app.benqi.fi/stake',
           isLive: true,
           features: ['Liquid', 'No Lock-up', 'Validator Rewards']
         });
       }
 
-      // BENQI AVAX Lending
-      if (data.benqi.avaxLending) {
-        opportunities.push({
-          id: 'benqi-avax-lending',
-          protocol: 'BENQI',
-          category: 'Borrowing',
-          pair: 'AVAX',
-          apy: `${Math.max(data.benqi.avaxLending.apy, 0).toFixed(2)}%`,
-          tvl: `$${(data.benqi.avaxLending.tvl / 1000000).toFixed(1)}M`,
-          risk: data.benqi.avaxLending.utilization > 80 ? 'High' : data.benqi.avaxLending.utilization > 50 ? 'Medium' : 'Low',
-          icon: '🔥',
-          url: 'https://benqi.fi/lend',
-          isLive: true,
-          features: ['Borrowing', 'Collateral', 'Variable APY']
-        });
-      }
+      // BENQI Lending Markets - All available pairs
+      if (data.benqi.lendingMarkets) {
+        data.benqi.lendingMarkets.forEach((market) => {
+          if (market.tvl > 100000) { // Only show markets with >$100k TVL
+            opportunities.push({
+              id: `benqi-${market.symbol.toLowerCase()}`,
+              protocol: 'BENQI',
+              category: 'Lending',
+              pair: `${market.underlyingSymbol} (Supply)`,
+              apy: `${Math.max(market.supplyAPY, 0).toFixed(2)}%`,
+              tvl: `$${(market.tvl / 1000000).toFixed(1)}M`,
+              risk: market.utilization > 80 ? 'High' : market.utilization > 50 ? 'Medium' : 'Low',
+              icon: '🔥',
+              url: 'https://app.benqi.fi/lending',
+              isLive: true,
+              features: [
+                'Lending', 
+                `${market.utilization.toFixed(1)}% Utilization`,
+                market.underlyingSymbol.includes('USD') ? 'Stablecoin' : 'Volatile Asset'
+              ]
+            });
 
-      // BENQI USDC Lending
-      if (data.benqi.usdcLending) {
-        opportunities.push({
-          id: 'benqi-usdc-lending',
-          protocol: 'BENQI',
-          category: 'Borrowing',
-          pair: 'USDC',
-          apy: `${Math.max(data.benqi.usdcLending.apy, 0).toFixed(2)}%`,
-          tvl: `$${(data.benqi.usdcLending.tvl / 1000000).toFixed(1)}M`,
-          risk: 'Low',
-          icon: '🔥',
-          url: 'https://benqi.fi/lend',
-          isLive: true,
-          features: ['Stable Asset', 'Borrowing', 'Low Risk']
+            // Add borrowing opportunity if there's significant borrow APY
+            if (market.borrowAPY > 0.1) {
+              opportunities.push({
+                id: `benqi-${market.symbol.toLowerCase()}-borrow`,
+                protocol: 'BENQI',
+                category: 'Borrowing',
+                pair: `${market.underlyingSymbol} (Borrow)`,
+                apy: `${market.borrowAPY.toFixed(2)}%`,
+                tvl: `$${(market.totalBorrows * (data.benqi?.prices[market.underlyingSymbol.toLowerCase().replace('.e', '').replace('.b', '')] || 1) / 1000000).toFixed(1)}M`,
+                risk: market.utilization > 80 ? 'High' : market.utilization > 50 ? 'Medium' : 'Low',
+                icon: '🔥',
+                url: 'https://app.benqi.fi/lending',
+                isLive: true,
+                features: [
+                  'Borrowing', 
+                  'Variable Rate',
+                  `${market.utilization.toFixed(1)}% Utilization`
+                ]
+              });
+            }
+          }
         });
       }
     }
 
     // Format GoGoPool data
-    if (data.gogopool?.liquidStaking) {
-      opportunities.push({
-        id: 'gogopool-ggavax',
-        protocol: 'GoGoPool',
-        category: 'Liquid Staking',
-        pair: 'AVAX → ggAVAX',
-        apy: `${data.gogopool.liquidStaking.apr.toFixed(2)}%`,
-        tvl: `$${(data.gogopool.liquidStaking.tvl / 1000000).toFixed(1)}M`,
-        risk: 'Low',
-        icon: '⚡',
-        url: 'https://www.gogopool.com/stake',
-        isLive: true,
-        features: ['Minipool Network', 'Decentralized', 'Node Operators']
-      });
+    if (data.gogopool) {
+      // GoGoPool Liquid Staking
+      if (data.gogopool.liquidStaking) {
+        opportunities.push({
+          id: 'gogopool-ggavax',
+          protocol: 'GoGoPool',
+          category: 'Liquid Staking',
+          pair: 'AVAX → ggAVAX',
+          apy: `${data.gogopool.liquidStaking.apr.toFixed(2)}%`,
+          tvl: `$${(data.gogopool.liquidStaking.tvl / 1000000).toFixed(1)}M`,
+          risk: 'Low',
+          icon: '⚡',
+          url: 'https://www.gogopool.com/stake',
+          isLive: true,
+          features: ['Minipool Network', 'Decentralized', 'Node Operators']
+        });
+      }
+
+      // GoGoPool GGP Staking
+      if (data.gogopool.ggpStaking) {
+        opportunities.push({
+          id: 'gogopool-ggp-staking',
+          protocol: 'GoGoPool',
+          category: 'Token Staking',
+          pair: 'GGP Staking',
+          apy: `${data.gogopool.ggpStaking.stakingAPY.toFixed(2)}%`,
+          tvl: `$${(data.gogopool.ggpStaking.totalGGPStaked * data.gogopool.ggpStaking.ggpPrice / 1000000).toFixed(1)}M`,
+          risk: 'Medium',
+          icon: '⚡',
+          url: 'https://www.gogopool.com/stake',
+          isLive: true,
+          features: ['GGP Rewards', 'Minipool Collateral', 'Protocol Governance']
+        });
+      }
+
+      // Minipool Operations
+      if (data.gogopool.minipools) {
+        opportunities.push({
+          id: 'gogopool-minipool',
+          protocol: 'GoGoPool',
+          category: 'Validator Staking',
+          pair: 'Minipool Validation',
+          apy: `${data.gogopool.minipools.avgAPY.toFixed(2)}%`,
+          tvl: `$${(data.gogopool.minipools.active * 1000 * data.gogopool.prices.avax / 1000000).toFixed(1)}M`,
+          risk: 'Medium',
+          icon: '⚡',
+          url: 'https://www.gogopool.com/minipool',
+          isLive: true,
+          features: ['Validator Rewards', '1000 AVAX Required', 'Hardware Operation']
+        });
+      }
     }
 
     // Format Avant data
     if (data.avant) {
-      // Avant USD Staking
-      if (data.avant.usdStaking) {
+      // Avant savUSD Vault Staking
+      if (data.avant.savUSD) {
         opportunities.push({
-          id: 'avant-usd',
+          id: 'avant-savusd',
           protocol: 'Avant Finance',
           category: 'Yield Farming',
-          pair: 'USD → avUSD',
-          apy: `${data.avant.usdStaking.apy.toFixed(2)}%`,
-          tvl: `$${(data.avant.usdStaking.tvl / 1000000).toFixed(1)}M`,
+          pair: 'avUSD → savUSD',
+          apy: `${data.avant.savUSD.apy.toFixed(2)}%`,
+          tvl: `$${(data.avant.savUSD.tvl / 1000000).toFixed(1)}M`,
           risk: 'Low',
           icon: '💰',
-          url: 'https://avant.fi',
+          url: 'https://app.avantprotocol.com',
           isLive: true,
-          features: ['Stablecoin Yield', 'USD Denominated', 'Low Risk']
+          features: ['ERC-4626 Vault', 'Delta-Neutral Strategy', '1-day Cooldown']
         });
       }
 
-      // Avant AVAX Yield
-      if (data.avant.avaxYield) {
+      // Avant savBTC Vault Staking
+      if (data.avant.savBTC) {
         opportunities.push({
-          id: 'avant-avax',
+          id: 'avant-savbtc',
           protocol: 'Avant Finance',
           category: 'Yield Farming',
-          pair: 'AVAX → avAVAX',
-          apy: `${data.avant.avaxYield.apy.toFixed(2)}%`,
-          tvl: `$${(data.avant.avaxYield.tvl / 1000000).toFixed(1)}M`,
+          pair: 'avBTC → savBTC',
+          apy: `${data.avant.savBTC.apy.toFixed(2)}%`,
+          tvl: `$${(data.avant.savBTC.tvl / 1000000).toFixed(1)}M`,
           risk: 'Medium',
-          icon: '🌟',
-          url: 'https://avant.fi',
+          icon: '₿',
+          url: 'https://app.avantprotocol.com',
           isLive: true,
-          features: ['AVAX Yield', 'Optimized Returns', 'Auto-Compounding']
+          features: ['Bitcoin Yield', 'ERC-4626 Vault', 'Delta-Neutral Strategy']
+        });
+      }
+
+      // Avant avUSDx Token
+      if (data.avant.avUSDx) {
+        opportunities.push({
+          id: 'avant-avusdx',
+          protocol: 'Avant Finance',
+          category: 'Lending',
+          pair: 'avUSDx',
+          apy: '4.50%', // Base stable yield
+          tvl: `$${(data.avant.avUSDx.marketCap / 1000000).toFixed(1)}M`,
+          risk: 'Low',
+          icon: '💎',
+          url: 'https://app.avantprotocol.com',
+          isLive: true,
+          features: ['Stable Token', 'Cross-Chain', 'Yield-Bearing']
         });
       }
     }
@@ -180,40 +246,68 @@ export class ProtocolAggregator {
 
     if (data.benqi) {
       activeProtocols++;
+      
+      // Liquid Staking TVL and APY
       if (data.benqi.liquidStaking) {
         totalTVL += data.benqi.liquidStaking.tvl;
         totalAPY += data.benqi.liquidStaking.apr;
         apyCount++;
       }
-      if (data.benqi.avaxLending) {
-        totalTVL += data.benqi.avaxLending.tvl;
-        totalAPY += data.benqi.avaxLending.apy;
-        apyCount++;
-      }
-      if (data.benqi.usdcLending) {
-        totalTVL += data.benqi.usdcLending.tvl;
-        totalAPY += data.benqi.usdcLending.apy;
-        apyCount++;
+      
+      // All lending markets TVL and APY
+      if (data.benqi.lendingMarkets) {
+        data.benqi.lendingMarkets.forEach(market => {
+          if (market.tvl > 100000) { // Only count significant markets
+            totalTVL += market.tvl;
+            if (market.supplyAPY > 0) {
+              totalAPY += market.supplyAPY;
+              apyCount++;
+            }
+          }
+        });
       }
     }
 
-    if (data.gogopool?.liquidStaking) {
+    if (data.gogopool) {
       activeProtocols++;
-      totalTVL += data.gogopool.liquidStaking.tvl;
-      totalAPY += data.gogopool.liquidStaking.apr;
-      apyCount++;
+      
+      if (data.gogopool.liquidStaking) {
+        totalTVL += data.gogopool.liquidStaking.tvl;
+        totalAPY += data.gogopool.liquidStaking.apr;
+        apyCount++;
+      }
+      
+      if (data.gogopool.ggpStaking) {
+        totalTVL += data.gogopool.ggpStaking.totalGGPStaked * data.gogopool.ggpStaking.ggpPrice;
+        totalAPY += data.gogopool.ggpStaking.stakingAPY;
+        apyCount++;
+      }
+      
+      if (data.gogopool.minipools) {
+        totalTVL += data.gogopool.minipools.active * 1000 * data.gogopool.prices.avax;
+        totalAPY += data.gogopool.minipools.avgAPY;
+        apyCount++;
+      }
     }
 
     if (data.avant) {
       activeProtocols++;
-      if (data.avant.usdStaking) {
-        totalTVL += data.avant.usdStaking.tvl;
-        totalAPY += data.avant.usdStaking.apy;
+      
+      if (data.avant.savUSD) {
+        totalTVL += data.avant.savUSD.tvl;
+        totalAPY += data.avant.savUSD.apy;
         apyCount++;
       }
-      if (data.avant.avaxYield) {
-        totalTVL += data.avant.avaxYield.tvl;
-        totalAPY += data.avant.avaxYield.apy;
+      
+      if (data.avant.savBTC) {
+        totalTVL += data.avant.savBTC.tvl;
+        totalAPY += data.avant.savBTC.apy;
+        apyCount++;
+      }
+      
+      if (data.avant.avUSDx) {
+        totalTVL += data.avant.avUSDx.marketCap;
+        totalAPY += 4.50; // Base stable yield
         apyCount++;
       }
     }
