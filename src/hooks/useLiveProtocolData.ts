@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { AvantService, HyphaService } from '@/services/avantAndHyphaService';
+import { BenqiService } from '@/services/BenqiService';
+import { LfjService } from '@/services/LfjService';
 import { YieldOpportunity } from '@/components/protocols/ProtocolAggregator';
 
 export interface LiveProtocolData {
@@ -15,7 +17,7 @@ export interface LiveProtocolData {
   alerts: string[];
 }
 
-export function useLiveProtocolData(refreshInterval: number = 15000) {
+export function useLiveProtocolData(refreshInterval: number = 3600000) { // 1 hour = 3600000ms
   const [state, setState] = useState<LiveProtocolData>({
     opportunities: [],
     isLoading: true,
@@ -35,16 +37,21 @@ export function useLiveProtocolData(refreshInterval: number = 15000) {
     try {
       setState(prev => ({ ...prev, isLoading: true, error: null }));
       
-      console.log('🔄 Fetching live protocol data...');
+      console.log('🔄 Fetching live protocol data... (refreshes hourly)');
       
       // Fetch data from all live services in parallel
       const avantService = new AvantService();
       const hyphaService = new HyphaService();
+      const benqiService = new BenqiService();
+      const lfjService = new LfjService();
       
-      const [avantData, hyphaData] = await Promise.allSettled([
+      const [avantData, hyphaData, benqiData, lfjData] = await Promise.allSettled([
         avantService.fetchData(),
-        hyphaService.fetchData()
+        hyphaService.fetchData(),
+        benqiService.fetchData(),
+        lfjService.fetchData()
       ]);
+
 
       const allOpportunities: YieldOpportunity[] = [];
       
@@ -142,6 +149,50 @@ export function useLiveProtocolData(refreshInterval: number = 15000) {
           });
         }
       }
+      
+      // Convert BENQI data to YieldOpportunity format
+      if (benqiData.status === 'fulfilled') {
+        const data = benqiData.value;
+        
+        // sAVAX opportunity
+        if (data.sAVAX.apy > 0) {
+          allOpportunities.push({
+            id: 'benqi-savax',
+            protocol: 'BENQI',
+            category: 'Liquid Staking',
+            pair: 'AVAX → sAVAX',
+            apy: `${data.sAVAX.apy.toFixed(2)}%`,
+            tvl: `$${(data.sAVAX.tvl / 1000000).toFixed(1)}M`,
+            risk: 'Low',
+            icon: '🏔️',
+            url: 'https://app.benqi.fi/stake',
+            isLive: true,
+            features: ['Liquid Staking', 'Live APY', 'Official Contract']
+          });
+        }
+      }
+      
+      // Convert LFJ data to YieldOpportunity format
+      if (lfjData.status === 'fulfilled') {
+        const data = lfjData.value;
+        
+        // jAVAX lending opportunity
+        if (data.jAVAX.apy > 0) {
+          allOpportunities.push({
+            id: 'lfj-javax',
+            protocol: 'Trader Joe',
+            category: 'Lending',
+            pair: 'AVAX (Supply)',
+            apy: `${data.jAVAX.apy.toFixed(2)}%`,
+            tvl: `$${(data.jAVAX.tvl / 1000000).toFixed(1)}M`,
+            risk: data.jAVAX.utilization > 80 ? 'High' : data.jAVAX.utilization > 60 ? 'Medium' : 'Low',
+            icon: '🔺',
+            url: 'https://traderjoexyz.com/lending',
+            isLive: true,
+            features: ['Banker Joe', 'Compound Protocol', `${data.jAVAX.utilization.toFixed(1)}% Util`]
+          });
+        }
+      }
 
       // Calculate metrics
       const totalTVL = allOpportunities.reduce((sum, opp) => {
@@ -157,13 +208,15 @@ export function useLiveProtocolData(refreshInterval: number = 15000) {
       const activeProtocols = new Set(allOpportunities.map(opp => opp.protocol)).size;
       
       // Determine data quality based on successful service calls
-      const successfulServices = [avantData, hyphaData].filter(result => result.status === 'fulfilled').length;
-      const dataQuality = successfulServices >= 2 ? 'excellent' : successfulServices >= 1 ? 'good' : 'poor';
-      const systemHealth = (successfulServices / 2) * 100;
+      const successfulServices = [avantData, hyphaData, benqiData, lfjData].filter(result => result.status === 'fulfilled').length;
+      const dataQuality = successfulServices >= 3 ? 'excellent' : successfulServices >= 2 ? 'good' : successfulServices >= 1 ? 'fair' : 'poor';
+      const systemHealth = (successfulServices / 4) * 100;
 
       const alerts: string[] = [];
       if (avantData.status === 'rejected') alerts.push('Avant Protocol data unavailable');
       if (hyphaData.status === 'rejected') alerts.push('GoGoPool/Hypha data unavailable');
+      if (benqiData.status === 'rejected') alerts.push('BENQI data unavailable');
+      if (lfjData.status === 'rejected') alerts.push('Trader Joe data unavailable');
 
       setState({
         opportunities: allOpportunities,
