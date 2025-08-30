@@ -22,15 +22,6 @@ const ExploreYieldsPage: React.FC = () => {
             
             {/* Live Status Indicator */}
             <div className="flex flex-col sm:flex-row items-center justify-center mt-4 sm:mt-6 space-y-3 sm:space-y-0 sm:space-x-6 animate-light-bounce">
-              <div className="flex items-center space-x-3">
-                <div className={`w-3 h-3 rounded-full animate-pulse ${
-                  systemHealth >= 80 ? 'bg-green-400' :
-                  systemHealth >= 60 ? 'bg-yellow-400' : 'bg-red-400'
-                }`}></div>
-                <span className={`text-sm sm:text-base font-hind font-semibold ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                  {isLoading ? 'Updating...' : `${dataQuality} Data Quality`}
-                </span>
-              </div>
               {lastUpdated && (
                 <span className={`text-sm sm:text-base font-hind ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                   Last updated: {lastUpdated.toLocaleTimeString()}

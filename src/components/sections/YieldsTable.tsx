@@ -165,11 +165,6 @@ const YieldsCards: React.FC<YieldsCardsProps> = ({ isDarkMode }) => {
 
       {/* Live Data Indicator */}
       <div className="flex justify-center space-x-6">
-        <LiveDataIndicator 
-          lastUpdated={lastUpdated} 
-          isLoading={isLoading} 
-          error={error} 
-        />
         <DataQualityIndicator 
           quality={dataQuality}
           systemHealth={systemHealth}

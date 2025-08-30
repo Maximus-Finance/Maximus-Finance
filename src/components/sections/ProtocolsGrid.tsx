@@ -17,14 +17,11 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
   if (isLoading && opportunities.length === 0) {
     return (
       <div className="space-y-8 font-hind">
-        <div className="flex justify-center">
-          <LiveDataIndicator lastUpdated={lastUpdated} isLoading={isLoading} error={error} />
-        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
           {[1, 2, 3, 4].map(i => (
             <div key={i} className={`h-80 rounded-3xl animate-pulse hover-light ${
               isDarkMode ? 'glass-3d-dark animate-light-float' : 'glass-3d animate-light-bounce'
-            }`} style={{ animationDelay: `${i * 0.1}s` }} />
+            }`} style={{ animationDelay: `${i * 0.01}s` }} />
           ))}
         </div>
       </div>
@@ -42,9 +39,6 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
 
   return (
     <div className="space-y-8 font-hind">
-      <div className="flex justify-center">
-        <LiveDataIndicator lastUpdated={lastUpdated} isLoading={isLoading} error={error} />
-      </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
         {Object.entries(protocolGroups).map(([protocol, protocolOpportunities]) => {
@@ -89,7 +83,7 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
                   <div>
                     <div className={`text-sm font-hind font-semibold ${isDarkMode ? 'text-gray-400' : 'text-slate-600'}`}>TVL</div>
                     <div className={`text-lg sm:text-xl font-bold font-hind ${isDarkMode ? 'text-white animate-text-glow' : 'text-slate-800'}`}>
-                      ${totalProtocolTVL.toFixed(1)}M
+                      {totalProtocolTVL > 999 ? 'NA' : `$${totalProtocolTVL.toFixed(1)}M`}
                     </div>
                   </div>
                   <div>

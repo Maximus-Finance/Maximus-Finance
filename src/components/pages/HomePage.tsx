@@ -23,11 +23,8 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       <section className={`py-12 sm:py-16 lg:py-20 ${isDarkMode ? 'bg-gradient-to-r from-blue-900 to-purple-900' : 'bg-gradient-to-r from-blue-600 to-purple-600'}`}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 sm:mb-6 font-space-grotesk">
-            Join 10,000+ DeFi users maximizing their Avalanche yields
+          While others give you <span className="text-gray-400">data</span>, we give you the {" "} <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">decision</span>.
           </h2>
-          <p className="text-lg sm:text-xl text-blue-100 mb-6 sm:mb-8 font-space-grotesk">
-            Our platform has helped users earn over $50M in optimized yields across the Avalanche ecosystem
-          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
               onClick={() => onNavigate('yields')}

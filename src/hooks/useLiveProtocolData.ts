@@ -143,7 +143,7 @@ export function useLiveProtocolData(refreshInterval: number = 3600000) { // 1 ho
             tvl: `$${(data.stAVAX.tvlAVAX * 42 / 1000000).toFixed(1)}M`, // AVAX price estimate
             risk: 'Low',
             icon: '⚡',
-            url: 'https://www.gogopool.com/stake',
+            url: 'https://app.gogopool.com/liquid-staking/',
             isLive: true,
             features: ['Official API', 'Live Data', 'Minipool Network']
           });
@@ -165,7 +165,7 @@ export function useLiveProtocolData(refreshInterval: number = 3600000) { // 1 ho
             tvl: `$${(data.sAVAX.tvl / 1000000).toFixed(1)}M`,
             risk: 'Low',
             icon: '🏔️',
-            url: 'https://app.benqi.fi/stake',
+            url: 'https://app.benqi.fi/savax',
             isLive: true,
             features: ['Liquid Staking', 'Live APY', 'Official Contract']
           });
@@ -187,7 +187,7 @@ export function useLiveProtocolData(refreshInterval: number = 3600000) { // 1 ho
             tvl: `$${(data.jAVAX.tvl / 1000000).toFixed(1)}M`,
             risk: data.jAVAX.utilization > 80 ? 'High' : data.jAVAX.utilization > 60 ? 'Medium' : 'Low',
             icon: '🔺',
-            url: 'https://traderjoexyz.com/lending',
+            url: 'https://lfj.gg/avalanche/stake/sjoe',
             isLive: true,
             features: ['Banker Joe', 'Compound Protocol', `${data.jAVAX.utilization.toFixed(1)}% Util`]
           });
