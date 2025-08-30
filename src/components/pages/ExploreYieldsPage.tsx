@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from '@/hooks/useTheme';
-import YieldsTable from '@/components/sections/YieldsTable';
+import YieldsCards from '@/components/sections/YieldsTable';
 import { useLiveProtocolData } from '@/hooks/useLiveProtocolData';
 
 const ExploreYieldsPage: React.FC = () => {
@@ -10,11 +10,7 @@ const ExploreYieldsPage: React.FC = () => {
 
   return (
     <div className="pt-16 font-hind">
-      <section className={`min-h-screen py-12 sm:py-16 lg:py-20 ${
-        isDarkMode 
-          ? 'bg-gradient-to-br from-gray-900 via-purple-900/20 to-black' 
-          : 'bg-gradient-to-br from-white via-blue-50/30 to-gray-50'
-      }`}>
+      <section className="min-h-screen py-12 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12">
             <h1 className={`text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 font-hind animate-smooth-entrance hover-light leading-tight ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
@@ -49,7 +45,7 @@ const ExploreYieldsPage: React.FC = () => {
             </div>
           </div>
 
-          <YieldsTable isDarkMode={isDarkMode} />
+          <YieldsCards isDarkMode={isDarkMode} />
 
           {/* Summary Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12">

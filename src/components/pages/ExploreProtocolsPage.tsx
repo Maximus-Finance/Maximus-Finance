@@ -13,11 +13,7 @@ const ExploreProtocolsPage: React.FC<ExploreProtocolsPageProps> = ({ onNavigate 
 
   return (
     <div className="pt-16 font-hind">
-      <section className={`min-h-screen py-12 sm:py-16 lg:py-20 perspective-container ${
-        isDarkMode 
-          ? 'bg-gradient-to-br from-gray-900 via-purple-900/20 to-black' 
-          : 'bg-gradient-to-br from-white via-blue-50/30 to-gray-50'
-      }`}>
+      <section className="min-h-screen py-12 sm:py-16 lg:py-20 perspective-container">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12">
             <h1 className={`text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 font-hind animate-card-entrance hover-3d leading-tight ${isDarkMode ? 'text-white animate-text-glow' : 'text-gray-900'}`}>

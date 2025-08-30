@@ -10,11 +10,7 @@ interface HeroSectionProps {
 
 const HeroSection: React.FC<HeroSectionProps> = ({ isDarkMode, onNavigate }) => {
   return (
-    <section className={`min-h-screen flex items-center justify-center relative overflow-hidden ${
-      isDarkMode 
-        ? 'bg-gradient-to-br from-gray-900 via-purple-900/20 to-black' 
-        : 'bg-gradient-to-br from-white via-blue-50/50 to-gray-50'
-    }`}>
+    <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
       {/* Light animated background elements */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-1/4 left-1/4 w-48 h-48 sm:w-72 sm:h-72 lg:w-96 lg:h-96 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full mix-blend-screen filter blur-3xl animate-light-float"></div>

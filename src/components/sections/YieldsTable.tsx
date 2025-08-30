@@ -6,13 +6,87 @@ import { useLiveProtocolData } from '@/hooks/useLiveProtocolData';
 import LiveDataIndicator from '@/components/ui/LiveDataIndicator';
 import DataQualityIndicator from '@/components/ui/DataQualityIndicator';
 
-interface YieldsTableProps {
+interface YieldsCardsProps {
   isDarkMode: boolean;
 }
 
-const YieldsTable: React.FC<YieldsTableProps> = ({ isDarkMode }) => {
+const YieldsCards: React.FC<YieldsCardsProps> = ({ isDarkMode }) => {
   const [selectedFilter, setSelectedFilter] = useState('All');
   const { opportunities, isLoading, error, lastUpdated, dataQuality, systemHealth, alerts } = useLiveProtocolData();
+
+  // Format TVL to prevent overflow
+  const formatTVL = (tvlString: string): string => {
+    // Handle edge cases
+    if (!tvlString || tvlString === 'N/A' || tvlString === '0' || tvlString === '$0') {
+      return 'N/A';
+    }
+    
+    // Remove currency symbols and extract number
+    const numericValue = tvlString.replace(/[$,]/g, '').trim();
+    
+    // Handle very long numbers that might be malformed
+    if (numericValue.length > 20) {
+      return 'N/A';
+    }
+    
+    const match = numericValue.match(/^([\d.]+)([MBKmbt]?)$/i);
+    
+    if (!match) {
+      // Fallback: try to extract just numbers
+      const numberOnly = parseFloat(numericValue.replace(/[^\d.]/g, ''));
+      if (isNaN(numberOnly)) return 'N/A';
+      
+      if (numberOnly > 1000000000) {
+        return `$${(numberOnly / 1000000000).toFixed(1)}B`;
+      } else if (numberOnly > 1000000) {
+        return `$${(numberOnly / 1000000).toFixed(1)}M`;
+      } else if (numberOnly > 1000) {
+        return `$${(numberOnly / 1000).toFixed(1)}K`;
+      } else {
+        return `$${numberOnly.toFixed(0)}`;
+      }
+    }
+    
+    const [, value, unit] = match;
+    const number = parseFloat(value);
+    
+    if (isNaN(number)) return 'N/A';
+    
+    // Handle very large numbers - likely data errors
+    if (number > 999999) {
+      return 'N/A';
+    }
+    
+    // Handle units and format appropriately
+    const upperUnit = unit.toUpperCase();
+    
+    if (upperUnit === 'M' || upperUnit === '') {
+      if (number > 1000) {
+        return `$${(number / 1000).toFixed(1)}B`;
+      } else if (number > 100) {
+        return `$${Math.round(number)}M`;
+      } else if (number > 10) {
+        return `$${number.toFixed(0)}M`;
+      } else {
+        return `$${number.toFixed(1)}M`;
+      }
+    } else if (upperUnit === 'B') {
+      return `$${number.toFixed(1)}B`;
+    } else if (upperUnit === 'K') {
+      return `$${number.toFixed(0)}K`;
+    }
+    
+    // Default case for no unit
+    if (number > 1000000000) {
+      return `$${(number / 1000000000).toFixed(1)}B`;
+    } else if (number > 1000000) {
+      return `$${(number / 1000000).toFixed(1)}M`;
+    } else if (number > 1000) {
+      return `$${(number / 1000).toFixed(1)}K`;
+    } else {
+      return `$${number.toFixed(0)}`;
+    }
+  };
   
   const filters = ['All', 'Liquid Staking', 'Lending', 'Borrowing', 'Token Staking', 'Validator Staking', 'Yield Farming'];
 
@@ -28,23 +102,37 @@ const YieldsTable: React.FC<YieldsTableProps> = ({ isDarkMode }) => {
           {filters.map((filter, index) => (
             <div
               key={filter}
-              className={`px-6 py-3 rounded-xl h-12 w-32 animate-pulse ${
-                isDarkMode ? 'bg-gray-800' : 'bg-gray-200'
+              className={`px-6 py-3 rounded-xl h-12 w-32 animate-pulse shadow-lg ${
+                isDarkMode ? 'bg-gray-700' : 'bg-gray-300'
               }`}
               style={{ animationDelay: `${index * 0.1}s` }}
             />
           ))}
         </div>
-        <div className={`rounded-3xl overflow-hidden shadow-2xl p-8 ${
-          isDarkMode ? 'bg-gray-900/80' : 'bg-white/80'
-        }`}>
-          <div className="space-y-4">
-            {[1, 2, 3, 4].map(i => (
-              <div key={i} className={`h-20 rounded-xl animate-pulse ${
-                isDarkMode ? 'bg-gray-800' : 'bg-gray-200'
-              }`} />
-            ))}
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+          {[1, 2, 3, 4, 5, 6].map(i => (
+            <div 
+              key={i} 
+              className={`rounded-3xl p-8 animate-pulse border shadow-lg ${
+                isDarkMode ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'
+              }`}
+              style={{ animationDelay: `${i * 0.1}s` }}
+            >
+              <div className="flex items-center space-x-4 mb-6">
+                <div className={`w-12 h-12 rounded-full ${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}`} />
+                <div className="flex-1">
+                  <div className={`h-6 rounded-lg mb-2 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}`} />
+                  <div className={`h-4 w-20 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}`} />
+                </div>
+              </div>
+              <div className={`h-24 rounded-2xl mb-6 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`} />
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className={`h-16 rounded-xl ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`} />
+                <div className={`h-16 rounded-xl ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`} />
+              </div>
+              <div className={`h-12 rounded-2xl ${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}`} />
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -61,31 +149,16 @@ const YieldsTable: React.FC<YieldsTableProps> = ({ isDarkMode }) => {
             className={`
               relative px-6 py-3 rounded-2xl font-semibold transition-all duration-300 font-hind animate-smooth-entrance overflow-hidden group hover-light
               ${selectedFilter === filter
-                ? 'bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 text-white shadow-2xl animate-subtle-glow'
+                ? 'bg-blue-600 text-white shadow-lg'
                 : isDarkMode
-                ? 'glass-3d-dark text-gray-300 hover:text-white animate-light-float'
-                : 'glass-3d text-gray-700 hover:text-gray-900 animate-light-bounce'
+                ? 'bg-gray-700 text-gray-200 hover:bg-gray-600 hover:text-white shadow-lg'
+                : 'bg-gray-200 text-gray-800 hover:bg-gray-300 hover:text-gray-900 shadow-lg'
               }
             `}
             style={{ animationDelay: `${index * 0.1}s` }}
           >
             <span className="relative z-10">{filter}</span>
             
-            {/* Animated background for non-selected buttons */}
-            {selectedFilter !== filter && (
-              <div className={`
-                absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300
-                ${isDarkMode 
-                  ? 'bg-gradient-to-r from-purple-600/20 to-blue-600/20' 
-                  : 'bg-gradient-to-r from-purple-500/10 to-blue-500/10'
-                }
-              `} />
-            )}
-            
-            {/* Shimmer effect for selected button */}
-            {selectedFilter === filter && (
-              <div className="absolute inset-0 -top-2 -bottom-2 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 animate-[shimmer_2s_infinite] opacity-30" />
-            )}
           </button>
         ))}
       </div>
@@ -105,166 +178,164 @@ const YieldsTable: React.FC<YieldsTableProps> = ({ isDarkMode }) => {
         />
       </div>
 
-      {/* Enhanced Table with Glassmorphism */}
-      <div className={`
-        rounded-3xl overflow-hidden shadow-2xl animate-smooth-entrance relative group hover-light
-        ${isDarkMode ? 'glass-3d-dark' : 'glass-3d'}
-        hover:shadow-[0_0_50px_rgba(147,51,234,0.3)] transition-all duration-500 animate-background-shift
-      `}>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className={`
-              relative
-              ${isDarkMode ? 'glass-3d-dark' : 'glass-3d'}
-            `}>
-              <tr>
-                {['Protocol', 'Category', 'Pair/Asset', 'APY', 'TVL', 'Risk', 'Status', 'Action'].map((header, index) => (
-                  <th 
-                    key={header} 
-                    className={`
-                      px-6 py-6 text-left font-bold font-hind relative group
-                      ${isDarkMode ? 'text-gray-100' : 'text-gray-800 hover:text-gray-900'}
-                      animate-smooth-entrance hover-light
-                    `}
-                    style={{ animationDelay: `${index * 0.05}s` }}
-                  >
-                    <span className="relative z-10">{header}</span>
-                    <div className={`
-                      absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 
-                      transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 w-full
-                    `} />
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filteredData.length === 0 ? (
-                <tr>
-                  <td colSpan={8} className="text-center py-12">
-                    <div className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {isLoading ? 'Loading protocols...' : 'No protocols available for this filter'}
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                filteredData.map((item, index) => (
-                  <tr 
-                    key={item.id} 
-                    className={`transition-all duration-300 hover:z-10 relative animate-smooth-entrance hover-light ${
-                      isDarkMode 
-                        ? 'border-t border-gray-700/30 glass-3d-dark' 
-                        : 'border-t border-gray-200/30 glass-3d'
-                    }`}
-                    style={{ animationDelay: `${index * 0.05}s` }}
-                  >
-                    <td className="px-6 py-6">
-                      <div className="flex items-center space-x-4 group">
-                        <div className="text-4xl transform transition-all duration-300 group-hover:scale-110 animate-gentle-rotate">
-                          {item.icon}
-                        </div>
-                        <div>
-                          <span className={`font-bold text-xl font-hind ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                            {item.protocol}
-                          </span>
-                          <div className={`text-sm font-hind ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                            Protocol
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-6">
-                      <span className="bg-gradient-to-r from-purple-500 via-blue-500 to-purple-600 text-white px-5 py-3 rounded-2xl text-sm font-bold font-hind shadow-2xl hover-light animate-light-bounce transform hover:scale-105">
-                        {item.category}
-                      </span>
-                    </td>
-                    <td className={`px-6 py-6 font-bold font-hind text-lg ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                      {item.pair}
-                    </td>
-                    <td className="px-6 py-6">
-                      <div className="font-bold text-3xl bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 bg-clip-text text-transparent font-hind hover-light">
-                        {item.apy}
-                      </div>
-                      <div className="text-xs text-gray-500 font-hind animate-fade-in">Annual Return</div>
-                    </td>
-                    <td className={`px-6 py-6 font-bold text-lg font-hind ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                      {item.tvl}
-                    </td>
-                    <td className="px-6 py-6">
-                      <span className={`px-5 py-3 rounded-2xl text-sm font-bold font-hind shadow-lg hover-light animate-light-bounce transform hover:scale-105 ${
-                        item.risk === 'Low' ? 'bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 text-white' :
-                        item.risk === 'Medium' ? 'bg-gradient-to-r from-yellow-400 via-orange-500 to-yellow-600 text-white' :
-                        'bg-gradient-to-r from-red-400 via-pink-500 to-red-600 text-white'
-                      }`}>
-                        {item.risk}
-                      </span>
-                    </td>
-                    <td className="px-6 py-6">
-                      <div className="flex items-center space-x-2">
-                        {item.isLive ? (
-                          <>
-                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                            <span className={`text-sm font-semibold font-hind ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>
-                              Live
-                            </span>
-                          </>
-                        ) : (
-                          <>
-                            <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                            <span className={`text-sm font-semibold font-hind ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                              Offline
-                            </span>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-6">
-                      <Button 
-                        size="sm"
-                        onClick={() => window.open(item.url, '_blank')}
-                      >
-                        Stake Now
-                      </Button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+      {/* Cards Grid */}
+      {filteredData.length === 0 ? (
+        <div className={`
+          rounded-3xl p-12 text-center animate-smooth-entrance shadow-lg border
+          ${isDarkMode ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'}
+        `}>
+          <div className={`text-xl font-hind ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+            {isLoading ? 'Loading protocols...' : 'No protocols available for this filter'}
+          </div>
         </div>
-      </div>
-
-      {/* Features display for selected protocols */}
-      {filteredData.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
-          {filteredData.map((item, index) => item.features && (
-            <div 
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+          {filteredData.map((item, index) => (
+            <div
               key={item.id}
-              className={`p-6 rounded-2xl transition-all duration-300 hover-light animate-smooth-entrance ${
-                isDarkMode ? 'glass-3d-dark animate-light-float' : 'glass-3d animate-light-bounce'
-              }`}
+              className={`
+                group relative rounded-3xl p-8 transition-all duration-500 animate-smooth-entrance hover-light
+                ${isDarkMode ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'}
+                hover:shadow-xl hover:-translate-y-2 hover:scale-[1.02]
+                border shadow-lg
+              `}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <h4 className={`font-bold text-lg mb-3 font-hind ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                {item.protocol} Features
-              </h4>
-              <div className="flex flex-wrap gap-3">
-                {item.features.map((feature, idx) => (
-                  <span 
-                    key={idx}
-                    className={`text-sm px-4 py-2 rounded-xl font-hind font-medium hover-light transition-all duration-300 ${
-                      isDarkMode ? 'glass-3d-dark text-gray-300 hover:text-white' : 'glass-3d text-gray-700 hover:text-gray-900'
-                    }`}
-                  >
-                    {feature}
-                  </span>
-                ))}
+              {/* Status indicator */}
+              <div className="absolute top-4 right-4">
+                <div className="flex items-center space-x-2">
+                  {item.isLive ? (
+                    <>
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className={`text-xs font-semibold font-hind ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>
+                        Live
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                      <span className={`text-xs font-semibold font-hind ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                        Offline
+                      </span>
+                    </>
+                  )}
+                </div>
               </div>
+
+              {/* Protocol Header */}
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="text-5xl transform transition-all duration-300 group-hover:scale-110 animate-gentle-rotate">
+                  {item.icon}
+                </div>
+                <div className="flex-1">
+                  <h3 className={`font-bold text-2xl font-hind ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {item.protocol}
+                  </h3>
+                  <div className="flex items-center mt-2">
+                    <span className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold font-hind shadow-lg">
+                      {item.category}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* APY Highlight */}
+              <div className={`rounded-2xl p-6 mb-6 border ${
+                isDarkMode 
+                  ? 'bg-green-900/20 border-green-700/30' 
+                  : 'bg-green-50 border-green-200/30'
+              }`}>
+                <div className="text-center">
+                  <div className={`font-bold text-4xl font-hind ${
+                    isDarkMode ? 'text-green-400' : 'text-green-600'
+                  }`}>
+                    {item.apy}
+                  </div>
+                  <div className={`text-sm font-hind font-medium mt-1 ${isDarkMode ? 'text-green-300' : 'text-green-700'}`}>
+                    Annual Percentage Yield
+                  </div>
+                </div>
+              </div>
+
+              {/* Details Grid */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className={`p-4 rounded-xl overflow-hidden ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
+                  <div className={`text-sm font-hind mb-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    Pair/Asset
+                  </div>
+                  <div className={`font-bold text-lg font-hind break-all leading-tight overflow-wrap-anywhere ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                    {item.pair}
+                  </div>
+                </div>
+                <div className={`p-4 rounded-xl overflow-hidden ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
+                  <div className={`text-sm font-hind mb-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    TVL
+                  </div>
+                  <div className={`font-bold text-lg font-hind break-all leading-tight overflow-wrap-anywhere min-w-0 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`} title={item.tvl}>
+                    {formatTVL(item.tvl)}
+                  </div>
+                </div>
+              </div>
+
+              {/* Risk Badge */}
+              <div className="flex justify-center mb-6">
+                <span className={`px-6 py-3 rounded-2xl text-sm font-bold font-hind shadow-lg transform transition-all duration-300 hover:scale-105 ${
+                  item.risk === 'Low' ? 'bg-green-600 text-white' :
+                  item.risk === 'Medium' ? 'bg-yellow-600 text-white' :
+                  'bg-red-600 text-white'
+                }`}>
+                  {item.risk} Risk
+                </span>
+              </div>
+
+              {/* Features */}
+              {item.features && item.features.length > 0 && (
+                <div className="mb-6">
+                  <h4 className={`text-sm font-bold font-hind mb-3 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                    Features
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {item.features.slice(0, 3).map((feature, idx) => (
+                      <span 
+                        key={idx}
+                        className={`text-xs px-3 py-1 rounded-lg font-hind transition-all duration-300 ${
+                          isDarkMode ? 'bg-gray-700/50 text-gray-300' : 'bg-gray-100 text-gray-600'
+                        }`}
+                      >
+                        {feature}
+                      </span>
+                    ))}
+                    {item.features.length > 3 && (
+                      <span className={`text-xs px-3 py-1 rounded-lg font-hind ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        +{item.features.length - 3} more
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Action Button */}
+              <div className="text-center">
+                <Button 
+                  onClick={() => window.open(item.url, '_blank')}
+                  className="w-full"
+                >
+                  <span className="flex items-center justify-center space-x-2">
+                    <span>Stake Now</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </span>
+                </Button>
+              </div>
+
             </div>
           ))}
         </div>
       )}
+
     </div>
   );
 };
 
-export default YieldsTable;
+export default YieldsCards;

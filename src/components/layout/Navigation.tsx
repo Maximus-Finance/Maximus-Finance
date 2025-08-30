@@ -41,10 +41,10 @@ const Navigation: React.FC<NavigationProps> = ({
                 onClick={() => onNavigate(item.id)}
                 className={`px-6 py-3 rounded-2xl transition-all duration-300 font-hind font-semibold hover-light ${
                   currentPage === item.id
-                    ? 'bg-gradient-to-r from-purple-600 via-blue-600 to-purple-700 text-white shadow-2xl animate-subtle-glow'
+                    ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg'
                     : isDarkMode
-                    ? 'text-gray-300 hover:text-white glass-3d-dark'
-                    : 'text-slate-700 hover:text-slate-900 glass-card-light'
+                    ? 'text-gray-300 hover:text-white hover:bg-gray-700 bg-gray-800'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-gray-200 bg-gray-100'
                 }`}
               >
                 {item.label}
@@ -88,10 +88,10 @@ const Navigation: React.FC<NavigationProps> = ({
                 }}
                 className={`block w-full text-left px-4 py-3 rounded-2xl font-hind font-medium transition-all duration-300 hover-light ${
                   currentPage === item.id 
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white animate-subtle-glow' 
+                    ? 'bg-blue-600 text-white shadow-lg' 
                     : isDarkMode 
-                    ? 'text-gray-300 glass-3d-dark' 
-                    : 'text-slate-700 glass-card-light'
+                    ? 'text-gray-300 hover:text-white hover:bg-gray-700' 
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-gray-200'
                 }`}
               >
                 {item.label}

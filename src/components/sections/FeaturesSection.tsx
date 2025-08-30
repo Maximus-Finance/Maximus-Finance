@@ -29,11 +29,7 @@ const FeaturesSection: React.FC<FeaturesSectionProps> = ({ isDarkMode }) => {
   ];
 
   return (
-    <section className={`py-12 sm:py-16 lg:py-20 ${
-      isDarkMode 
-        ? 'bg-gradient-to-br from-gray-900 via-purple-900/10 to-black' 
-        : 'bg-gradient-to-br from-white via-blue-50/20 to-gray-50'
-    }`}>
+    <section className="py-12 sm:py-16 lg:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 sm:mb-16">
           <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 font-hind hover-light ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>

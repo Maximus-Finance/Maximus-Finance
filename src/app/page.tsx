@@ -6,6 +6,7 @@ import Footer from '@/components/layout/Footer';
 import HomePage from '@/components/pages/HomePage';
 import ExploreYieldsPage from '@/components/pages/ExploreYieldsPage';
 import ExploreProtocolsPage from '@/components/pages/ExploreProtocolsPage';
+import ParticleBackground from '@/components/ui/ParticleBackground';
 import { useTheme } from '@/hooks/useTheme';
 
 export default function Home() {
@@ -26,19 +27,22 @@ export default function Home() {
   };
 
   return (
-    <div className={`min-h-screen transition-all duration-500 font-hind ${
+    <div className={`min-h-screen transition-all duration-500 font-hind relative ${
       isDarkMode 
-        ? 'dark bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900 text-white' 
-        : 'light-theme bg-gradient-to-br from-slate-50 via-blue-50/40 to-indigo-50/30 text-slate-900'
+        ? 'dark text-white bg-gray-900' 
+        : 'light-theme text-slate-900 bg-white'
     }`}>
-      <Navigation 
-        currentPage={currentPage}
-        onNavigate={setCurrentPage}
-        isDarkMode={isDarkMode}
-        onToggleTheme={toggleDarkMode}
-      />
-      {renderCurrentPage()}
-      <Footer isDarkMode={isDarkMode} />
+      <ParticleBackground isDarkMode={isDarkMode} />
+      <div className="relative z-10">
+        <Navigation 
+          currentPage={currentPage}
+          onNavigate={setCurrentPage}
+          isDarkMode={isDarkMode}
+          onToggleTheme={toggleDarkMode}
+        />
+        {renderCurrentPage()}
+        <Footer isDarkMode={isDarkMode} />
+      </div>
     </div>
   );
 }

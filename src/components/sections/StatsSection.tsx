@@ -12,11 +12,7 @@ const StatsSection: React.FC<StatsSectionProps> = ({ isDarkMode }) => {
   ];
 
   return (
-    <section className={`py-12 sm:py-16 lg:py-20 ${
-      isDarkMode 
-        ? 'bg-gradient-to-br from-gray-900/50 via-purple-900/10 to-gray-900/50' 
-        : 'bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-100'
-    }`}>
+    <section className="py-12 sm:py-16 lg:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {stats.map((stat, index) => (

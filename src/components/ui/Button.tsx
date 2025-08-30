@@ -27,15 +27,17 @@ const Button: React.FC<ButtonProps> = ({
   const getVariantClasses = () => {
     switch (variant) {
       case 'primary':
-        return 'bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 hover:from-purple-700 hover:via-blue-700 hover:to-cyan-600 text-white shadow-2xl animate-glow';
+        return isDarkMode
+          ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg'
+          : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg';
       case 'secondary':
         return isDarkMode 
-          ? 'glass-3d-dark text-white hover:text-gray-100' 
-          : 'glass-3d text-gray-700 hover:text-gray-900';
+          ? 'bg-gray-700 hover:bg-gray-600 text-white shadow-lg' 
+          : 'bg-gray-800 hover:bg-gray-900 text-white shadow-lg';
       case 'outline':
         return isDarkMode
-          ? 'glass-3d-dark text-gray-300 hover:text-white border-2 border-purple-500/50 hover:border-purple-400'
-          : 'glass-3d text-gray-700 hover:text-gray-900 border-2 border-blue-500/50 hover:border-blue-400';
+          ? 'bg-transparent border-2 border-blue-500 hover:border-blue-400 text-blue-400 hover:text-blue-300'
+          : 'bg-transparent border-2 border-gray-800 hover:border-gray-900 text-gray-800 hover:text-gray-900';
       default:
         return '';
     }
