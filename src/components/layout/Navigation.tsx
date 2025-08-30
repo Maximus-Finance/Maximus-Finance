@@ -6,6 +6,7 @@ import Logo from '@/components/ui/Logo';
 import ThemeToggle from './ThemeToggle';
 import Button from '@/components/ui/Button';
 import { NavigationProps } from '@/types';
+import { useWalletConnect } from '@/hooks/useWalletConnect';
 
 const Navigation: React.FC<NavigationProps> = ({
   currentPage,
@@ -14,6 +15,7 @@ const Navigation: React.FC<NavigationProps> = ({
   onToggleTheme,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { buttonText, handleClick } = useWalletConnect();
 
   const navItems = [
     { id: 'home' as const, label: 'Home' },
@@ -52,7 +54,7 @@ const Navigation: React.FC<NavigationProps> = ({
 
           <div className="flex items-center space-x-4">
             <ThemeToggle isDarkMode={isDarkMode} onToggle={onToggleTheme} />
-            <Button>Connect Wallet</Button>
+            <Button onClick={handleClick}>{buttonText}</Button>
             
             {/* Mobile menu button */}
             <button

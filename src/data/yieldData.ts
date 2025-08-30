@@ -14,9 +14,18 @@ export const yieldData: YieldData[] = [
     protocol: 'Benqi',
     category: 'Liquid Staking',
     pair: 'sAVAX',
-    apy: '8.2%',
+    apy: '8.1%',
     tvl: '$125.8M',
     risk: 'Low',
+    icon: '🏔️'
+  },
+  {
+    protocol: 'Benqi',
+    category: 'Liquid Staking',
+    pair: 'savUSD',
+    apy: '18.98%',
+    tvl: '$45M',
+    risk: 'Medium',
     icon: '🏔️'
   },
   {
@@ -45,6 +54,33 @@ export const yieldData: YieldData[] = [
     tvl: '$8.9M',
     risk: 'High',
     icon: '🚀'
+  },
+  {
+    protocol: 'GoGoPool',
+    category: 'Liquid Staking',
+    pair: 'stAVAX',
+    apy: '5.88%',
+    tvl: '$41.3M',
+    risk: 'Low',
+    icon: '⛷️'
+  },
+  {
+    protocol: 'Avant Protocol',
+    category: 'Liquid Staking',
+    pair: 'savUSD',
+    apy: '18.98%',
+    tvl: '$15M',
+    risk: 'Medium',
+    icon: '🏛️'
+  },
+  {
+    protocol: 'Avant Protocol',
+    category: 'Liquid Staking',
+    pair: 'savBTC',
+    apy: '12.5%',
+    tvl: '$8M',
+    risk: 'Medium',
+    icon: '🏛️'
   },
   {
     protocol: 'Yield Yak',

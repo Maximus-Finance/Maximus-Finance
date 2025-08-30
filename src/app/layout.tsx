@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { WalletProvider } from '@/providers/WalletProvider'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="font-space-grotesk">
-        {children}
+        <WalletProvider>
+          {children}
+        </WalletProvider>
       </body>
     </html>
   )

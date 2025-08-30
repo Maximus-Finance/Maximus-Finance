@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { priceService } from '@/utils/priceService';
+import { HyphaService } from '@/services/avantAndHyphaService';
 
 // GoGoPool Contract addresses - Updated with complete addresses
 export const GOGOPOOL_CONTRACTS = {
@@ -77,39 +78,63 @@ export class GoGoPoolService {
     return this.provider;
   }
 
+  private async fetchWithRetry(url: string, maxRetries: number = 3): Promise<Record<string, unknown>> {
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        const response = await fetch(url, {
+          headers: {
+            'Accept': 'application/json',
+            'User-Agent': 'Maximus-Finance/1.0'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.warn(`GoGoPool API attempt ${i + 1} failed:`, error);
+        if (i === maxRetries - 1) throw error;
+        await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1))); // Exponential backoff
+      }
+    }
+    // This should never be reached due to throw above, but TypeScript requires it
+    throw new Error('All retry attempts failed');
+  }
+
   async fetchData(): Promise<GoGoPoolData> {
     try {
       // Get live token prices
       const prices = await priceService.getTokenPrices(['AVAX', 'GGP']);
       
-      // Fetch live data from GoGoPool official API
-      const [metricsResponse, ggAvaxResponse] = await Promise.allSettled([
-        fetch(`${GOGOPOOL_API.BASE_URL}${GOGOPOOL_API.endpoints.metrics}`)
-          .then(r => r.json()),
-        fetch(`${GOGOPOOL_API.BASE_URL}${GOGOPOOL_API.endpoints.ggAvax}`)
-          .then(r => r.json())
+      // Use the new comprehensive Hypha service
+      const hyphaService = new HyphaService();
+      const hyphaData = await hyphaService.fetchData();
+      
+      // Also fetch legacy API data for GGP staking info
+      const [metricsResponse] = await Promise.allSettled([
+        this.fetchWithRetry(`${GOGOPOOL_API.BASE_URL}${GOGOPOOL_API.endpoints.metrics}`)
       ]);
 
-      // Extract metrics data with fallbacks
       const metrics = metricsResponse.status === 'fulfilled' ? metricsResponse.value : null;
-      const ggAvaxData = ggAvaxResponse.status === 'fulfilled' ? ggAvaxResponse.value : null;
 
-      // Liquid staking data from API
-      const liquidStakingAPR = ggAvaxData?.apy || metrics?.liquidStakingApy || 6.2;
-      const totalAssets = ggAvaxData?.totalAssets || metrics?.ggAvaxTotalAssets || 8500000;
-      const totalSupply = ggAvaxData?.totalSupply || metrics?.ggAvaxTotalSupply || 8200000;
-      const exchangeRate = totalAssets / totalSupply;
-      const tvl = totalAssets * prices.avax;
+      // Use accurate Hypha data for stAVAX (formerly ggAVAX)
+      const liquidStakingAPR = hyphaData.stAVAX.apy;
+      const totalSupply = hyphaData.stAVAX.totalSupply;
+      const exchangeRate = hyphaData.stAVAX.avaxPerShare;
+      const totalAssets = hyphaData.stAVAX.tvlAVAX;
+      const tvl = totalAssets * (prices.avax || 42.50);
 
       // GGP staking data from API  
-      const ggpStakingAPY = metrics?.ggpStakingApy || 12.5;
-      const totalGGPStaked = metrics?.totalGGPStaked || 7875000; // 35% of 22.5M supply
-      const stakerCount = metrics?.stakerCount || 250;
+      const ggpStakingAPY = Number(metrics?.ggpStakingApy || metrics?.ggpApy || 12.5);
+      const totalGGPStaked = Number(metrics?.totalGGPStaked || metrics?.totalGgpStake || 2132657); // From real API
+      const stakerCount = Number(metrics?.stakerCount || metrics?.totalStakers || 250);
 
       // Minipool data from API
-      const activeMinipools = metrics?.activeMinipools || 144; // 80% of 180 total
-      const totalMinipools = metrics?.totalMinipools || 180;
-      const minipoolAPY = metrics?.minipoolApy || 7.8;
+      const activeMinipools = Number(metrics?.activeStakingMinipools || metrics?.activeMinipools || 112); // From real API
+      const totalMinipools = Number(metrics?.totalMinipools || (activeMinipools + 20)); // Estimate total
+      const minipoolAPY = Number(metrics?.minipoolApy || liquidStakingAPR);
 
       return {
         protocol: 'GOGOPOOL',

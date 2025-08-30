@@ -16,9 +16,9 @@ export const protocolData: ProtocolData[] = [
     name: 'Benqi',
     category: 'Liquid Staking',
     tvl: '$125.8M',
-    apy: '8.2%',
-    description: 'Liquid staking protocol allowing users to earn staking rewards while maintaining liquidity.',
-    features: ['Liquid Staking', 'Lending & Borrowing', 'Low Risk', 'High TVL'],
+    apy: '18.98%',
+    description: 'Liquid staking protocol with sAVAX and savUSD staking options.',
+    features: ['sAVAX Staking (8.1%)', 'savUSD Staking (18.98%)', 'Lending & Borrowing', 'Low Risk'],
     icon: '🏔️'
   },
   {
@@ -33,6 +33,26 @@ export const protocolData: ProtocolData[] = [
   },
   {
     id: 4,
+    name: 'GoGoPool',
+    category: 'Liquid Staking',
+    tvl: '$41.3M',
+    apy: '5.88%',
+    description: 'Avalanche liquid staking protocol with stAVAX tokens and minipool validation.',
+    features: ['stAVAX Liquid Staking', 'Minipool Validation', 'MEV Rewards', 'GGP Token Rewards'],
+    icon: '⛷️'
+  },
+  {
+    id: 5,
+    name: 'Avant Protocol',
+    category: 'Liquid Staking',
+    tvl: '$25.8M',
+    apy: '18.98%',
+    description: 'Advanced liquid staking with savUSD and savBTC yielding assets.',
+    features: ['savUSD Staking', 'savBTC Staking', 'avUSD/avBTC Tokens', 'ERC-4626 Vaults'],
+    icon: '🏛️'
+  },
+  {
+    id: 6,
     name: 'Pangolin',
     category: 'DEX',
     tvl: '$12.4M',
