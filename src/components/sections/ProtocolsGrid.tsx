@@ -20,7 +20,7 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
         <div className="flex justify-center">
           <LiveDataIndicator lastUpdated={lastUpdated} isLoading={isLoading} error={error} />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
           {[1, 2, 3, 4].map(i => (
             <div key={i} className={`h-80 rounded-3xl animate-pulse hover-light ${
               isDarkMode ? 'glass-3d-dark animate-light-float' : 'glass-3d animate-light-bounce'
@@ -46,7 +46,7 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
         <LiveDataIndicator lastUpdated={lastUpdated} isLoading={isLoading} error={error} />
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
         {Object.entries(protocolGroups).map(([protocol, protocolOpportunities]) => {
           const totalProtocolTVL = protocolOpportunities.reduce((sum, opp) => {
             const tvlValue = parseFloat(opp.tvl.replace(/[$M,]/g, ''));
@@ -60,39 +60,41 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
           return (
             <div
               key={protocol}
-              className={`relative overflow-hidden rounded-3xl transition-all duration-500 cursor-pointer hover-3d animate-card-entrance ${
-                isDarkMode ? 'glass-3d-dark animate-float3d' : 'glass-3d animate-bubble'
-              } shadow-2xl hover:shadow-[0_0_50px_rgba(147,51,234,0.3)] transform hover:scale-110`}
+              className={`relative overflow-hidden rounded-3xl transition-all duration-500 cursor-pointer animate-card-entrance ${
+                isDarkMode 
+                  ? 'glass-3d-dark animate-float3d hover-light shadow-2xl hover:shadow-[0_0_50px_rgba(147,51,234,0.3)]' 
+                  : 'glass-3d-light animate-light-bounce hover-light-theme shadow-xl hover:shadow-[0_0_40px_rgba(59,130,246,0.2)]'
+              } transform sm:hover:scale-105`}
               style={{ animationDelay: `${Object.keys(protocolGroups).indexOf(protocol) * 0.2}s` }}
               onMouseEnter={() => setExpandedProtocol(protocol)}
               onMouseLeave={() => setExpandedProtocol(null)}
             >
-              <div className="p-10">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center space-x-3">
-                    <span className="text-4xl animate-rotate3d hover-3d">{protocolOpportunities[0].icon}</span>
+              <div className="p-6 sm:p-8 lg:p-10">
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <div className="flex items-center space-x-2 sm:space-x-3">
+                    <span className="text-3xl sm:text-4xl animate-rotate3d hover-3d">{protocolOpportunities[0].icon}</span>
                     <div>
-                      <h3 className={`text-2xl font-bold font-hind hover-3d ${isDarkMode ? 'text-white animate-text-glow' : 'text-gray-900'}`}>
+                      <h3 className={`text-xl sm:text-2xl font-bold font-hind hover-3d ${isDarkMode ? 'text-white animate-text-glow' : 'text-slate-800'}`}>
                         {protocol}
                       </h3>
-                      <span className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-2 rounded-full text-xs font-bold font-hind animate-bubble hover-3d">
+                      <span className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-2 sm:px-3 py-1 sm:py-2 rounded-full text-xs font-bold font-hind animate-bubble hover-3d">
                         {protocolOpportunities[0].category}
                       </span>
                     </div>
                   </div>
-                  <ExternalLink className={`${isDarkMode ? 'text-gray-400 animate-text-glow' : 'text-gray-500'} animate-float3d hover-3d`} size={24} />
+                  <ExternalLink className={`${isDarkMode ? 'text-gray-400 animate-text-glow' : 'text-slate-500'} animate-float3d hover-3d`} size={20} />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
                   <div>
-                    <div className={`text-sm font-hind font-semibold ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>TVL</div>
-                    <div className={`text-xl font-bold font-hind ${isDarkMode ? 'text-white animate-text-glow' : 'text-gray-900'}`}>
+                    <div className={`text-sm font-hind font-semibold ${isDarkMode ? 'text-gray-400' : 'text-slate-600'}`}>TVL</div>
+                    <div className={`text-lg sm:text-xl font-bold font-hind ${isDarkMode ? 'text-white animate-text-glow' : 'text-slate-800'}`}>
                       ${totalProtocolTVL.toFixed(1)}M
                     </div>
                   </div>
                   <div>
-                    <div className={`text-sm font-hind font-semibold ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Avg APY</div>
-                    <div className="text-xl font-bold bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-hind animate-text-glow">
+                    <div className={`text-sm font-hind font-semibold ${isDarkMode ? 'text-gray-400' : 'text-slate-600'}`}>Avg APY</div>
+                    <div className="text-lg sm:text-xl font-bold bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent font-hind animate-text-glow">
                       {avgAPY.toFixed(2)}%
                     </div>
                   </div>

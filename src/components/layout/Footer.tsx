@@ -15,15 +15,15 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
   ];
 
   return (
-    <footer className={`py-16 ${
+    <footer className={`py-12 sm:py-16 ${
       isDarkMode 
         ? 'glass-3d-dark animate-background-shift' 
-        : 'glass-3d animate-background-shift'
+        : 'glass-3d-light animate-background-shift'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <Logo onNavigate={() => {}} />
-          <div className="flex space-x-6 mt-4 md:mt-0">
+          <div className="flex flex-wrap justify-center space-x-4 sm:space-x-6 mt-4 md:mt-0">
             {footerLinks.map((link) => (
               <a
                 key={link.label}
@@ -32,17 +32,17 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
                   isDarkMode 
                     ? 'text-gray-400 hover:text-white' 
                     : 'text-gray-600 hover:text-gray-900'
-                } transition-all duration-300 font-hind font-semibold hover-light`}
+                } transition-all duration-300 font-hind font-semibold hover-light text-sm sm:text-base`}
               >
                 {link.label}
               </a>
             ))}
           </div>
         </div>
-        <div className={`mt-8 pt-8 text-center font-hind animate-fade-in ${
+        <div className={`mt-6 sm:mt-8 pt-6 sm:pt-8 text-center font-hind animate-fade-in ${
           isDarkMode ? 'text-gray-400' : 'text-gray-600'
         }`}>
-          <p>&copy; 2025 Maximus Finance. All rights reserved. Built for the Avalanche ecosystem.</p>
+          <p className="text-sm sm:text-base">&copy; 2025 Maximus Finance. All rights reserved. Built for the Avalanche ecosystem.</p>
         </div>
       </div>
     </footer>

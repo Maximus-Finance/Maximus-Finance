@@ -156,8 +156,9 @@ a {
 .glass-morphism-light {
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
-  background-color: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(209, 213, 219, 0.3);
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(100, 116, 139, 0.2);
+  box-shadow: 0 4px 24px rgba(148, 163, 184, 0.1);
 }
 
 /* Light animations for better performance */
@@ -239,16 +240,16 @@ a {
 /* Enhanced 3D glass morphism */
 .glass-3d {
   background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.1) 0%, 
-    rgba(255, 255, 255, 0.05) 100%
+    rgba(255, 255, 255, 0.9) 0%, 
+    rgba(255, 255, 255, 0.7) 100%
   );
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(100, 116, 139, 0.2);
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    0 8px 32px rgba(148, 163, 184, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(148, 163, 184, 0.1);
   transform-style: preserve-3d;
 }
 
@@ -275,6 +276,134 @@ a {
 .hover-light:hover {
   transform: translateY(-3px) scale(1.02);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.hover-light-theme {
+  transition: all 0.3s ease-out;
+}
+
+.hover-light-theme:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 12px 28px rgba(59, 130, 246, 0.15);
+}
+
+/* Light theme specific animations */
+@keyframes light-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); }
+  50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.4); }
+}
+
+@keyframes light-pulse {
+  0%, 100% { 
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1),
+                0 0 40px rgba(147, 51, 234, 0.05);
+  }
+  50% { 
+    box-shadow: 0 8px 40px rgba(59, 130, 246, 0.2),
+                0 0 80px rgba(147, 51, 234, 0.1);
+  }
+}
+
+@keyframes light-shimmer {
+  0% { 
+    background-position: -200% center;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% { 
+    background-position: 200% center;
+    opacity: 0;
+  }
+}
+
+.animate-light-glow {
+  animation: light-glow 3s ease-in-out infinite;
+}
+
+.animate-light-pulse {
+  animation: light-pulse 4s ease-in-out infinite;
+}
+
+.animate-light-shimmer {
+  animation: light-shimmer 2s ease-in-out infinite;
+}
+
+/* Light theme glass morphism variations */
+.glass-3d-light {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.95) 0%, 
+    rgba(248, 250, 252, 0.9) 100%
+  );
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(148, 163, 184, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(148, 163, 184, 0.05);
+  transform-style: preserve-3d;
+}
+
+.glass-card-light {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.9) 0%, 
+    rgba(248, 250, 252, 0.8) 100%
+  );
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(203, 213, 225, 0.4);
+  box-shadow: 
+    0 4px 24px rgba(148, 163, 184, 0.08),
+    0 2px 8px rgba(71, 85, 105, 0.04);
+}
+
+/* Light theme scrollbar */
+.light-theme::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+  border-radius: 10px;
+}
+
+.light-theme::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #2563eb, #7c3aed);
+}
+
+/* Light theme text colors and effects */
+.text-light-primary {
+  color: #1e293b;
+}
+
+.text-light-secondary {
+  color: #475569;
+}
+
+.text-light-accent {
+  color: #3b82f6;
+}
+
+.bg-light-card {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.95) 0%, 
+    rgba(248, 250, 252, 0.9) 100%
+  );
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  .glass-3d, .glass-3d-dark, .glass-3d-light {
+    backdrop-filter: blur(10px) saturate(150%);
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
+  }
+  
+  .hover-light, .hover-light-theme {
+    transform: none !important;
+  }
+  
+  .hover-light:hover, .hover-light-theme:hover {
+    transform: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
 }
 
 /* Font family utilities */

@@ -20,12 +20,12 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       <FeaturesSection isDarkMode={isDarkMode} />
       
       {/* CTA Section */}
-      <section className={`py-20 ${isDarkMode ? 'bg-gradient-to-r from-blue-900 to-purple-900' : 'bg-gradient-to-r from-blue-600 to-purple-600'}`}>
+      <section className={`py-12 sm:py-16 lg:py-20 ${isDarkMode ? 'bg-gradient-to-r from-blue-900 to-purple-900' : 'bg-gradient-to-r from-blue-600 to-purple-600'}`}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-white mb-6 font-space-grotesk">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 sm:mb-6 font-space-grotesk">
             Join 10,000+ DeFi users maximizing their Avalanche yields
           </h2>
-          <p className="text-xl text-blue-100 mb-8 font-space-grotesk">
+          <p className="text-lg sm:text-xl text-blue-100 mb-6 sm:mb-8 font-space-grotesk">
             Our platform has helped users earn over $50M in optimized yields across the Avalanche ecosystem
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

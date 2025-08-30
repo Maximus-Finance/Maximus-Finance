@@ -29,37 +29,37 @@ const FeaturesSection: React.FC<FeaturesSectionProps> = ({ isDarkMode }) => {
   ];
 
   return (
-    <section className={`py-20 ${
+    <section className={`py-12 sm:py-16 lg:py-20 ${
       isDarkMode 
         ? 'bg-gradient-to-br from-gray-900 via-purple-900/10 to-black' 
         : 'bg-gradient-to-br from-white via-blue-50/20 to-gray-50'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className={`text-5xl font-bold mb-6 font-hind hover-light ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 font-hind hover-light ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
             Why We&apos;re Different
           </h2>
-          <p className={`text-xl font-hind animate-light-float ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+          <p className={`text-lg sm:text-xl font-hind animate-light-float px-4 sm:px-0 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
             Three pillars that set us apart in the DeFi space
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
           {features.map((feature, index) => (
             <div 
               key={index}
-              className={`p-10 rounded-3xl hover-light animate-smooth-entrance transition-all duration-300 transform hover:scale-105 ${
-                isDarkMode ? 'glass-3d-dark animate-light-float' : 'glass-3d animate-light-bounce'
+              className={`p-6 sm:p-8 lg:p-10 rounded-3xl hover-light animate-smooth-entrance transition-all duration-300 transform sm:hover:scale-105 ${
+                isDarkMode ? 'glass-3d-dark animate-light-float' : 'glass-3d-light animate-light-bounce'
               }`}
               style={{ animationDelay: `${index * 0.2}s` }}
             >
-              <div className={`w-20 h-20 bg-gradient-to-r ${feature.gradient} rounded-full flex items-center justify-center mb-8 hover-light animate-gentle-rotate shadow-2xl`}>
-                <feature.icon className="text-white animate-light-float" size={36} />
+              <div className={`w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r ${feature.gradient} rounded-full flex items-center justify-center mb-6 sm:mb-8 hover-light animate-gentle-rotate shadow-2xl`}>
+                <feature.icon className="text-white animate-light-float" size={24} />
               </div>
-              <h3 className={`text-3xl font-bold mb-6 font-hind hover-light ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              <h3 className={`text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 font-hind hover-light ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                 {feature.title}
               </h3>
-              <p className={`font-hind text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              <p className={`font-hind text-base sm:text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                 {feature.description}
               </p>
             </div>

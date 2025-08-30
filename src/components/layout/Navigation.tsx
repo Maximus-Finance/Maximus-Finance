@@ -27,7 +27,7 @@ const Navigation: React.FC<NavigationProps> = ({
     <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${
       isDarkMode 
         ? 'glass-3d-dark animate-background-shift' 
-        : 'glass-3d animate-background-shift'
+        : 'glass-3d-light animate-background-shift'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -44,7 +44,7 @@ const Navigation: React.FC<NavigationProps> = ({
                     ? 'bg-gradient-to-r from-purple-600 via-blue-600 to-purple-700 text-white shadow-2xl animate-subtle-glow'
                     : isDarkMode
                     ? 'text-gray-300 hover:text-white glass-3d-dark'
-                    : 'text-gray-600 hover:text-gray-900 glass-3d'
+                    : 'text-slate-700 hover:text-slate-900 glass-card-light'
                 }`}
               >
                 {item.label}
@@ -52,15 +52,19 @@ const Navigation: React.FC<NavigationProps> = ({
             ))}
           </div>
 
-          <div className="flex items-center space-x-4">
-            <ThemeToggle isDarkMode={isDarkMode} onToggle={onToggleTheme} />
-            <Button onClick={handleClick}>{buttonText}</Button>
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <div className="hidden sm:block">
+              <ThemeToggle isDarkMode={isDarkMode} onToggle={onToggleTheme} />
+            </div>
+            <div className="hidden sm:block">
+              <Button onClick={handleClick}>{buttonText}</Button>
+            </div>
             
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className={`md:hidden p-3 rounded-2xl transition-all duration-300 hover-light ${
-                isDarkMode ? 'glass-3d-dark' : 'glass-3d'
+              className={`md:hidden p-2 sm:p-3 rounded-2xl transition-all duration-300 hover-light ${
+                isDarkMode ? 'glass-3d-dark' : 'glass-3d-light'
               }`}
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -72,9 +76,9 @@ const Navigation: React.FC<NavigationProps> = ({
       {/* Mobile Navigation */}
       {isMenuOpen && (
         <div className={`md:hidden transition-all duration-300 animate-smooth-entrance ${
-          isDarkMode ? 'glass-3d-dark' : 'glass-3d'
+          isDarkMode ? 'glass-3d-dark' : 'glass-3d-light'
         }`}>
-          <div className="px-2 pt-2 pb-3 space-y-1">
+          <div className="px-4 pt-4 pb-4 space-y-3">
             {navItems.map((item) => (
               <button
                 key={item.id}
@@ -87,12 +91,24 @@ const Navigation: React.FC<NavigationProps> = ({
                     ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white animate-subtle-glow' 
                     : isDarkMode 
                     ? 'text-gray-300 glass-3d-dark' 
-                    : 'text-gray-600 glass-3d'
+                    : 'text-slate-700 glass-card-light'
                 }`}
               >
                 {item.label}
               </button>
             ))}
+            
+            {/* Mobile theme toggle and wallet button */}
+            <div className="pt-3 border-t border-gray-200/20 space-y-2">
+              <div className="flex justify-center">
+                <ThemeToggle isDarkMode={isDarkMode} onToggle={onToggleTheme} />
+              </div>
+              <div className="flex justify-center">
+                <Button onClick={handleClick} size="sm" className="w-full max-w-xs">
+                  {buttonText}
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       )}

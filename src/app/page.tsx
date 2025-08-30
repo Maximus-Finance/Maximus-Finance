@@ -29,7 +29,7 @@ export default function Home() {
     <div className={`min-h-screen transition-all duration-500 font-hind ${
       isDarkMode 
         ? 'dark bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900 text-white' 
-        : 'bg-gradient-to-br from-white via-blue-50/30 to-white text-gray-900'
+        : 'light-theme bg-gradient-to-br from-slate-50 via-blue-50/40 to-indigo-50/30 text-slate-900'
     }`}>
       <Navigation 
         currentPage={currentPage}
