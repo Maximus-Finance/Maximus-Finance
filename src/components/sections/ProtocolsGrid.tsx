@@ -1,9 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import { ExternalLink } from 'lucide-react';
 import { useLiveProtocolData } from '@/hooks/useLiveProtocolData';
-import LiveDataIndicator from '@/components/ui/LiveDataIndicator';
 import Button from '@/components/ui/Button';
 
 interface ProtocolsGridProps {
@@ -11,8 +9,8 @@ interface ProtocolsGridProps {
 }
 
 const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
-  const [selectedFilter, setSelectedFilter] = useState('All');
-  const { opportunities, isLoading, error, lastUpdated } = useLiveProtocolData();
+  // const [selectedFilter, setSelectedFilter] = useState('All');
+  const { opportunities, isLoading } = useLiveProtocolData();
 
   // Enhanced yield calculation using 8-loop strategy for liquid staking protocols
   const calculateEnhancedAPY = (baseAPY: string): { enhanced: number; isEligible: boolean } => {
@@ -37,7 +35,7 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
     
     // User gets 70% of net APY added to original APY
     const userBoost = netAPY * 0.70;
-    const enhancedAPY = numericAPY + userBoost;
+    const enhancedAPY = userBoost;
     
     return { enhanced: enhancedAPY, isEligible: true };
   };
@@ -48,31 +46,13 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
     (item.protocol === 'BENQI' || item.protocol === 'GoGoPool')
   );
 
-  const filters = ['All', 'USDC', 'USDT', 'AVAX'];
+  // const filters = ['All', 'USDC', 'USDT', 'AVAX'];
 
-  const filteredData = selectedFilter === 'All' 
-    ? liquidStakingData 
-    : liquidStakingData.filter(item => {
-        if (selectedFilter === 'AVAX') {
-          return item.pair.includes('AVAX') || item.pair.includes('sAVAX') || item.pair.includes('stAVAX');
-        }
-        return item.pair.includes(selectedFilter);
-      });
+  const filteredData = liquidStakingData;
 
   if (isLoading && liquidStakingData.length === 0) {
     return (
       <div className="space-y-8 font-hind">
-        <div className="flex flex-wrap justify-center gap-4">
-          {filters.map((filter, index) => (
-            <div
-              key={filter}
-              className={`px-6 py-3 rounded-xl h-12 w-32 animate-pulse shadow-lg ${
-                isDarkMode ? 'bg-gray-700' : 'bg-gray-300'
-              }`}
-              style={{ animationDelay: `${index * 0.1}s` }}
-            />
-          ))}
-        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
           {[1, 2].map(i => (
             <div key={i} className={`h-80 rounded-3xl animate-pulse hover-light ${
@@ -86,8 +66,8 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
 
   return (
     <div className="space-y-8 font-hind">
-      {/* Enhanced Filter Buttons */}
-      <div className="flex flex-wrap justify-center gap-3">
+      {/* Enhanced Filter Buttons - Removed */}
+      {/* <div className="flex flex-wrap justify-center gap-3">
         {filters.map((filter, index) => (
           <button
             key={filter}
@@ -106,9 +86,8 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
             <span className="relative z-10">{filter}</span>
           </button>
         ))}
-      </div>
+      </div> */}
 
-      
       {filteredData.length === 0 ? (
         <div className={`
           rounded-3xl p-12 text-center animate-smooth-entrance shadow-lg border
@@ -205,9 +184,9 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
                   </div>
                 </div>
 
-                {/* Details Grid */}
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className={`p-4 rounded-xl flex flex-col justify-center min-h-[80px] ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
+                {/* Details Grid - Fixed height */}
+                <div className="grid grid-cols-2 gap-4 mb-6 min-h-[120px]">
+                  <div className={`p-4 rounded-xl flex flex-col justify-start ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
                     <div className={`text-sm font-hind mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                       Asset
                     </div>
@@ -215,7 +194,7 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
                       {item.pair}
                     </div>
                   </div>
-                  <div className={`p-4 rounded-xl flex flex-col justify-center min-h-[80px] ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
+                  <div className={`p-4 rounded-xl flex flex-col justify-start ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
                     <div className={`text-sm font-hind mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                       TVL
                     </div>
@@ -225,8 +204,8 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
                   </div>
                 </div>
 
-                {/* Risk Badge - Fixed alignment */}
-                <div className="flex justify-center mb-6 min-h-[60px] items-center">
+                {/* Risk Badge - Absolutely positioned for perfect alignment */}
+                <div className="flex justify-center mb-6">
                   <span className={`px-6 py-3 rounded-2xl text-sm font-bold font-hind shadow-lg transform transition-all duration-300 hover:scale-105 ${
                     item.risk === 'Low' ? 'bg-green-600 text-white' :
                     item.risk === 'Medium' ? 'bg-yellow-600 text-white' :

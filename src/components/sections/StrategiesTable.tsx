@@ -41,7 +41,7 @@ const StrategiesCards: React.FC<StrategiesCardsProps> = ({ isDarkMode }) => {
     
     // User gets 70% of net APY added to original APY
     const userBoost = netAPY * 0.70;
-    const enhancedAPY = numericAPY + userBoost;
+    const enhancedAPY = userBoost;
     
     return { enhanced: enhancedAPY, isEligible: true };
   };

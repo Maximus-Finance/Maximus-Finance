@@ -11,7 +11,54 @@ interface ExploreProtocolsPageProps {
 
 const ExploreProtocolsPage: React.FC<ExploreProtocolsPageProps> = ({ onNavigate }) => {
   const { isDarkMode } = useTheme();
-  const { isLoading, totalTVL, averageAPY, activeProtocols } = useLiveProtocolData();
+  const { isLoading, opportunities } = useLiveProtocolData();
+
+  // Enhanced yield calculation using 8-loop strategy (same logic as ProtocolsGrid)
+  const calculateEnhancedAPY = (baseAPY: string): number => {
+    const numericAPY = parseFloat(baseAPY.replace('%', ''));
+    if (isNaN(numericAPY)) return 0;
+    
+    // 8-loop calculation with 70% collateral factor
+    const f = 0.70; // collateral factor
+    const loops = 8;
+    
+    // Cumulative supply after 8 loops: S8 = 100 × (1 - f^9) / (1 - f)
+    const cumulativeSupply = 100 * (1 - Math.pow(f, loops + 1)) / (1 - f);
+    
+    // Cumulative borrow after 8 loops: B8 = 100 × f(1 - f^8) / (1 - f)
+    const cumulativeBorrow = 100 * f * (1 - Math.pow(f, loops)) / (1 - f);
+    
+    // Assume 2.03% borrow rate (standard for liquid staking)
+    const borrowRate = 2.03;
+    
+    // Net APY calculation: (numericAPY * cumulativeSupply/100) - (borrowRate * cumulativeBorrow/100)
+    const netAPY = (numericAPY * cumulativeSupply / 100) - (borrowRate * cumulativeBorrow / 100);
+    
+    // User gets 70% of net APY added to original APY
+    const userBoost = netAPY * 0.70;
+    const enhancedAPY = userBoost;
+    
+    return enhancedAPY;
+  };
+
+  // Filter to only liquid staking protocols (same as ProtocolsGrid)
+  const liquidStakingData = opportunities.filter(item => 
+    item.category === 'Liquid Staking' && 
+    (item.protocol === 'BENQI' || item.protocol === 'GoGoPool')
+  );
+
+  // Calculate metrics from strategy protocols
+  const strategyTotalTVL = liquidStakingData.reduce((sum, opp) => {
+    const tvlValue = parseFloat(opp.tvl.replace(/[$M,]/g, '')) * 1000000;
+    return sum + (isNaN(tvlValue) ? 0 : tvlValue);
+  }, 0);
+
+  const totalEnhancedAPY = liquidStakingData.reduce((sum, opp) => {
+    return sum + calculateEnhancedAPY(opp.apy);
+  }, 0);
+
+  const enhancedAverageAPY = liquidStakingData.length > 0 ? totalEnhancedAPY / liquidStakingData.length : 0;
+  const activeStrategyProtocols = new Set(liquidStakingData.map(opp => opp.protocol)).size;
 
   return (
     <div className="pt-16 font-hind">
@@ -33,17 +80,17 @@ const ExploreProtocolsPage: React.FC<ExploreProtocolsPageProps> = ({ onNavigate 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12">
             {[
               { 
-                value: `$${(totalTVL / 1000000).toFixed(1)}M`, 
+                value: `$${(strategyTotalTVL / 1000000).toFixed(1)}M`, 
                 label: 'Total Value Locked', 
                 gradient: 'from-green-400 to-emerald-500' 
               },
               { 
-                value: `${(averageAPY * 1.7).toFixed(1)}%`, 
+                value: `${enhancedAverageAPY.toFixed(1)}%`, 
                 label: 'Enhanced Average APY', 
                 gradient: 'from-blue-400 to-cyan-500' 
               },
               { 
-                value: activeProtocols.toString(), 
+                value: activeStrategyProtocols.toString(), 
                 label: 'Strategy Protocols', 
                 gradient: 'from-purple-400 to-pink-500' 
               },

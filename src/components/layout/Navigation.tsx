@@ -20,7 +20,7 @@ const Navigation: React.FC<NavigationProps> = ({
   const navItems = [
     { id: 'home' as const, label: 'Home' },
     { id: 'yields' as const, label: 'Explore Yields' },
-    { id: 'protocols' as const, label: 'Explore Protocols' },
+    { id: 'protocols' as const, label: 'Yield Strategies' },
   ];
 
   return (
