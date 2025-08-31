@@ -154,13 +154,13 @@ export function useLiveProtocolData(refreshInterval: number = 3600000) { // 1 ho
       if (benqiData.status === 'fulfilled') {
         const data = benqiData.value;
         
-        // sAVAX opportunity
+        // sAVAX opportunity (BENQI only provides sAVAX liquid staking)
         if (data.sAVAX.apy > 0) {
           allOpportunities.push({
             id: 'benqi-savax',
             protocol: 'BENQI',
             category: 'Liquid Staking',
-            pair: 'AVAX → sAVAX',
+            pair: 'sAVAX',
             apy: `${data.sAVAX.apy.toFixed(2)}%`,
             tvl: `$${(data.sAVAX.tvl / 1000000).toFixed(1)}M`,
             risk: 'Low',

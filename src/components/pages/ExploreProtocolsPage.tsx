@@ -2,6 +2,7 @@
 
 import { useTheme } from '@/hooks/useTheme';
 import ProtocolsGrid from '@/components/sections/ProtocolsGrid';
+import { useLiveProtocolData } from '@/hooks/useLiveProtocolData';
 import { PageType } from '@/types';
 
 interface ExploreProtocolsPageProps {
@@ -10,6 +11,7 @@ interface ExploreProtocolsPageProps {
 
 const ExploreProtocolsPage: React.FC<ExploreProtocolsPageProps> = ({ onNavigate }) => {
   const { isDarkMode } = useTheme();
+  const { isLoading, totalTVL, averageAPY, activeProtocols } = useLiveProtocolData();
 
   return (
     <div className="pt-16 font-hind">
@@ -17,52 +19,56 @@ const ExploreProtocolsPage: React.FC<ExploreProtocolsPageProps> = ({ onNavigate 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12">
             <h1 className={`text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 font-hind animate-card-entrance hover-3d leading-tight ${isDarkMode ? 'text-white animate-text-glow' : 'text-gray-900'}`}>
-              Avalanche <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent animate-gradient animate-text-glow">DeFi Protocols</span>
+              Yield <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent animate-gradient animate-text-glow">Strategies</span>
             </h1>
             <p className={`text-lg sm:text-xl font-hind animate-float3d px-4 sm:px-0 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-              Discover the leading protocols in the Avalanche ecosystem
+              Enhanced yield opportunities with our advanced looping strategies
             </p>
+            
           </div>
 
           <ProtocolsGrid isDarkMode={isDarkMode} />
 
-          {/* Featured Protocols */}
-          <div className="mt-12 sm:mt-16 lg:mt-20">
-            <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-8 sm:mb-12 lg:mb-16 font-hind hover-3d ${isDarkMode ? 'text-white animate-text-glow' : 'text-gray-900'}`}>
-              Featured Protocols
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-              {[
-                { icon: '🔺', name: 'Trader Joe', desc: 'Leading DEX with $45.2M TVL', apy: '24.5% APY' },
-                { icon: '🏔️', name: 'Benqi', desc: 'Liquid staking with $125.8M TVL', apy: '8.2% APY' },
-                { icon: '🐧', name: 'Pangolin', desc: 'Community DEX with $12.4M TVL', apy: '18.7% APY' },
-              ].map((protocol, index) => (
-                <div 
-                  key={index}
-                  className={`p-6 sm:p-8 lg:p-10 rounded-3xl text-center hover-3d animate-card-entrance shadow-2xl transform sm:hover:scale-110 transition-all duration-500 ${
-                    isDarkMode ? 'glass-3d-dark animate-float3d' : 'glass-3d-light animate-bubble'
-                  }`}
-                  style={{ animationDelay: `${index * 0.3}s` }}
-                >
-                  <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">{protocol.icon}</div>
-                  <h3 className={`text-lg sm:text-xl font-bold mb-2 font-space-grotesk ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                    {protocol.name}
-                  </h3>
-                  <p className={`font-hind text-base sm:text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                    {protocol.desc}
-                  </p>
-                  <p className={`text-base sm:text-lg font-semibold mt-2 font-space-grotesk ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>
-                    {protocol.apy}
-                  </p>
+          {/* Summary Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12">
+            {[
+              { 
+                value: `$${(totalTVL / 1000000).toFixed(1)}M`, 
+                label: 'Total Value Locked', 
+                gradient: 'from-green-400 to-emerald-500' 
+              },
+              { 
+                value: `${(averageAPY * 1.7).toFixed(1)}%`, 
+                label: 'Enhanced Average APY', 
+                gradient: 'from-blue-400 to-cyan-500' 
+              },
+              { 
+                value: activeProtocols.toString(), 
+                label: 'Strategy Protocols', 
+                gradient: 'from-purple-400 to-pink-500' 
+              },
+            ].map((stat, index) => (
+              <div 
+                key={index}
+                className={`p-6 sm:p-8 lg:p-10 rounded-3xl text-center hover-light animate-smooth-entrance shadow-2xl transform sm:hover:scale-105 transition-all duration-300 ${
+                  isDarkMode ? 'glass-3d-dark animate-light-float' : 'glass-3d-light animate-light-bounce'
+                }`}
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className={`text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent mb-3 sm:mb-4 font-hind hover-light`}>
+                  {isLoading ? '...' : stat.value}
                 </div>
-              ))}
-            </div>
+                <div className={`font-hind text-base sm:text-lg font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  {stat.label}
+                </div>
+              </div>
+            ))}
           </div>
 
-          {/* Features Section */}
+          {/* Strategy Features Section */}
           <div className="mt-12 sm:mt-16 lg:mt-20">
             <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-8 sm:mb-12 lg:mb-16 font-hind hover-light ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              Why Choose Our Platform?
+              How Our Strategies Work
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
               <div className={`p-6 sm:p-8 lg:p-10 rounded-3xl hover-light animate-smooth-entrance shadow-2xl transition-all duration-300 ${
@@ -70,18 +76,18 @@ const ExploreProtocolsPage: React.FC<ExploreProtocolsPageProps> = ({ onNavigate 
               }`} style={{ animationDelay: '0.1s' }}>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center mb-6 sm:mb-8">
                   <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mb-4 sm:mb-0 sm:mr-6 hover-light animate-gentle-rotate shadow-2xl">
-                    <span className="text-white text-lg sm:text-2xl animate-light-float">⚡</span>
+                    <span className="text-white text-lg sm:text-2xl animate-light-float">🔄</span>
                   </div>
                   <div>
-                    <span className="bg-green-100 text-green-800 px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-bold font-hind hover-light animate-light-bounce">TODAY</span>
+                    <span className="bg-green-100 text-green-800 px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-bold font-hind hover-light animate-light-bounce">ACTIVE</span>
                     <h3 className={`text-xl sm:text-2xl lg:text-3xl font-bold mt-2 sm:mt-3 font-hind hover-light ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                      Instant Yield Access
+                      Advanced Looping Strategy
                     </h3>
                   </div>
                 </div>
                 <p className={`font-hind text-base sm:text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                  Currently, we direct you to the top-performing Avalanche yield platforms so you can 
-                  start earning right away.
+                  Using 70% collateral factor with 8-loop optimization to maximize your yields. 
+                  Each loop compounds your returns for up to 70% APY enhancement.
                 </p>
               </div>
 
@@ -89,19 +95,19 @@ const ExploreProtocolsPage: React.FC<ExploreProtocolsPageProps> = ({ onNavigate 
                 isDarkMode ? 'glass-3d-dark animate-bubble' : 'glass-3d-light animate-float3d'
               }`} style={{ animationDelay: '0.4s' }}>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center mb-6 sm:mb-8">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mb-4 sm:mb-0 sm:mr-6 hover-3d animate-rotate3d shadow-2xl">
-                    <span className="text-white text-lg sm:text-2xl animate-bubble">🏛️</span>
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mb-4 sm:mb-0 sm:mr-6 hover-3d animate-rotate3d shadow-2xl">
+                    <span className="text-white text-lg sm:text-2xl animate-bubble">🎯</span>
                   </div>
                   <div>
-                    <span className="bg-yellow-100 text-yellow-800 px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-bold font-hind hover-3d animate-float3d">TOMORROW</span>
+                    <span className="bg-purple-100 text-purple-800 px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-bold font-hind hover-3d animate-float3d">OPTIMIZED</span>
                     <h3 className={`text-xl sm:text-2xl lg:text-3xl font-bold mt-2 sm:mt-3 font-hind hover-3d ${isDarkMode ? 'text-white animate-text-glow' : 'text-gray-900'}`}>
-                      One-Click Auto-Staking
+                      Risk-Managed Returns
                     </h3>
                   </div>
                 </div>
                 <p className={`font-hind text-base sm:text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                  Deposit with us, and we&apos;ll stake your funds across protocols automatically—
-                  optimizing returns without you lifting a finger.
+                  Our strategies maintain safe collateral ratios while maximizing yields. 
+                  Automated monitoring prevents liquidation risks.
                 </p>
               </div>
             </div>
@@ -111,23 +117,23 @@ const ExploreProtocolsPage: React.FC<ExploreProtocolsPageProps> = ({ onNavigate 
                 isDarkMode ? 'bg-gradient-to-r from-blue-900 to-purple-900' : 'bg-gradient-to-r from-blue-600 to-purple-600'
               }`}>
                 <h3 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4 font-space-grotesk text-center">
-                  Your Avalanche yield journey starts here.
+                  Maximize your DeFi yields with smart strategies.
                 </h3>
                 <p className="text-lg sm:text-xl mb-6 sm:mb-8 text-blue-100 font-space-grotesk text-center">
-                  Stop searching, start earning.
+                  Enhanced APYs through automated looping protocols.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <button 
                     onClick={() => onNavigate('yields')}
                     className="bg-white text-blue-600 px-6 sm:px-8 py-3 sm:py-4 rounded-xl text-base sm:text-lg font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 font-space-grotesk"
                   >
-                    Start Earning Now
+                    Start Strategy
                   </button>
                   <button 
                     onClick={() => onNavigate('yields')}
                     className="border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl text-base sm:text-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300 transform hover:scale-105 font-space-grotesk"
                   >
-                    View Live Yields
+                    View All Strategies
                   </button>
                 </div>
               </div>
