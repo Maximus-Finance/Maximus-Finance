@@ -128,13 +128,12 @@ const ExploreProtocolsPage: React.FC<ExploreProtocolsPageProps> = ({ onNavigate 
                   <div>
                     <span className="bg-green-100 text-green-800 px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-bold font-hind hover-light animate-light-bounce">ACTIVE</span>
                     <h3 className={`text-xl sm:text-2xl lg:text-3xl font-bold mt-2 sm:mt-3 font-hind hover-light ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                      Advanced Looping Strategy
+                      Advanced Yield Strategy
                     </h3>
                   </div>
                 </div>
                 <p className={`font-hind text-base sm:text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                  Using 70% collateral factor with 8-loop optimization to maximize your yields. 
-                  Each loop compounds your returns for up to 70% APY enhancement.
+                  Using advanced mechansim of restaking and distributed yield to maximize your yields. 
                 </p>
               </div>
 
@@ -167,7 +166,7 @@ const ExploreProtocolsPage: React.FC<ExploreProtocolsPageProps> = ({ onNavigate 
                   Maximize your DeFi yields with smart strategies.
                 </h3>
                 <p className="text-lg sm:text-xl mb-6 sm:mb-8 text-blue-100 font-space-grotesk text-center">
-                  Enhanced APYs through automated looping protocols.
+                  Enhanced APYs through our protocol.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <button 

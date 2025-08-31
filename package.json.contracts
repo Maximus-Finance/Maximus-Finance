@@ -1,0 +1,21 @@
+{
+  "name": "maximus-finance-contracts",
+  "version": "1.0.0",
+  "description": "Smart contracts for Maximus Finance DeFi platform",
+  "scripts": {
+    "compile": "hardhat compile",
+    "deploy:localhost": "hardhat run scripts/deploy.js --network localhost",
+    "deploy:fuji": "hardhat run scripts/deploy.js --network fuji",
+    "deploy:avalanche": "hardhat run scripts/deploy.js --network avalanche",
+    "verify": "hardhat verify --network",
+    "test": "hardhat test",
+    "node": "hardhat node"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "hardhat": "^2.17.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0"
+  }
+}

@@ -21,6 +21,7 @@ const Navigation: React.FC<NavigationProps> = ({
     { id: 'home' as const, label: 'Home' },
     { id: 'yields' as const, label: 'Explore Yields' },
     { id: 'protocols' as const, label: 'Yield Strategies' },
+    { id: 'profile' as const, label: 'Profile' },
   ];
 
   return (

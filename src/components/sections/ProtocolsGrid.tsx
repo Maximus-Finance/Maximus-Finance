@@ -1,8 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import { ExternalLink } from 'lucide-react';
 import { useLiveProtocolData } from '@/hooks/useLiveProtocolData';
 import Button from '@/components/ui/Button';
+import StakingModal from '@/components/staking/StakingModal';
 
 interface ProtocolsGridProps {
   isDarkMode: boolean;
@@ -11,6 +13,17 @@ interface ProtocolsGridProps {
 const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
   // const [selectedFilter, setSelectedFilter] = useState('All');
   const { opportunities, isLoading } = useLiveProtocolData();
+  const [stakingModal, setStakingModal] = useState<{
+    isOpen: boolean;
+    protocol: string;
+    baseAPY: string;
+    enhancedAPY: string;
+  }>({
+    isOpen: false,
+    protocol: '',
+    baseAPY: '',
+    enhancedAPY: ''
+  });
 
   // Enhanced yield calculation using 8-loop strategy for liquid staking protocols
   const calculateEnhancedAPY = (baseAPY: string): { enhanced: number; isEligible: boolean } => {
@@ -49,6 +62,24 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
   // const filters = ['All', 'USDC', 'USDT', 'AVAX'];
 
   const filteredData = liquidStakingData;
+
+  const handleStartStrategy = (item: { protocol: string; apy: string; }, enhancedAPY: number) => {
+    setStakingModal({
+      isOpen: true,
+      protocol: item.protocol,
+      baseAPY: item.apy,
+      enhancedAPY: `${enhancedAPY.toFixed(1)}%`
+    });
+  };
+
+  const closeStakingModal = () => {
+    setStakingModal({
+      isOpen: false,
+      protocol: '',
+      baseAPY: '',
+      enhancedAPY: ''
+    });
+  };
 
   if (isLoading && liquidStakingData.length === 0) {
     return (
@@ -218,7 +249,7 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
                 {/* Action Button */}
                 <div className="text-center mt-auto">
                   <Button 
-                    onClick={() => window.open(item.url, '_blank')}
+                    onClick={() => handleStartStrategy(item, enhancedAPY)}
                     className="w-full"
                   >
                     <span className="flex items-center justify-center space-x-2">
@@ -235,6 +266,16 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
           })}
         </div>
       )}
+
+      {/* Staking Modal */}
+      <StakingModal
+        isOpen={stakingModal.isOpen}
+        onClose={closeStakingModal}
+        protocol={stakingModal.protocol}
+        baseAPY={stakingModal.baseAPY}
+        enhancedAPY={stakingModal.enhancedAPY}
+        isDarkMode={isDarkMode}
+      />
     </div>
   );
 };
