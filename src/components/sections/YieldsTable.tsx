@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import { useLiveProtocolData } from '@/hooks/useLiveProtocolData';
-import LiveDataIndicator from '@/components/ui/LiveDataIndicator';
 import DataQualityIndicator from '@/components/ui/DataQualityIndicator';
 
 interface YieldsCardsProps {
@@ -12,7 +11,7 @@ interface YieldsCardsProps {
 
 const YieldsCards: React.FC<YieldsCardsProps> = ({ isDarkMode }) => {
   const [selectedFilter, setSelectedFilter] = useState('All');
-  const { opportunities, isLoading, error, lastUpdated, dataQuality, systemHealth, alerts } = useLiveProtocolData();
+  const { opportunities, isLoading, dataQuality, systemHealth, alerts } = useLiveProtocolData();
 
   // Format TVL to prevent overflow
   const formatTVL = (tvlString: string): string => {

@@ -79,7 +79,7 @@ const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
       }
 
       // Create provider and signer (ethers v5 compatible)
-      const web3Provider = new ethers.providers.Web3Provider(window.ethereum as any);
+      const web3Provider = new ethers.providers.Web3Provider(window.ethereum as ethers.providers.ExternalProvider);
       const web3Signer = web3Provider.getSigner();
       
       setProvider(web3Provider);
@@ -139,7 +139,7 @@ const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
   const switchToFuji = async () => {
     try {
       console.log('🔄 Attempting to switch to Fuji network...');
-      await window.ethereum.request({
+      await window.ethereum!.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: FUJI_CONFIG.chainId }],
       });
@@ -149,10 +149,10 @@ const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
       console.log('⚠️ Switch failed, error code:', error.code);
       
       // Network not added, try to add it
-      if (switchError.code === 4902) {
+      if (error.code === 4902) {
         try {
           console.log('📝 Adding Fuji network to MetaMask...');
-          await window.ethereum.request({
+          await window.ethereum!.request({
             method: 'wallet_addEthereumChain',
             params: [FUJI_CONFIG],
           });
@@ -190,24 +190,26 @@ const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
     const checkConnection = async () => {
       if (isMetaMaskInstalled()) {
         try {
-          const accounts = await window.ethereum.request({ method: 'eth_accounts' }) as string[];
+          const accounts = await window.ethereum!.request({ method: 'eth_accounts' }) as string[];
           if (accounts.length > 0) {
             // Auto-connect if previously connected
             await connectWallet();
           }
-        } catch (err) {
+        } catch {
           console.log('No previous connection found');
         }
       }
     };
 
     checkConnection();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Listen for account changes
   useEffect(() => {
     if (isMetaMaskInstalled()) {
-      const handleAccountsChanged = (accounts: string[]) => {
+      const handleAccountsChanged = (...args: unknown[]) => {
+        const accounts = args[0] as string[];
         if (accounts.length === 0) {
           disconnectWallet();
         } else if (accounts[0] !== account) {
@@ -216,7 +218,8 @@ const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
         }
       };
 
-      const handleChainChanged = (chainId: string) => {
+      const handleChainChanged = (...args: unknown[]) => {
+        const chainId = args[0] as string;
         const numericChainId = parseInt(chainId, 16);
         setChainId(numericChainId);
         // Reload if not on Fuji
@@ -225,16 +228,17 @@ const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
         }
       };
 
-      window.ethereum.on('accountsChanged', handleAccountsChanged);
-      window.ethereum.on('chainChanged', handleChainChanged);
+      window.ethereum!.on?.('accountsChanged', handleAccountsChanged);
+      window.ethereum!.on?.('chainChanged', handleChainChanged);
 
       return () => {
-        if (window.ethereum.removeListener) {
+        if (window.ethereum?.removeListener) {
           window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
           window.ethereum.removeListener('chainChanged', handleChainChanged);
         }
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account]);
 
   // Helper functions

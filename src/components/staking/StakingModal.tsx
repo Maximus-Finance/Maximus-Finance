@@ -74,14 +74,6 @@ const StakingModal: React.FC<StakingModalProps> = ({
     }
   }, [isOpen, isConnected, setupContract]);
 
-  useEffect(() => {
-    if (isConnected && account && contract) {
-      fetchStakingData();
-      const interval = setInterval(fetchStakingData, 10000); // Update every 10 seconds
-      return () => clearInterval(interval);
-    }
-  }, [isConnected, account, contract]);
-
   const fetchStakingData = useCallback(async () => {
     if (contract && account) {
       try {
@@ -102,14 +94,21 @@ const StakingModal: React.FC<StakingModalProps> = ({
           depositTime: depositTimestamp.toString(),
           isActive: active
         });
-      } catch (error) {
+      } catch {
         console.log('Contract not deployed yet or no deposits - using default values');
         setStakedAmount('0');
         setIsActive(false);
-        setDepositTime('');
       }
     }
   }, [contract, account]);
+
+  useEffect(() => {
+    if (isConnected && account && contract) {
+      fetchStakingData();
+      const interval = setInterval(fetchStakingData, 10000); // Update every 10 seconds
+      return () => clearInterval(interval);
+    }
+  }, [isConnected, account, contract, fetchStakingData]);
 
   const showStatus = (message: string, type: string = 'info') => {
     setTxStatus({ message, type });

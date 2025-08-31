@@ -6,7 +6,7 @@ import { useLiveProtocolData } from '@/hooks/useLiveProtocolData';
 
 const ExploreYieldsPage: React.FC = () => {
   const { isDarkMode } = useTheme();
-  const { isLoading, lastUpdated, totalTVL, averageAPY, activeProtocols, dataQuality, systemHealth } = useLiveProtocolData();
+  const { isLoading, lastUpdated, totalTVL, averageAPY, activeProtocols, systemHealth } = useLiveProtocolData();
 
   return (
     <div className="pt-16 font-hind">

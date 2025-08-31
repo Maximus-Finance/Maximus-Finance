@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { ethers } from 'ethers';
 import { useTheme } from '@/hooks/useTheme';
 import { useWallet } from '@/context/WalletContext';
@@ -27,20 +27,18 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
     switchToFuji,
     updateBalance,
     CONTRACT_ADDRESSES,
-    loading: walletLoading,
-    error: walletError
+    loading: walletLoading
   } = useWallet();
 
   const [stakedAmount, setStakedAmount] = useState<string>('0');
-  const [depositTime, setDepositTime] = useState<string>('');
   const [isActive, setIsActive] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
 
   // Contract ABI to match updated SimpleStaking contract
-  const STAKING_ABI = [
+  const STAKING_ABI = useMemo(() => [
     "function getUserDeposit(address user) external view returns (uint256 amount, uint256 depositTime, bool isActive)",
     "function getTotalValue() external view returns (uint256)"
-  ];
+  ], []);
 
   const fetchStakingData = useCallback(async () => {
     if (signer && account && CONTRACT_ADDRESSES.STAKING_CONTRACT) {
@@ -52,26 +50,20 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
         setStakedAmount(ethers.utils.formatEther(amount));
         setIsActive(active);
         
-        if (depositTimestamp.gt(0)) {
-          const date = new Date(depositTimestamp.toNumber() * 1000);
-          setDepositTime(date.toLocaleDateString());
-        } else {
-          setDepositTime('');
-        }
+        // depositTime not used in UI currently
 
         console.log('✅ Profile staking data loaded:', {
           amount: ethers.utils.formatEther(amount),
           depositTime: depositTimestamp.toString(),
           isActive: active
         });
-      } catch (error) {
+      } catch {
         console.log('Contract not deployed or no deposits - showing default values');
         setStakedAmount('0');
         setIsActive(false);
-        setDepositTime('');
       }
     }
-  }, [signer, account, CONTRACT_ADDRESSES.STAKING_CONTRACT]);
+  }, [signer, account, CONTRACT_ADDRESSES.STAKING_CONTRACT, STAKING_ABI]);
 
   const refreshData = async () => {
     if (isConnected) {

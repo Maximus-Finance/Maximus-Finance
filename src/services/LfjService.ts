@@ -77,8 +77,7 @@ export class LfjService {
     } else {
       // per-block fallback (very coarse). If you dislike this, set a static APY fallback instead.
       const perBlock = parseFloat(ethers.utils.formatUnits(rateBN, 18));
-      const secondsPerYear = 365.25 * 24 * 60 * 60;
-      const approxBlocksPerSecond = 0.5; // ~2s block time
+        const approxBlocksPerSecond = 0.5; // ~2s block time
       return perBlock * approxBlocksPerSecond; // convert to per-second
     }
   }

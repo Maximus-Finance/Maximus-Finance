@@ -104,16 +104,6 @@ export class BenqiService {
     return this.provider;
   }
 
-  private calculateLiquidStakingAPR(_totalAssets: number, _exchangeRate: number, _avaxPrice: number): number {
-    try {
-      // BENQI avUSD to savUSD confirmed rate is 18.98%
-      const confirmedRate = 18.98;
-      return confirmedRate;
-    } catch (error) {
-      console.warn('Failed to calculate BENQI APR:', error);
-      return 18.98; // Confirmed fallback APR for avUSD to savUSD
-    }
-  }
 
   private getMarketConfig() {
     return [
