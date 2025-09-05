@@ -1,6 +1,5 @@
 import { priceService } from '@/utils/priceService';
 
-// Pangolin API endpoints
 export const PANGOLIN_API = {
   BASE_URL: 'https://api.pangolin.exchange',
   endpoints: {
@@ -48,24 +47,19 @@ export interface PangolinData {
 export class PangolinService {
   
   async fetchData(): Promise<PangolinData> {
-    // Get live token prices (outside try-catch for fallback access)
     const prices = await priceService.getTokenPrices(['AVAX', 'PNG', 'USDC', 'USDT', 'ETH', 'BTC']);
     
     try {
-      
-      // Fetch data from Pangolin API endpoints
-      const [pairsResponse, farmsResponse] = await Promise.allSettled([
+        const [pairsResponse, farmsResponse] = await Promise.allSettled([
         fetch(`${PANGOLIN_API.BASE_URL}${PANGOLIN_API.endpoints.pairs}`)
           .then(r => r.json()),
         fetch(`${PANGOLIN_API.BASE_URL}${PANGOLIN_API.endpoints.farms}`)
           .then(r => r.json())
       ]);
 
-      // Process pairs data
       const pairsData = pairsResponse.status === 'fulfilled' ? pairsResponse.value : [];
       const farmsData = farmsResponse.status === 'fulfilled' ? farmsResponse.value : [];
 
-      // Format high-yield pairs (>5% APR and >$100k TVL)
       const significantPairs: PangolinPair[] = (pairsData as Record<string, unknown>[])
         .filter((pair) => (pair.apr as number) > 5 && (pair.tvl as number) > 100000)
         .map((pair) => ({
@@ -81,7 +75,6 @@ export class PangolinService {
           reserve1: parseFloat((pair.reserve1 as string)) || 0
         }));
 
-      // Format high-yield farms (>10% APR and >$50k TVL)
       const significantFarms: PangolinFarm[] = (farmsData as Record<string, unknown>[])
         .filter((farm) => (farm.apr as number) > 10 && (farm.tvl as number) > 50000)
         .map((farm) => ({
@@ -96,7 +89,6 @@ export class PangolinService {
           rewardTokens: (farm.rewardTokens as string[]) || []
         }));
 
-      // Calculate totals
       const totalTVL = [...significantPairs, ...significantFarms].reduce((sum, item) => sum + item.tvl, 0);
       const totalAPR = [...significantPairs, ...significantFarms].reduce((sum, item) => sum + item.apr, 0);
       const averageAPR = (significantPairs.length + significantFarms.length) > 0 ? 
@@ -113,7 +105,6 @@ export class PangolinService {
     } catch (error) {
       console.error('Pangolin data fetch failed:', error);
       
-      // Fallback data with popular pairs
       return {
         protocol: 'PANGOLIN',
         pairs: [

@@ -34,7 +34,6 @@ const Navigation: React.FC<NavigationProps> = ({
         <div className="flex justify-between items-center h-16">
           <Logo onNavigate={onNavigate} />
           
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
               <button
@@ -61,7 +60,6 @@ const Navigation: React.FC<NavigationProps> = ({
               <Button onClick={handleClick}>{buttonText}</Button>
             </div>
             
-            {/* Mobile menu button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className={`md:hidden p-2 sm:p-3 rounded-2xl transition-all duration-300 hover-light ${
@@ -74,7 +72,6 @@ const Navigation: React.FC<NavigationProps> = ({
         </div>
       </div>
 
-      {/* Mobile Navigation */}
       {isMenuOpen && (
         <div className={`md:hidden transition-all duration-300 animate-smooth-entrance ${
           isDarkMode ? 'glass-3d-dark' : 'glass-3d-light'
@@ -99,7 +96,6 @@ const Navigation: React.FC<NavigationProps> = ({
               </button>
             ))}
             
-            {/* Mobile theme toggle and wallet button */}
             <div className="pt-3 border-t border-gray-200/20 space-y-2">
               <div className="flex justify-center">
                 <ThemeToggle isDarkMode={isDarkMode} onToggle={onToggleTheme} />

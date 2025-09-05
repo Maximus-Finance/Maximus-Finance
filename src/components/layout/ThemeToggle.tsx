@@ -44,7 +44,6 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ isDarkMode, onToggle }) => {
           </div>
         </div>
         
-        {/* Light background gradient */}
         <div className={`
           absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300
           ${isDarkMode 
@@ -54,7 +53,6 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ isDarkMode, onToggle }) => {
         `} />
       </button>
       
-      {/* Light floating indicator */}
       <div className={`
         absolute -top-2 -right-2 w-4 h-4 rounded-full transition-all duration-300 hover-light
         ${isDarkMode ? 'bg-yellow-400 animate-pulse shadow-lg' : 'bg-blue-500 animate-gentle-rotate shadow-lg'}

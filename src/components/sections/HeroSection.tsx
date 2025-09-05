@@ -11,7 +11,6 @@ interface HeroSectionProps {
 const HeroSection: React.FC<HeroSectionProps> = ({ isDarkMode, onNavigate }) => {
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Animated background elements - only in dark mode */}
       {isDarkMode && (
         <>
           <div className="absolute inset-0 opacity-30">
@@ -20,7 +19,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ isDarkMode, onNavigate }) => 
             <div className="absolute bottom-1/4 left-1/3 w-48 h-48 sm:w-72 sm:h-72 lg:w-96 lg:h-96 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full mix-blend-screen filter blur-3xl animate-light-bounce"></div>
           </div>
 
-          {/* Lightning effect from center */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="w-1 h-full bg-gradient-to-b from-transparent via-purple-400/30 to-transparent animate-pulse"></div>
             <div className="h-1 w-full absolute bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent animate-pulse animate-delay-1000"></div>

@@ -34,7 +34,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Contract ABI to match updated SimpleStaking contract
   const STAKING_ABI = useMemo(() => [
     "function getUserDeposit(address user) external view returns (uint256 amount, uint256 depositTime, bool isActive)",
     "function getTotalValue() external view returns (uint256)"
@@ -50,7 +49,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
         setStakedAmount(ethers.utils.formatEther(amount));
         setIsActive(active);
         
-        // depositTime not used in UI currently
 
         console.log('✅ Profile staking data loaded:', {
           amount: ethers.utils.formatEther(amount),
@@ -111,7 +109,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
     <div className="pt-16 font-hind">
       <section className="min-h-screen py-12 sm:py-16 lg:py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
           <div className="text-center mb-8 sm:mb-12">
             <h1 className={`text-3xl sm:text-5xl md:text-6xl font-bold mb-6 font-hind ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
               Your <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">Profile</span>
@@ -122,7 +119,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
           </div>
 
           {!isConnected ? (
-            /* Connect Wallet Section */
             <div className={`text-center p-8 sm:p-12 rounded-3xl ${isDarkMode ? 'glass-3d-dark' : 'glass-3d-light'}`}>
               <div className="mb-6">
                 <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
@@ -140,9 +136,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
               </Button>
             </div>
           ) : (
-            /* Profile Content */
             <div className="space-y-6 sm:space-y-8">
-              {/* Wallet Info Card */}
               <div className={`p-6 sm:p-8 rounded-3xl ${isDarkMode ? 'glass-3d-dark' : 'glass-3d-light'}`}>
                 <div className="flex items-center justify-between mb-6">
                   <h2 className={`text-2xl font-bold font-hind ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
@@ -154,7 +148,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Wallet Address */}
                   <div className={`p-4 rounded-xl ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-100'}`}>
                     <div className={`text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                       Wallet Address
@@ -170,7 +163,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
                     </button>
                   </div>
 
-                  {/* Network */}
                   <div className={`p-4 rounded-xl ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-100'}`}>
                     <div className={`text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                       Network
@@ -193,14 +185,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
                 </div>
               </div>
 
-              {/* Balance & Staking Card */}
               <div className={`p-6 sm:p-8 rounded-3xl ${isDarkMode ? 'glass-3d-dark' : 'glass-3d-light'}`}>
                 <h2 className={`text-2xl font-bold mb-6 font-hind ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                   Balance & Staking
                 </h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                  {/* AVAX Balance */}
                   <div className={`p-6 rounded-2xl text-center ${isDarkMode ? 'bg-blue-900/20 border border-blue-700/30' : 'bg-blue-50 border border-blue-200/30'}`}>
                     <div className={`text-3xl font-bold mb-2 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>
                       {formatAmount(balance)}
@@ -210,7 +200,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
                     </div>
                   </div>
 
-                  {/* Staked Amount */}
                   <div className={`p-6 rounded-2xl text-center ${isDarkMode ? 'bg-green-900/20 border border-green-700/30' : 'bg-green-50 border border-green-200/30'}`}>
                     <div className={`text-3xl font-bold mb-2 ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>
                       {formatAmount(stakedAmount)}
@@ -220,7 +209,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
                     </div>
                   </div>
 
-                  {/* Status */}
                   <div className={`p-6 rounded-2xl text-center ${isDarkMode ? 'bg-purple-900/20 border border-purple-700/30' : 'bg-purple-50 border border-purple-200/30'}`}>
                     <div className={`text-3xl font-bold mb-2 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`}>
                       {isActive ? '✅' : '⏸️'}
@@ -231,7 +219,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
                   </div>
                 </div>
 
-                {/* Status Message */}
                 {parseFloat(stakedAmount) === 0 && (
                   <div className={`mt-6 p-4 rounded-xl text-center ${isDarkMode ? 'bg-yellow-900/20 text-yellow-300' : 'bg-yellow-50 text-yellow-700'}`}>
                     <p className="font-medium">No AVAX staked yet</p>
@@ -249,7 +236,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
                 )}
               </div>
 
-              {/* Quick Actions */}
               <div className={`p-6 sm:p-8 rounded-3xl ${isDarkMode ? 'glass-3d-dark' : 'glass-3d-light'}`}>
                 <h2 className={`text-2xl font-bold mb-6 font-hind ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                   Quick Actions

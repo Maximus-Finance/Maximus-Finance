@@ -1,14 +1,10 @@
 import { ethers } from 'ethers';
 import { priceService } from '@/utils/priceService';
 
-// BENQI Contract addresses - Updated with complete market addresses
 export const BENQI_CONTRACTS = {
-  // Liquid Staking
   sAVAX: '0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE',
-  savUSD: '0x63682bDC5f875e9bF69E201550658492C9763F89', // savUSD contract
+  savUSD: '0x63682bDC5f875e9bF69E201550658492C9763F89', 
   QI: '0x8729438EB15e2C8B576fCc6AeCdA6A148776C0F5',
-  
-  // Core Markets
   qiAVAX: '0x5C0401e81Bc07Ca70fAD469b451682c0d747Ef1c',
   qiSAVAX: '0xF362feA9659cf036792c9cb02f8ff8198E21B4cB',
   qiUSDC: '0xBEb5d47A3f720Ec0a390d04b4d41ED7d9688bC7F',
@@ -21,20 +17,15 @@ export const BENQI_CONTRACTS = {
   qiLINK: '0x4e9f683A27a6BdAD3FC2764003759277e93696e6',
   qiBTC: '0xe194c4c5aC32a3C9ffDb358d9Bfd523a0B6d1568',
   qiBTCb: '0x89a415b3D20098E6A6C8f7a59001C67BD3129821',
-  
-  // System Contracts
   comptroller: '0x486Af39519B4Dc9a7fCcd318217352830E8AD9b4'
 };
 
-// BENQI ABIs
 const BENQI_ABIS = {
   SAVAX: [
-    // ERC-4626 Vault Standard (primary)
     'function totalAssets() view returns (uint256)',
     'function totalSupply() view returns (uint256)',
     'function convertToAssets(uint256 shares) view returns (uint256)',
     'function convertToShares(uint256 assets) view returns (uint256)',
-    // Legacy methods (backup)
     'function totalPooledAVAX() view returns (uint256)',
     'function totalShares() view returns (uint256)',
     'function getPooledAVAXByShares(uint256 shares) view returns (uint256)',
@@ -104,7 +95,6 @@ export class BenqiService {
     return this.provider;
   }
 
-
   private getMarketConfig() {
     return [
       { address: BENQI_CONTRACTS.qiAVAX, symbol: 'qiAVAX', underlyingSymbol: 'AVAX', decimals: 18 },
@@ -126,12 +116,10 @@ export class BenqiService {
     try {
       const provider = await this.getProvider();
       
-      // Fetch prices for all tokens
       const prices = await priceService.getTokenPrices([
         'AVAX', 'USDC', 'USDT', 'DAI', 'BUSD', 'ETH', 'LINK', 'BTC', 'QI'
       ]);
 
-      // Fetch liquid staking data using ERC-4626 standard
       const sAvaxContract = new ethers.Contract(BENQI_CONTRACTS.sAVAX, BENQI_ABIS.SAVAX, provider);
       
       const [
@@ -139,7 +127,6 @@ export class BenqiService {
         totalSupply,
         exchangeRate
       ] = await Promise.all([
-        // Try ERC-4626 methods first, fallback to legacy
         sAvaxContract.totalAssets().catch(() => 
           sAvaxContract.totalPooledAVAX().catch(() => ethers.BigNumber.from('15695117000000000000000000'))
         ),
@@ -147,7 +134,6 @@ export class BenqiService {
           sAvaxContract.totalShares().catch(() => ethers.BigNumber.from('12868046000000000000000000'))
         ),
         sAvaxContract.convertToAssets(ethers.utils.parseEther('1')).catch(async () => {
-          // Fallback: calculate from totalPooledAVAX / totalShares
           const pooled = await sAvaxContract.totalPooledAVAX().catch(() => ethers.BigNumber.from('15695117000000000000000000'));
           const shares = await sAvaxContract.totalShares().catch(() => ethers.BigNumber.from('12868046000000000000000000'));
           return pooled.mul(ethers.utils.parseEther('1')).div(shares);
@@ -158,7 +144,6 @@ export class BenqiService {
       const totalSupplyFloat = parseFloat(totalSupply.toString()) / 1e18;
       const currentExchangeRate = parseFloat(exchangeRate.toString()) / 1e18;
 
-      // Fetch all lending markets data
       const marketConfigs = this.getMarketConfig();
       const lendingMarkets: LendingMarket[] = [];
 
@@ -182,7 +167,6 @@ export class BenqiService {
             qTokenContract.totalBorrows().catch(() => ethers.BigNumber.from('0'))
           ]);
 
-          // Calculate APY and metrics
           const SECONDS_PER_YEAR = 31536000;
           const supplyAPY = parseFloat(supplyRate.toString()) > 0 ? 
             (Math.pow(1 + (parseFloat(supplyRate.toString()) / 1e18), SECONDS_PER_YEAR) - 1) * 100 : 0;
@@ -194,15 +178,12 @@ export class BenqiService {
           const availableCashFloat = parseFloat(cash.toString()) / Math.pow(10, config.decimals);
           const exchangeRateFloat = parseFloat(exchangeRate.toString()) / Math.pow(10, 18 + config.decimals);
 
-          // Get token price
           const tokenPrice = prices[config.underlyingSymbol.toLowerCase().replace('.e', '').replace('.b', '')] || 1;
-          
-          // Calculate TVL and utilization
           const tvl = totalSupplyFloat * exchangeRateFloat * tokenPrice;
           const utilization = (availableCashFloat + totalBorrowsFloat) > 0 ? 
             (totalBorrowsFloat / (availableCashFloat + totalBorrowsFloat)) * 100 : 0;
 
-          if (tvl > 100) { // Only include markets with significant TVL
+          if (tvl > 100) {
             lendingMarkets.push({
               symbol: config.symbol,
               address: config.address,
@@ -229,11 +210,11 @@ export class BenqiService {
           totalShares: totalSupplyFloat,
           exchangeRate: currentExchangeRate,
           tvl: totalAssetsFloat * (prices.avax || 42.50),
-          apr: 8.1 // Standard sAVAX staking APR
+          apr: 8.1 
         },
         savUSDStaking: {
-          apr: 18.98, // Confirmed avUSD to savUSD rate
-          tvl: 45000000, // Estimated savUSD TVL
+          apr: 18.98, 
+          tvl: 45000000, 
           description: 'avUSD to savUSD liquid staking with 18.98% APR'
         },
         lendingMarkets,

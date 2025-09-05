@@ -9,7 +9,6 @@ async function main() {
 
   console.log("\n=== Starting Simple Contract Deployment ===\n");
 
-  // 1. Deploy LiveDataProvider
   console.log("1. Deploying LiveDataProvider...");
   const LiveDataProvider = await ethers.getContractFactory("LiveDataProvider");
   const dataProvider = await LiveDataProvider.deploy();
@@ -18,7 +17,6 @@ async function main() {
   console.log("✅ LiveDataProvider deployed to:", dataProvider.address);
   console.log("   Transaction hash:", dataProvider.deployTransaction.hash);
 
-  // 2. Deploy LiveAPYCalculator
   console.log("\n2. Deploying LiveAPYCalculator...");
   const LiveAPYCalculator = await ethers.getContractFactory("LiveAPYCalculator");
   const calculator = await LiveAPYCalculator.deploy(dataProvider.address);
@@ -27,7 +25,6 @@ async function main() {
   console.log("✅ LiveAPYCalculator deployed to:", calculator.address);
   console.log("   Transaction hash:", calculator.deployTransaction.hash);
 
-  // 3. Deploy YieldOptimizationFactory
   console.log("\n3. Deploying YieldOptimizationFactory...");
   const YieldOptimizationFactory = await ethers.getContractFactory("YieldOptimizationFactory");
   const factory = await YieldOptimizationFactory.deploy();
@@ -36,15 +33,12 @@ async function main() {
   console.log("✅ YieldOptimizationFactory deployed to:", factory.address);
   console.log("   Transaction hash:", factory.deployTransaction.hash);
 
-  // 4. Test basic contract functionality (without BENQI integration)
   console.log("\n4. Testing basic contract functionality...");
   
   try {
-    // Test sAVAX staking APY (should return static value)
     const stakingAPY = await dataProvider.getSAvaxStakingAPY();
     console.log("📊 sAVAX Staking APY:", stakingAPY.toString(), "basis points");
     
-    // Test calculator with mock data
     const testAmount = ethers.utils.parseEther("100");
     try {
       const result = await calculator.calculateLoopingStrategy(testAmount, 4, 6000);
@@ -61,7 +55,6 @@ async function main() {
     console.log("⚠️  Basic testing failed:", error.reason || error.message);
   }
 
-  // 5. Display deployment summary
   console.log("\n🎉 === DEPLOYMENT COMPLETE ===");
   console.log("Deployment Summary:");
   console.log("==================");

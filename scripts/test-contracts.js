@@ -1,6 +1,5 @@
 const { ethers } = require("hardhat");
 
-// Deployed contract addresses on Fuji
 const CONTRACTS = {
   LiveDataProvider: "0xB5c32E3bCE37903d6Ccd5F1A331D54964158f8cE",
   LiveAPYCalculator: "0xA66d7fbE74bA6F6f6E3cA756d0bc50699a36DE7C",
@@ -14,7 +13,6 @@ async function testContracts() {
   console.log("Tester account:", signer.address);
   console.log("Balance:", ethers.utils.formatEther(await signer.getBalance()), "AVAX");
 
-  // Get contract instances
   const LiveDataProvider = await ethers.getContractFactory("LiveDataProvider");
   const dataProvider = LiveDataProvider.attach(CONTRACTS.LiveDataProvider);
   
@@ -26,7 +24,6 @@ async function testContracts() {
 
   console.log("\n=== TESTING LIVE DATA PROVIDER ===");
   
-  // Test 1: Basic APY fetching
   try {
     console.log("\n1. Testing sAVAX staking APY...");
     const stakingAPY = await dataProvider.getSAvaxStakingAPY();
@@ -36,7 +33,6 @@ async function testContracts() {
     console.log("❌ sAVAX APY test failed:", error.reason || error.message);
   }
 
-  // Test 2: Market data (will likely fail on testnet but shows structure)
   try {
     console.log("\n2. Testing market data fetching...");
     const marketData = await dataProvider.getSAvaxMarketData();
@@ -51,7 +47,6 @@ async function testContracts() {
     console.log("   This is normal - BENQI contracts don't exist on Fuji testnet");
   }
 
-  // Test 3: Optimal parameters
   try {
     console.log("\n3. Testing optimal parameter calculation...");
     const [maxLoops, targetLTV, safetyBuffer] = await dataProvider.getOptimalParameters();
@@ -65,12 +60,10 @@ async function testContracts() {
 
   console.log("\n=== TESTING APY CALCULATOR ===");
 
-  // Test 4: Strategy simulation
   try {
     console.log("\n4. Testing strategy simulation...");
     const testAmount = ethers.utils.parseEther("100");
     
-    // Test different strategies
     const scenarios = [
       { name: "Conservative", loops: 3, ltv: 5000 },
       { name: "Balanced", loops: 5, ltv: 6500 },
@@ -95,7 +88,6 @@ async function testContracts() {
     console.log("❌ Strategy simulation failed:", error.reason || error.message);
   }
 
-  // Test 5: Market summary
   try {
     console.log("\n5. Testing market summary...");
     const summary = await calculator.getMarketSummary();
@@ -110,19 +102,15 @@ async function testContracts() {
 
   console.log("\n=== TESTING FACTORY ===");
 
-  // Test 6: Factory functionality
   try {
     console.log("\n6. Testing factory operations...");
     
-    // Get vault count
     const vaultCount = await factory.getVaultCount();
     console.log("✅ Current vault count:", vaultCount.toString());
     
-    // Get all vaults
     const allVaults = await factory.getAllVaults();
     console.log("✅ All vaults:", allVaults.length);
     
-    // Get active vaults
     const activeVaults = await factory.getActiveVaults();
     console.log("✅ Active vaults:", activeVaults.length);
     

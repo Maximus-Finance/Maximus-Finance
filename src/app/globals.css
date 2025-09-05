@@ -32,7 +32,6 @@ a {
   text-decoration: none;
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -50,7 +49,6 @@ a {
   background: linear-gradient(to bottom, #7c3aed, #2563eb);
 }
 
-/* Animation utilities */
 .animate-delay-100 { animation-delay: 0.1s; }
 .animate-delay-200 { animation-delay: 0.2s; }
 .animate-delay-300 { animation-delay: 0.3s; }
@@ -59,7 +57,6 @@ a {
 .animate-delay-2000 { animation-delay: 2s; }
 .animate-delay-4000 { animation-delay: 4s; }
 
-/* Enhanced animations */
 @keyframes gradient {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -145,7 +142,6 @@ a {
   animation: pulse-glow 3s ease-in-out infinite;
 }
 
-/* Glass morphism effect */
 .glass-morphism {
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
@@ -160,8 +156,6 @@ a {
   border: 1px solid rgba(100, 116, 139, 0.2);
   box-shadow: 0 4px 24px rgba(148, 163, 184, 0.1);
 }
-
-/* Light animations for better performance */
 @keyframes gentle-rotate {
   0%, 100% { transform: rotate(0deg); }
   50% { transform: rotate(5deg); }
@@ -237,7 +231,6 @@ a {
   animation: data-wave 2s ease-in-out infinite;
 }
 
-/* Enhanced 3D glass morphism */
 .glass-3d {
   background: linear-gradient(135deg, 
     rgba(255, 255, 255, 0.9) 0%, 
@@ -268,7 +261,6 @@ a {
   transform-style: preserve-3d;
 }
 
-/* Light hover effects */
 .hover-light {
   transition: all 0.3s ease-out;
 }
@@ -287,7 +279,6 @@ a {
   box-shadow: 0 12px 28px rgba(59, 130, 246, 0.15);
 }
 
-/* Light theme specific animations */
 @keyframes light-glow {
   0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); }
   50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.4); }
@@ -330,7 +321,6 @@ a {
   animation: light-shimmer 2s ease-in-out infinite;
 }
 
-/* Light theme glass morphism variations */
 .glass-3d-light {
   background: linear-gradient(135deg, 
     rgba(255, 255, 255, 0.95) 0%, 
@@ -359,7 +349,6 @@ a {
     0 2px 8px rgba(71, 85, 105, 0.04);
 }
 
-/* Light theme scrollbar */
 .light-theme::-webkit-scrollbar-thumb {
   background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
   border-radius: 10px;
@@ -369,7 +358,6 @@ a {
   background: linear-gradient(to bottom, #2563eb, #7c3aed);
 }
 
-/* Light theme text colors and effects */
 .text-light-primary {
   color: #1e293b;
 }
@@ -389,7 +377,6 @@ a {
   );
 }
 
-/* Mobile-specific improvements */
 @media (max-width: 768px) {
   .glass-3d, .glass-3d-dark, .glass-3d-light {
     backdrop-filter: blur(10px) saturate(150%);
@@ -406,5 +393,4 @@ a {
   }
 }
 
-/* Font family utilities */
 .font-hind { font-family: 'Hind', sans-serif; }

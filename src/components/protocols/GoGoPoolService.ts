@@ -2,15 +2,12 @@ import { ethers } from 'ethers';
 import { priceService } from '@/utils/priceService';
 import { HyphaService } from '@/services/avantAndHyphaService';
 
-// GoGoPool Contract addresses - Updated with complete addresses
 export const GOGOPOOL_CONTRACTS = {
-  // Tokens
   TokenggAVAX: '0xA25EaF2906FA1a3a13EdAc9B9657108Af7B703e3',
   TokenggAVAXImpl: '0xf80Eb498bBfD45f5E2d123DFBdb752677757843E',
   TokenGGP: '0x69260B9483F9871ca57f81A90D91E2F96c2Cd11d',
   WAVAX: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7',
   
-  // Core Protocol Contracts
   Staking: '0xB6dDbf75e2F0C7FC363B47B84b5C03959526AecB',
   MinipoolManager: '0xc300Bc9B4b690BA7A182126299a0618eCe268Ee7',
   RewardsPool: '0xAA8FD06cc3f1059b6d35870Bbf625C1Bac7c1B1D',
@@ -21,7 +18,6 @@ export const GOGOPOOL_CONTRACTS = {
 };
 
 
-// GoGoPool API endpoints
 export const GOGOPOOL_API = {
   BASE_URL: 'https://api.gogopool.com',
   endpoints: {
@@ -99,41 +95,34 @@ export class GoGoPoolService {
         await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1))); // Exponential backoff
       }
     }
-    // This should never be reached due to throw above, but TypeScript requires it
     throw new Error('All retry attempts failed');
   }
 
   async fetchData(): Promise<GoGoPoolData> {
     try {
-      // Get live token prices
       const prices = await priceService.getTokenPrices(['AVAX', 'GGP']);
       
-      // Use the new comprehensive Hypha service
       const hyphaService = new HyphaService();
       const hyphaData = await hyphaService.fetchData();
       
-      // Also fetch legacy API data for GGP staking info
       const [metricsResponse] = await Promise.allSettled([
         this.fetchWithRetry(`${GOGOPOOL_API.BASE_URL}${GOGOPOOL_API.endpoints.metrics}`)
       ]);
 
       const metrics = metricsResponse.status === 'fulfilled' ? metricsResponse.value : null;
 
-      // Use accurate Hypha data for stAVAX (formerly ggAVAX)
       const liquidStakingAPR = hyphaData.stAVAX.apy;
       const totalSupply = hyphaData.stAVAX.totalSupply;
       const exchangeRate = hyphaData.stAVAX.avaxPerShare;
       const totalAssets = hyphaData.stAVAX.tvlAVAX;
       const tvl = totalAssets * (prices.avax || 42.50);
 
-      // GGP staking data from API  
       const ggpStakingAPY = Number(metrics?.ggpStakingApy || metrics?.ggpApy || 12.5);
-      const totalGGPStaked = Number(metrics?.totalGGPStaked || metrics?.totalGgpStake || 2132657); // From real API
+      const totalGGPStaked = Number(metrics?.totalGGPStaked || metrics?.totalGgpStake || 2132657);
       const stakerCount = Number(metrics?.stakerCount || metrics?.totalStakers || 250);
 
-      // Minipool data from API
-      const activeMinipools = Number(metrics?.activeStakingMinipools || metrics?.activeMinipools || 112); // From real API
-      const totalMinipools = Number(metrics?.totalMinipools || (activeMinipools + 20)); // Estimate total
+      const activeMinipools = Number(metrics?.activeStakingMinipools || metrics?.activeMinipools || 112); 
+      const totalMinipools = Number(metrics?.totalMinipools || (activeMinipools + 20)); 
       const minipoolAPY = Number(metrics?.minipoolApy || liquidStakingAPR);
 
       return {
@@ -150,7 +139,7 @@ export class GoGoPoolService {
           stakerCount,
           ggpPrice: prices.ggp,
           stakingAPY: ggpStakingAPY,
-          totalSupply: 22500000 // Fixed GGP total supply
+          totalSupply: 22500000 
         },
         minipools: {
           active: activeMinipools,

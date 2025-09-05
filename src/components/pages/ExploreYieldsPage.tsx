@@ -20,7 +20,6 @@ const ExploreYieldsPage: React.FC = () => {
               Real-time yield opportunities across the Avalanche ecosystem
             </p>
             
-            {/* Live Status Indicator */}
             <div className="flex flex-col sm:flex-row items-center justify-center mt-4 sm:mt-6 space-y-3 sm:space-y-0 sm:space-x-6 animate-light-bounce">
               {lastUpdated && (
                 <span className={`text-sm sm:text-base font-hind ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -38,7 +37,6 @@ const ExploreYieldsPage: React.FC = () => {
 
           <YieldsCards isDarkMode={isDarkMode} />
 
-          {/* Summary Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12">
             {[
               { 

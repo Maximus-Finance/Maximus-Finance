@@ -1,20 +1,17 @@
 import { ethers } from 'ethers';
 import { priceService } from '@/utils/priceService';
 
-// Silo Finance Contract addresses
 export const SILO_CONTRACTS = {
-  // Core Contracts
-  SiloLens: '0x07b94eB6AaD663c4eaf083fBb52928ff9A15BE47',        // SiloLens for data aggregation
-  SiloRepository: '0xd998C35B7900b344bbBe6555cc11576942Cf309d',  // Silo Repository
   
-  // Individual Silos
-  AVAX_Silo: '0xd57E7b53a1572d27A04d9c1De2c4D423C5d95538',       // AVAX isolated lending silo
-  USDC_Silo: '0xd31a59c85aE9D8edEFeC411D448f90841571b89c',       // USDC isolated lending silo
-  ETH_Silo: '0x4D919CEcfD4793c0D47866C8d0a02a0950737589',        // ETH isolated lending silo
-  BTC_Silo: '0x69841244C6009C92f15669cE87960082F6beFbE0',        // BTC isolated lending silo
+  SiloLens: '0x07b94eB6AaD663c4eaf083fBb52928ff9A15BE47',        
+  SiloRepository: '0xd998C35B7900b344bbBe6555cc11576942Cf309d',  
+  
+  AVAX_Silo: '0xd57E7b53a1572d27A04d9c1De2c4D423C5d95538',       
+  USDC_Silo: '0xd31a59c85aE9D8edEFeC411D448f90841571b89c',       
+  ETH_Silo: '0x4D919CEcfD4793c0D47866C8d0a02a0950737589',        
+  BTC_Silo: '0x69841244C6009C92f15669cE87960082F6beFbE0',       
 };
 
-// Silo Finance ABIs
 const SILO_ABIS = {
   SILO_LENS: [
     'function getSiloData(address silo) view returns (tuple(uint256 totalDeposits, uint256 totalBorrows, uint256 utilizationRate, uint256 depositAPY, uint256 borrowAPY))',
@@ -72,13 +69,10 @@ export class SiloService {
     try {
       const provider = await this.getProvider();
       
-      // Get live token prices
       const prices = await priceService.getTokenPrices(['AVAX', 'USDC', 'ETH', 'BTC']);
       
-      // Try SiloLens for aggregated data first
       const siloLensContract = new ethers.Contract(SILO_CONTRACTS.SiloLens, SILO_ABIS.SILO_LENS, provider);
       
-      // Known silos to query
       const knownSilos = [
         { address: SILO_CONTRACTS.AVAX_Silo, symbol: 'AVAX', decimals: 18 },
         { address: SILO_CONTRACTS.USDC_Silo, symbol: 'USDC', decimals: 6 },
@@ -92,7 +86,6 @@ export class SiloService {
       let totalBorrows = 0;
       let apyCount = 0;
 
-      // Fetch data for each known silo
       for (const silo of knownSilos) {
         try {
           const siloData = await siloLensContract.getSiloData(silo.address).catch(() => null);
@@ -107,11 +100,11 @@ export class SiloService {
             const tokenPrice = prices[silo.symbol.toLowerCase()] || 1;
             const marketTVL = totalDeposits * tokenPrice;
             
-            if (marketTVL > 50000) { // Only include markets with >$50k TVL
+            if (marketTVL > 50000) { 
               markets.push({
                 siloAddress: silo.address,
                 assetSymbol: silo.symbol,
-                assetAddress: silo.address, // Simplified for now
+                assetAddress: silo.address, 
                 totalDeposits,
                 totalBorrows: totalBorrowsAmount,
                 depositAPY,
@@ -131,8 +124,7 @@ export class SiloService {
           console.warn(`Failed to fetch Silo data for ${silo.symbol}:`, error);
         }
       }
-
-      // Fallback data if API calls fail
+    
       if (markets.length === 0) {
         markets.push(
           {

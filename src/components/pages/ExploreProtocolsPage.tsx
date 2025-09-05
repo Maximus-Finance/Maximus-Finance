@@ -13,41 +13,32 @@ const ExploreProtocolsPage: React.FC<ExploreProtocolsPageProps> = ({ onNavigate 
   const { isDarkMode } = useTheme();
   const { isLoading, opportunities } = useLiveProtocolData();
 
-  // Enhanced yield calculation using 8-loop strategy (same logic as ProtocolsGrid)
   const calculateEnhancedAPY = (baseAPY: string): number => {
     const numericAPY = parseFloat(baseAPY.replace('%', ''));
     if (isNaN(numericAPY)) return 0;
     
-    // 8-loop calculation with 70% collateral factor
-    const f = 0.70; // collateral factor
+    const f = 0.70; 
     const loops = 8;
     
-    // Cumulative supply after 8 loops: S8 = 100 × (1 - f^9) / (1 - f)
     const cumulativeSupply = 100 * (1 - Math.pow(f, loops + 1)) / (1 - f);
     
-    // Cumulative borrow after 8 loops: B8 = 100 × f(1 - f^8) / (1 - f)
     const cumulativeBorrow = 100 * f * (1 - Math.pow(f, loops)) / (1 - f);
     
-    // Assume 2.03% borrow rate (standard for liquid staking)
     const borrowRate = 2.03;
     
-    // Net APY calculation: (numericAPY * cumulativeSupply/100) - (borrowRate * cumulativeBorrow/100)
     const netAPY = (numericAPY * cumulativeSupply / 100) - (borrowRate * cumulativeBorrow / 100);
     
-    // User gets 70% of net APY added to original APY
     const userBoost = netAPY * 0.70;
     const enhancedAPY = userBoost;
     
     return enhancedAPY;
   };
 
-  // Filter to only liquid staking protocols (same as ProtocolsGrid)
   const liquidStakingData = opportunities.filter(item => 
     item.category === 'Liquid Staking' && 
     (item.protocol === 'BENQI' || item.protocol === 'GoGoPool')
   );
 
-  // Calculate metrics from strategy protocols
   const strategyTotalTVL = liquidStakingData.reduce((sum, opp) => {
     const tvlValue = parseFloat(opp.tvl.replace(/[$M,]/g, '')) * 1000000;
     return sum + (isNaN(tvlValue) ? 0 : tvlValue);
@@ -76,7 +67,6 @@ const ExploreProtocolsPage: React.FC<ExploreProtocolsPageProps> = ({ onNavigate 
 
           <ProtocolsGrid isDarkMode={isDarkMode} />
 
-          {/* Summary Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12">
             {[
               { 
@@ -112,7 +102,6 @@ const ExploreProtocolsPage: React.FC<ExploreProtocolsPageProps> = ({ onNavigate 
             ))}
           </div>
 
-          {/* Strategy Features Section */}
           <div className="mt-12 sm:mt-16 lg:mt-20">
             <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-8 sm:mb-12 lg:mb-16 font-hind hover-light ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
               How Our Strategies Work

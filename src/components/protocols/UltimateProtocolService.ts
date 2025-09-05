@@ -16,9 +16,8 @@ export interface TrustedYieldData {
 
 export class UltimateProtocolService {
   private static cache: Map<string, { data: unknown; timestamp: number }> = new Map();
-  private static readonly CACHE_DURATION = 30000; // 30 seconds
+  private static readonly CACHE_DURATION = 30000; 
   
-  // Main method to fetch all trusted protocol data
   static async getTrustedYieldData(): Promise<TrustedYieldData> {
     console.log('🔍 Fetching trusted yield data from multiple sources...');
     

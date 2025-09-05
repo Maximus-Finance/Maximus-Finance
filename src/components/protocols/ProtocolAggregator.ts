@@ -77,9 +77,7 @@ export class ProtocolAggregator {
   formatToYieldOpportunities(data: AggregatedData): YieldOpportunity[] {
     const opportunities: YieldOpportunity[] = [];
 
-    // Format BENQI data
     if (data.benqi) {
-      // BENQI Liquid Staking
       if (data.benqi.liquidStaking) {
         opportunities.push({
           id: 'benqi-savax',
@@ -96,10 +94,9 @@ export class ProtocolAggregator {
         });
       }
 
-      // BENQI Lending Markets - All available pairs
       if (data.benqi.lendingMarkets) {
         data.benqi.lendingMarkets.forEach((market) => {
-          if (market.tvl > 100000) { // Only show markets with >$100k TVL
+          if (market.tvl > 100000) { 
             opportunities.push({
               id: `benqi-${market.symbol.toLowerCase()}`,
               protocol: 'BENQI',
@@ -118,7 +115,6 @@ export class ProtocolAggregator {
               ]
             });
 
-            // Add borrowing opportunity if there's significant borrow APY
             if (market.borrowAPY > 0.1) {
               opportunities.push({
                 id: `benqi-${market.symbol.toLowerCase()}-borrow`,
@@ -143,9 +139,7 @@ export class ProtocolAggregator {
       }
     }
 
-    // Format GoGoPool data
     if (data.gogopool) {
-      // GoGoPool Liquid Staking
       if (data.gogopool.liquidStaking) {
         opportunities.push({
           id: 'gogopool-ggavax',
@@ -162,7 +156,6 @@ export class ProtocolAggregator {
         });
       }
 
-      // GoGoPool GGP Staking
       if (data.gogopool.ggpStaking) {
         opportunities.push({
           id: 'gogopool-ggp-staking',
@@ -179,7 +172,6 @@ export class ProtocolAggregator {
         });
       }
 
-      // Minipool Operations
       if (data.gogopool.minipools) {
         opportunities.push({
           id: 'gogopool-minipool',
@@ -197,9 +189,7 @@ export class ProtocolAggregator {
       }
     }
 
-    // Format Avant data
     if (data.avant) {
-      // Avant savUSD Vault Staking
       if (data.avant.savUSD) {
         opportunities.push({
           id: 'avant-savusd',

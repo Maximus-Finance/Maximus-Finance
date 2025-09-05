@@ -27,12 +27,10 @@ export interface ValidatedProtocolData {
 
 export class EnhancedProtocolService {
   
-  // Enhanced GoGoPool data with multi-source validation
   static async getGoGoPoolData(): Promise<ValidatedProtocolData> {
     const apySources = await DataSourceManager.fetchGoGoPoolData();
     const validatedAPY = DataValidator.validateAPY(apySources);
     
-    // Fetch TVL from multiple sources
     const tvlSources = await this.fetchGoGoPoolTVL();
     const validatedTVL = DataValidator.validateTVL(tvlSources);
     
@@ -47,12 +45,10 @@ export class EnhancedProtocolService {
     };
   }
   
-  // Enhanced BENQI data using subgraph + API validation
   static async getBenqiData(): Promise<ValidatedProtocolData> {
     const apySources = await DataSourceManager.fetchBenqiData();
     const validatedAPY = DataValidator.validateAPY(apySources);
     
-    // Fetch lending market data from subgraph
     const lendingData = await this.fetchBenqiLendingFromSubgraph();
     
     return {
@@ -67,7 +63,6 @@ export class EnhancedProtocolService {
     };
   }
   
-  // Enhanced Avant data with vault rate tracking
   static async getAvantData(): Promise<ValidatedProtocolData> {
     const sources = await DataSourceManager.fetchAvantData();
     const validatedAPY = DataValidator.validateAPY(sources);
@@ -83,7 +78,6 @@ export class EnhancedProtocolService {
     };
   }
   
-  // Enhanced Pangolin data from subgraph
   static async getPangolinData(): Promise<ValidatedProtocolData> {
     const farmingData = await this.fetchPangolinFromSubgraph();
     
@@ -93,13 +87,11 @@ export class EnhancedProtocolService {
     };
   }
   
-  // Private helper methods
   private static async fetchGoGoPoolTVL() {
     const sources = [];
     const now = Date.now();
     
     try {
-      // DeFiLlama TVL
       const response = await fetch('https://api.llama.fi/protocol/gogopool');
       const data = await response.json();
       
@@ -217,7 +209,6 @@ export class EnhancedProtocolService {
     }
   }
   
-  // Cross-validation method to ensure data accuracy
   static async validateProtocolData() {
     const protocols = ['GoGoPool', 'BENQI', 'Avant Finance', 'Pangolin'];
     const validationReport = [];

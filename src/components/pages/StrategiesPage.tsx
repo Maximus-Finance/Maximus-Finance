@@ -20,7 +20,6 @@ const StrategiesPage: React.FC = () => {
               Enhanced yield opportunities with our advanced looping strategies
             </p>
             
-            {/* Live Status Indicator */}
             <div className="flex flex-col sm:flex-row items-center justify-center mt-4 sm:mt-6 space-y-3 sm:space-y-0 sm:space-x-6 animate-light-bounce">
               <div className="flex items-center space-x-3">
                 <div className={`w-3 h-3 rounded-full animate-pulse ${
@@ -47,7 +46,6 @@ const StrategiesPage: React.FC = () => {
 
           <StrategiesCards isDarkMode={isDarkMode} />
 
-          {/* Summary Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12">
             {[
               { 
