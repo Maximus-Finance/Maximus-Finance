@@ -115,7 +115,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Website**: [maximus-finance.com](https://maximus-finance.com)
 - **Documentation**: Coming Soon
 - **Discord**: Community Support
-- **Twitter**: [@MaximusFinance](https://twitter.com/MaximusFinance)
+- **Twitter**: Coming Soon
 
 ## ⚠️ Disclaimer
 
