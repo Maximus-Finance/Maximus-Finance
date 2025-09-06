@@ -247,7 +247,7 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = () => {
                 </div>
 
                 {/* Enhanced 3D Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-blue-600/15 to-cyan-600/10 opacity-0 hover:opacity-100 transition-all duration-500 pointer-events-none animate-morphism-shift"></div>
+                <div className="absolute inset-0 bg-purple-600/20 opacity-0 hover:opacity-100 transition-all duration-500 pointer-events-none"></div>
               </div>
             );
           })}

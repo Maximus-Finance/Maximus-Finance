@@ -109,7 +109,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12">
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-6 font-hind text-white">
-              Your <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">Profile</span>
+              Your <span className="text-purple-400">Profile</span>
             </h1>
             <p className="text-lg sm:text-xl font-hind text-gray-300">
               Wallet connection and staking overview
@@ -119,7 +119,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
           {!isConnected ? (
             <div className="text-center p-8 sm:p-12 rounded-3xl glass-3d-dark">
               <div className="mb-6">
-                <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
+                <div className="w-20 h-20 mx-auto mb-4 bg-blue-500 rounded-full flex items-center justify-center">
                   <span className="text-3xl">👤</span>
                 </div>
                 <h2 className={`text-2xl font-bold mb-4 font-hind text-white`}>

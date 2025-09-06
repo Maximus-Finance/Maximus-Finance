@@ -11,19 +11,19 @@ const FeaturesSection: React.FC<FeaturesSectionProps> = () => {
       icon: Zap,
       title: 'Unmatched Efficiency',
       description: 'Our advanced algorithms scan hundreds of protocols simultaneously, ensuring you never miss the best opportunities. We optimize gas costs and execution paths for maximum efficiency.',
-      gradient: 'from-blue-500 to-cyan-500',
+      color: 'bg-blue-600',
     },
     {
       icon: BarChart3,
       title: 'Real-Time Analysis',
       description: 'Live market data, instant risk assessment, and dynamic yield calculations. Our platform updates every second to give you the most current information for informed decisions.',
-      gradient: 'from-purple-500 to-pink-500',
+      color: 'bg-purple-600',
     },
     {
       icon: Shield,
       title: 'Security First',
       description: 'Built with institutional-grade security standards. We audit every protocol, assess smart contract risks, and provide transparent safety scores for all yield opportunities.',
-      gradient: 'from-green-500 to-emerald-500',
+      color: 'bg-green-600',
     },
   ];
 
@@ -46,7 +46,7 @@ const FeaturesSection: React.FC<FeaturesSectionProps> = () => {
               className="p-6 sm:p-8 transition-all duration-200 transform sm:hover:scale-[1.02] asgard-card"
               style={{ animationDelay: `${index * 0.2}s` }}
             >
-              <div className={`w-12 h-12 bg-gradient-to-r ${feature.gradient} rounded-lg flex items-center justify-center mb-4 shadow-lg`}>
+              <div className={`w-12 h-12 ${feature.color} rounded-lg flex items-center justify-center mb-4 shadow-lg`}>
                 <feature.icon className="text-white" size={20} />
               </div>
               <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 font-instrument-sans text-white">

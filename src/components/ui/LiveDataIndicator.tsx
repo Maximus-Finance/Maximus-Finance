@@ -25,7 +25,7 @@ export default function LiveDataIndicator({ lastUpdated, isLoading, error }: Liv
 
   const getStatusConfig = () => {
     if (error) return {
-      color: 'from-red-500 to-pink-600',
+      color: 'bg-red-500',
       bgColor: 'bg-red-500/10',
       borderColor: 'border-red-500/30',
       textColor: 'text-red-400',
@@ -34,7 +34,7 @@ export default function LiveDataIndicator({ lastUpdated, isLoading, error }: Liv
     };
     
     if (isLoading) return {
-      color: 'from-yellow-400 to-orange-500',
+      color: 'bg-yellow-500',
       bgColor: 'bg-yellow-500/10',
       borderColor: 'border-yellow-500/30', 
       textColor: 'text-yellow-400',
@@ -43,7 +43,7 @@ export default function LiveDataIndicator({ lastUpdated, isLoading, error }: Liv
     };
     
     return {
-      color: 'from-green-400 to-emerald-500',
+      color: 'bg-green-500',
       bgColor: 'bg-green-500/10',
       borderColor: 'border-green-500/30',
       textColor: 'text-green-400',
@@ -76,10 +76,10 @@ export default function LiveDataIndicator({ lastUpdated, isLoading, error }: Liv
       <div className="flex items-center gap-3">
         <div className="relative">
           <div 
-            className={`w-3 h-3 rounded-full bg-gradient-to-r ${status.color} ${isLoading ? 'animate-ping' : 'animate-pulse'}`}
+            className={`w-3 h-3 rounded-full ${status.color} ${isLoading ? 'animate-ping' : 'animate-pulse'}`}
           />
           <div 
-            className={`absolute inset-0 w-3 h-3 rounded-full bg-gradient-to-r ${status.color} opacity-75`}
+            className={`absolute inset-0 w-3 h-3 rounded-full ${status.color} opacity-75`}
           />
         </div>
         
@@ -100,7 +100,7 @@ export default function LiveDataIndicator({ lastUpdated, isLoading, error }: Liv
               <span className="font-hind font-medium">Next update: {countdown}s</span>
               <div className="w-12 h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-gradient-to-r from-blue-400 to-purple-500 transition-all duration-1000"
+                  className="h-full bg-blue-500 transition-all duration-1000"
                   style={{ width: `${(countdown / 15) * 100}%` }}
                 />
               </div>
@@ -125,7 +125,7 @@ export default function LiveDataIndicator({ lastUpdated, isLoading, error }: Liv
       {/* Animated pulse ring */}
       {!error && (
         <div className={`
-          absolute -inset-2 rounded-3xl bg-gradient-to-r ${status.color} opacity-20 blur-sm
+          absolute -inset-2 rounded-3xl ${status.color} opacity-20 blur-sm
           ${isLoading ? 'animate-pulse' : 'animate-background-shift'}
         `} />
       )}

@@ -12,7 +12,7 @@ const StrategiesPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12">
             <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 font-hind animate-smooth-entrance hover-light leading-tight text-white">
-              Yield <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent animate-gradient">Strategies</span>
+              Yield <span className="text-purple-400">Strategies</span>
             </h1>
             <p className="text-lg sm:text-xl font-hind animate-light-float px-4 sm:px-0 text-gray-300">
               Enhanced yield opportunities with our advanced looping strategies
@@ -49,17 +49,17 @@ const StrategiesPage: React.FC = () => {
               { 
                 value: `$${(totalTVL / 1000000).toFixed(1)}M`, 
                 label: 'Total Value Locked', 
-                gradient: 'from-green-400 to-emerald-500' 
+                color: 'text-green-400' 
               },
               { 
                 value: `${(averageAPY * 1.7).toFixed(1)}%`, 
                 label: 'Enhanced Average APY', 
-                gradient: 'from-blue-400 to-cyan-500' 
+                color: 'text-blue-400' 
               },
               { 
                 value: activeProtocols.toString(), 
                 label: 'Strategy Protocols', 
-                gradient: 'from-purple-400 to-pink-500' 
+                color: 'text-purple-400' 
               },
             ].map((stat, index) => (
               <div 
@@ -67,7 +67,7 @@ const StrategiesPage: React.FC = () => {
                 className="p-6 sm:p-8 lg:p-10 rounded-3xl text-center hover-light animate-smooth-entrance shadow-2xl transform sm:hover:scale-105 transition-all duration-300 glass-3d-dark animate-light-float"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className={`text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent mb-3 sm:mb-4 font-hind hover-light`}>
+                <div className={`text-4xl sm:text-5xl lg:text-6xl font-bold ${stat.color} mb-3 sm:mb-4 font-hind hover-light`}>
                   {isLoading ? '...' : stat.value}
                 </div>
                 <div className="font-hind text-base sm:text-lg font-semibold text-gray-300">

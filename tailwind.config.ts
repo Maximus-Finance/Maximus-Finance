@@ -13,15 +13,11 @@ const config: Config = {
         'space-grotesk': ['Space Grotesk', 'sans-serif'],
         'jetbrains': ['JetBrains Mono', 'monospace'],
       },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-      },
       animation: {
         'fade-in-up': 'fadeInUp 1s ease-out',
         'slide-in': 'slideIn 0.8s ease-out forwards',
         'table-row': 'tableRow 0.6s ease-out forwards',
         'pulse-slow': 'pulseSlow 4s ease-in-out infinite',
-        'gradient': 'gradient 3s ease infinite',
       },
       keyframes: {
         fadeInUp: {
@@ -39,11 +35,6 @@ const config: Config = {
         pulseSlow: {
           '0%, 100%': { opacity: '0.5', transform: 'scale(1)' },
           '50%': { opacity: '0.8', transform: 'scale(1.05)' },
-        },
-        gradient: {
-          '0%': { 'background-position': '0% 50%' },
-          '50%': { 'background-position': '100% 50%' },
-          '100%': { 'background-position': '0% 50%' },
         },
       },
     },
