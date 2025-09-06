@@ -24,6 +24,4 @@ export interface YieldData {
   export interface NavigationProps {
     currentPage: PageType;
     onNavigate: (page: PageType) => void;
-    isDarkMode: boolean;
-    onToggleTheme: () => void;
   }

@@ -2,9 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 
-interface ParticleBackgroundProps {
-  isDarkMode: boolean;
-}
+interface ParticleBackgroundProps {}
 
 class Particle {
   x: number;
@@ -60,21 +58,19 @@ class Particle {
     this.opacity = Math.max(0.05, this.baseOpacity * scale);
   }
 
-  draw(ctx: CanvasRenderingContext2D, isDarkMode: boolean) {
+  draw(ctx: CanvasRenderingContext2D) {
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.rotationX);
     
-    // Main particle
-    ctx.fillStyle = isDarkMode 
-      ? `rgba(147, 197, 253, ${this.opacity})` 
-      : `rgba(59, 130, 246, ${this.opacity})`;
+    // Main particle - always dark mode
+    ctx.fillStyle = `rgba(147, 197, 253, ${this.opacity})`;
     
     const size = this.size;
     ctx.fillRect(-size/2, -size/2, size, size);
     
     // Add glow effect
-    ctx.shadowColor = isDarkMode ? '#93c5fd' : '#3b82f6';
+    ctx.shadowColor = '#93c5fd';
     ctx.shadowBlur = size * 2;
     ctx.fillRect(-size/2, -size/2, size, size);
     
@@ -82,16 +78,14 @@ class Particle {
     ctx.shadowBlur = 0;
     
     // Add inner highlight
-    ctx.fillStyle = isDarkMode 
-      ? `rgba(219, 234, 254, ${this.opacity * 0.8})` 
-      : `rgba(30, 64, 175, ${this.opacity * 0.8})`;
+    ctx.fillStyle = `rgba(219, 234, 254, ${this.opacity * 0.8})`;
     ctx.fillRect(-size/2 + 1, -size/2 + 1, size - 2, size - 2);
     
     ctx.restore();
   }
 }
 
-const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ isDarkMode }) => {
+const ParticleBackground: React.FC<ParticleBackgroundProps> = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | undefined>(undefined);
   const particlesRef = useRef<Particle[]>([]);
@@ -137,9 +131,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ isDarkMode }) =
           
           if (distance < 120) {
             const opacity = 0.15 * (1 - distance / 120);
-            ctx.strokeStyle = isDarkMode 
-              ? `rgba(147, 197, 253, ${opacity})` 
-              : `rgba(59, 130, 246, ${opacity})`;
+            ctx.strokeStyle = `rgba(147, 197, 253, ${opacity})`;
             ctx.beginPath();
             ctx.moveTo(particle.x, particle.y);
             ctx.lineTo(otherParticle.x, otherParticle.y);
@@ -151,7 +143,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ isDarkMode }) =
       // Update and draw particles
       particlesRef.current.forEach(particle => {
         particle.update(canvas.width, canvas.height);
-        particle.draw(ctx, isDarkMode);
+        particle.draw(ctx);
       });
 
       animationRef.current = requestAnimationFrame(animate);
@@ -166,16 +158,14 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ isDarkMode }) =
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [isDarkMode]);
+  }, []);
 
   return (
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0"
       style={{
-        background: isDarkMode 
-          ? '#1f2937'
-          : '#ffffff'
+        background: '#1f2937'
       }}
     />
   );

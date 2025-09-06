@@ -1,7 +1,6 @@
 'use client';
 
 import { PageType } from '@/types';
-import { useTheme } from '@/hooks/useTheme';
 import Image from 'next/image';
 
 interface LogoProps {
@@ -9,8 +8,6 @@ interface LogoProps {
 }
 
 const Logo: React.FC<LogoProps> = ({ onNavigate }) => {
-  const { isDarkMode } = useTheme();
-  
   return (
     <button 
       onClick={() => onNavigate('home')}
@@ -30,14 +27,10 @@ const Logo: React.FC<LogoProps> = ({ onNavigate }) => {
       
       {/* Company Name */}
       <div className="flex flex-col items-start">
-        <span className={`text-lg font-bold tracking-tight font-sans transition-colors duration-300 ${
-          isDarkMode ? 'text-white' : 'text-gray-900'
-        }`}>
+        <span className="text-lg font-bold tracking-tight font-sans transition-colors duration-300 text-white">
           Maximus Finance
         </span>
-        <span className={`text-xs tracking-wide font-medium ${
-          isDarkMode ? 'text-blue-400' : 'text-blue-600'
-        }`}>
+        <span className="text-xs tracking-wide font-medium text-blue-400">
           DeFi Yield Optimization
         </span>
       </div>

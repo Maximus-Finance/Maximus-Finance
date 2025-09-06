@@ -1,10 +1,8 @@
 'use client';
 
-interface StatsSectionProps {
-  isDarkMode: boolean;
-}
+interface StatsSectionProps {}
 
-const StatsSection: React.FC<StatsSectionProps> = ({ isDarkMode }) => {
+const StatsSection: React.FC<StatsSectionProps> = () => {
   const stats = [
     { value: '$304.3M', label: 'Total Value Locked', color: 'text-green-500' },
     { value: '18.2%', label: 'Average APY', color: 'text-blue-500' },
@@ -18,15 +16,13 @@ const StatsSection: React.FC<StatsSectionProps> = ({ isDarkMode }) => {
           {stats.map((stat, index) => (
             <div 
               key={index}
-              className={`p-6 sm:p-8 lg:p-10 rounded-3xl text-center hover-light animate-smooth-entrance ${
-                isDarkMode ? 'glass-3d-dark animate-light-float' : 'glass-3d-light animate-light-bounce'
-              } shadow-2xl transform sm:hover:scale-105 transition-all duration-300`}
+              className="p-6 sm:p-8 text-center transition-all duration-200 asgard-card transform sm:hover:scale-[1.02]"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className={`text-3xl sm:text-4xl lg:text-5xl font-bold ${stat.color} mb-3 sm:mb-4 font-hind hover-light`}>
+              <div className={`text-3xl sm:text-4xl lg:text-4xl font-bold ${stat.color} mb-3 sm:mb-4 font-instrument-sans`}>
                 {stat.value}
               </div>
-              <div className={`font-hind text-base sm:text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              <div className="font-instrument-sans text-sm sm:text-base font-medium text-gray-400">
                 {stat.label}
               </div>
             </div>

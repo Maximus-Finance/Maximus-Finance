@@ -22,7 +22,6 @@ interface StakingModalProps {
   protocol: string;
   baseAPY: string;
   enhancedAPY: string;
-  isDarkMode: boolean;
 }
 
 const StakingModal: React.FC<StakingModalProps> = ({ 
@@ -30,8 +29,7 @@ const StakingModal: React.FC<StakingModalProps> = ({
   onClose, 
   protocol, 
   baseAPY, 
-  enhancedAPY, 
-  isDarkMode 
+  enhancedAPY 
 }) => {
   const {
     isConnected,
@@ -262,26 +260,26 @@ const StakingModal: React.FC<StakingModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className={`relative max-w-md w-full rounded-3xl p-8 ${
-        isDarkMode ? 'glass-3d-dark' : 'glass-3d-light'
+        'glass-3d-dark'
       }`}>
         <button
           onClick={onClose}
           className={`absolute top-4 right-4 p-2 rounded-full hover:bg-gray-200 ${
-            isDarkMode ? 'text-white hover:bg-gray-700' : 'text-gray-600 hover:bg-gray-200'
+            'text-white hover:bg-gray-700'
           }`}
         >
           <X size={20} />
         </button>
 
         <div className="mb-6">
-          <h2 className={`text-2xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+          <h2 className={`text-2xl font-bold mb-2 ${'text-white'}`}>
             Enhanced Staking
           </h2>
-          <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+          <p className={`text-sm ${'text-gray-300'}`}>
             {protocol} Strategy
           </p>
           {!isOnFuji && isConnected && (
-            <div className={`mt-2 p-2 rounded-lg text-xs ${isDarkMode ? 'bg-yellow-900/20 text-yellow-300' : 'bg-yellow-50 text-yellow-700'}`}>
+            <div className={`mt-2 p-2 rounded-lg text-xs ${'bg-yellow-900/20 text-yellow-300'}`}>
               ⚠️ Please switch to Fuji testnet to continue
               <button 
                 onClick={handleSwitchNetwork}
@@ -295,38 +293,30 @@ const StakingModal: React.FC<StakingModalProps> = ({
 
         {/* APY Display */}
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className={`p-4 rounded-2xl border ${
-            isDarkMode 
-              ? 'bg-blue-900/20 border-blue-700/30' 
-              : 'bg-blue-50 border-blue-200/30'
-          }`}>
+          <div className="p-4 rounded-2xl border bg-blue-900/20 border-blue-700/30">
             <div className="text-center">
               <div className={`font-bold text-xl ${
-                isDarkMode ? 'text-blue-400' : 'text-blue-600'
+                'text-blue-400'
               }`}>
                 {baseAPY}
               </div>
               <div className={`text-xs font-medium mt-1 ${
-                isDarkMode ? 'text-blue-300' : 'text-blue-700'
+                'text-blue-300'
               }`}>
                 Base APY
               </div>
             </div>
           </div>
           
-          <div className={`p-4 rounded-2xl border ${
-            isDarkMode 
-              ? 'bg-green-900/20 border-green-700/30' 
-              : 'bg-green-50 border-green-200/30'
-          }`}>
+          <div className="p-4 rounded-2xl border bg-green-900/20 border-green-700/30">
             <div className="text-center">
               <div className={`font-bold text-xl ${
-                isDarkMode ? 'text-green-400' : 'text-green-600'
+                'text-green-400'
               }`}>
                 {enhancedAPY}
               </div>
               <div className={`text-xs font-medium mt-1 ${
-                isDarkMode ? 'text-green-300' : 'text-green-700'
+                'text-green-300'
               }`}>
                 Enhanced APY
               </div>
@@ -345,38 +335,38 @@ const StakingModal: React.FC<StakingModalProps> = ({
         ) : (
           <div className="space-y-4">
             {/* Account Info */}
-            <div className={`p-4 rounded-xl ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
-              <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            <div className={`p-4 rounded-xl ${'bg-gray-800'}`}>
+              <div className={`text-sm ${'text-gray-400'}`}>
                 Connected Account
               </div>
-              <div className={`text-sm font-mono ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+              <div className={`text-sm font-mono ${'text-gray-200'}`}>
                 {account?.slice(0, 6)}...{account?.slice(-4)}
               </div>
             </div>
 
             {/* Staking Stats */}
             <div className="grid grid-cols-2 gap-4">
-              <div className={`p-4 rounded-xl ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
-                <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+              <div className={`p-4 rounded-xl ${'bg-gray-800'}`}>
+                <div className={`text-sm ${'text-gray-400'}`}>
                   Deposited
                 </div>
-                <div className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <div className={`text-lg font-bold ${'text-white'}`}>
                   {parseFloat(stakedAmount).toFixed(4)} AVAX
                 </div>
               </div>
-              <div className={`p-4 rounded-xl ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
-                <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+              <div className={`p-4 rounded-xl ${'bg-gray-800'}`}>
+                <div className={`text-sm ${'text-gray-400'}`}>
                   Status
                 </div>
-                <div className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <div className={`text-lg font-bold ${'text-white'}`}>
                   {isActive ? '✅ Active' : '⏸️ Inactive'}
                 </div>
               </div>
             </div>
 
             {depositTime && (
-              <div className={`p-3 rounded-xl ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
-                <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+              <div className={`p-3 rounded-xl ${'bg-gray-800/50'}`}>
+                <div className={`text-sm ${'text-gray-400'}`}>
                   Deposit Date: {depositTime}
                 </div>
               </div>
@@ -384,9 +374,7 @@ const StakingModal: React.FC<StakingModalProps> = ({
 
             {/* Deposit Input */}
             <div>
-              <label className={`block text-sm font-medium mb-2 ${
-                isDarkMode ? 'text-gray-300' : 'text-gray-700'
-              }`}>
+              <label className="block text-sm font-medium mb-2 text-gray-300">
                 Deposit Amount (AVAX)
               </label>
               <input
@@ -399,12 +387,10 @@ const StakingModal: React.FC<StakingModalProps> = ({
                 max="1000"
                 disabled={!isOnFuji}
                 className={`w-full p-3 rounded-xl border ${
-                  isDarkMode 
-                    ? 'bg-gray-800 border-gray-600 text-white placeholder-gray-400' 
-                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+                    'bg-gray-800 border-gray-600 text-white placeholder-gray-400'
                 } ${!isOnFuji ? 'opacity-50 cursor-not-allowed' : ''}`}
               />
-              <div className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+              <div className={`text-xs mt-1 ${'text-gray-400'}`}>
                 Minimum: 0.01 AVAX • Maximum: 1000 AVAX
               </div>
             </div>

@@ -4,44 +4,35 @@ import Button from '@/components/ui/Button';
 import { PageType } from '@/types';
 
 interface HeroSectionProps {
-  isDarkMode: boolean;
   onNavigate: (page: PageType) => void;
 }
 
-const HeroSection: React.FC<HeroSectionProps> = ({ isDarkMode, onNavigate }) => {
+const HeroSection: React.FC<HeroSectionProps> = ({ onNavigate }) => {
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      {isDarkMode && (
-        <>
-          <div className="absolute inset-0 opacity-30">
-            <div className="absolute top-1/4 left-1/4 w-48 h-48 sm:w-72 sm:h-72 lg:w-96 lg:h-96 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full mix-blend-screen filter blur-3xl animate-light-float"></div>
-            <div className="absolute top-3/4 right-1/4 w-48 h-48 sm:w-72 sm:h-72 lg:w-96 lg:h-96 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full mix-blend-screen filter blur-3xl animate-gentle-rotate"></div>
-            <div className="absolute bottom-1/4 left-1/3 w-48 h-48 sm:w-72 sm:h-72 lg:w-96 lg:h-96 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full mix-blend-screen filter blur-3xl animate-light-bounce"></div>
-          </div>
+      <div className="absolute inset-0 opacity-30">
+        <div className="absolute top-1/4 left-1/4 w-48 h-48 sm:w-72 sm:h-72 lg:w-96 lg:h-96 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full mix-blend-screen filter blur-3xl animate-light-float"></div>
+        <div className="absolute top-3/4 right-1/4 w-48 h-48 sm:w-72 sm:h-72 lg:w-96 lg:h-96 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full mix-blend-screen filter blur-3xl animate-gentle-rotate"></div>
+        <div className="absolute bottom-1/4 left-1/3 w-48 h-48 sm:w-72 sm:h-72 lg:w-96 lg:h-96 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full mix-blend-screen filter blur-3xl animate-light-bounce"></div>
+      </div>
 
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-1 h-full bg-gradient-to-b from-transparent via-purple-400/30 to-transparent animate-pulse"></div>
-            <div className="h-1 w-full absolute bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent animate-pulse animate-delay-1000"></div>
-          </div>
-        </>
-      )}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="w-1 h-full bg-gradient-to-b from-transparent via-purple-400/30 to-transparent animate-pulse"></div>
+        <div className="h-1 w-full absolute bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent animate-pulse animate-delay-1000"></div>
+      </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <div className="animate-smooth-entrance">
-        <h1 className={`text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-bold mb-6 sm:mb-8 font-hind hover-light leading-tight ${
-        isDarkMode ? 'text-white' : 'text-black'
-      }`}>
+        <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 font-instrument-sans leading-tight text-white">
         Maximize Your{' '}
-        <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent animate-gradient">
+        <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
           Avalanche Yields
         </span>
         <br className="block sm:hidden" />
         <span className="hidden sm:inline"> </span>
         Instantly, Intelligently, Effortlessly
       </h1>
-      <p className={`text-lg sm:text-xl md:text-2xl mb-8 sm:mb-12 max-w-4xl mx-auto font-hind animate-light-float px-4 sm:px-0 ${
-        isDarkMode ? 'text-gray-300' : 'text-gray-800'
-      }`}>
+      <p className="text-lg sm:text-xl md:text-xl mb-8 sm:mb-12 max-w-3xl mx-auto font-instrument-sans px-4 sm:px-0 text-gray-400">
         We scan the entire Avalanche DeFi ecosystem in real time, compare every yield 
         opportunity, and guide you to the highest returns.
       </p>

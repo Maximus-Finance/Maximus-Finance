@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Menu, X, User, LogOut } from 'lucide-react';
 import Logo from '@/components/ui/Logo';
-import ThemeToggle from './ThemeToggle';
 import Button from '@/components/ui/Button';
 import { NavigationProps } from '@/types';
 import { useWalletConnect } from '@/hooks/useWalletConnect';
@@ -11,8 +10,6 @@ import { useWalletConnect } from '@/hooks/useWalletConnect';
 const Navigation: React.FC<NavigationProps> = ({
   currentPage,
   onNavigate,
-  isDarkMode,
-  onToggleTheme,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isWalletDropdownOpen, setIsWalletDropdownOpen] = useState(false);
@@ -56,11 +53,7 @@ const Navigation: React.FC<NavigationProps> = ({
   ];
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-      isDarkMode 
-        ? 'glass-3d-dark animate-background-shift' 
-        : 'glass-3d-light animate-background-shift'
-    }`}>
+    <nav className="fixed top-0 w-full z-50 transition-all duration-300 asgard-card border-b border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Logo onNavigate={onNavigate} />
@@ -70,12 +63,10 @@ const Navigation: React.FC<NavigationProps> = ({
               <button
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
-                className={`px-6 py-3 rounded-2xl transition-all duration-300 font-hind font-semibold hover-light ${
+                className={`px-4 py-2 rounded-lg transition-all duration-200 font-instrument-sans font-medium ${
                   currentPage === item.id
-                    ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg'
-                    : isDarkMode
-                    ? 'text-gray-300 hover:text-white hover:bg-gray-700 bg-gray-800'
-                    : 'text-slate-700 hover:text-slate-900 hover:bg-gray-200 bg-gray-100'
+                    ? 'asgard-button-primary' 
+                    : 'text-gray-300 hover:text-white hover:bg-gray-700 bg-transparent'
                 }`}
               >
                 {item.label}
@@ -84,30 +75,21 @@ const Navigation: React.FC<NavigationProps> = ({
           </div>
 
           <div className="flex items-center space-x-2 sm:space-x-4">
-            <div className="hidden sm:block">
-              <ThemeToggle isDarkMode={isDarkMode} onToggle={onToggleTheme} />
-            </div>
             <div className="hidden sm:block relative" ref={dropdownRef}>
               <Button onClick={handleWalletButtonClick}>{buttonText}</Button>
               {isConnected && isWalletDropdownOpen && (
-                <div className={`absolute right-0 mt-2 w-48 rounded-xl shadow-lg z-50 ${
-                  isDarkMode ? 'glass-3d-dark border border-gray-600' : 'glass-3d-light border border-gray-200'
-                }`}>
+                <div className="absolute right-0 mt-2 w-48 rounded-lg shadow-lg z-50 asgard-card">
                   <div className="py-2">
                     <button
                       onClick={handleProfileClick}
-                      className={`flex items-center w-full px-4 py-2 text-left hover:bg-opacity-80 transition-colors ${
-                        isDarkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'
-                      }`}
+                      className="flex items-center w-full px-4 py-2 text-left hover:bg-opacity-80 transition-colors text-gray-300 hover:bg-gray-700"
                     >
                       <User className="w-4 h-4 mr-3" />
                       Profile
                     </button>
                     <button
                       onClick={handleDisconnect}
-                      className={`flex items-center w-full px-4 py-2 text-left hover:bg-opacity-80 transition-colors ${
-                        isDarkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'
-                      }`}
+                      className="flex items-center w-full px-4 py-2 text-left hover:bg-opacity-80 transition-colors text-gray-300 hover:bg-gray-700"
                     >
                       <LogOut className="w-4 h-4 mr-3" />
                       Disconnect Wallet
@@ -119,9 +101,7 @@ const Navigation: React.FC<NavigationProps> = ({
             
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className={`md:hidden p-2 sm:p-3 rounded-2xl transition-all duration-300 hover-light ${
-                isDarkMode ? 'glass-3d-dark' : 'glass-3d-light'
-              }`}
+              className="md:hidden p-2 sm:p-3 rounded-2xl transition-all duration-300 hover-light glass-3d-dark"
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -130,9 +110,7 @@ const Navigation: React.FC<NavigationProps> = ({
       </div>
 
       {isMenuOpen && (
-        <div className={`md:hidden transition-all duration-300 animate-smooth-entrance ${
-          isDarkMode ? 'glass-3d-dark' : 'glass-3d-light'
-        }`}>
+        <div className="md:hidden transition-all duration-300 animate-smooth-entrance glass-3d-dark">
           <div className="px-4 pt-4 pb-4 space-y-3">
             {navItems.map((item) => (
               <button
@@ -144,9 +122,7 @@ const Navigation: React.FC<NavigationProps> = ({
                 className={`block w-full text-left px-4 py-3 rounded-2xl font-hind font-medium transition-all duration-300 hover-light ${
                   currentPage === item.id 
                     ? 'bg-blue-600 text-white shadow-lg' 
-                    : isDarkMode 
-                    ? 'text-gray-300 hover:text-white hover:bg-gray-700' 
-                    : 'text-slate-700 hover:text-slate-900 hover:bg-gray-200'
+                    : 'text-gray-300 hover:text-white hover:bg-gray-700'
                 }`}
               >
                 {item.label}
@@ -154,9 +130,6 @@ const Navigation: React.FC<NavigationProps> = ({
             ))}
             
             <div className="pt-3 border-t border-gray-200/20 space-y-2">
-              <div className="flex justify-center">
-                <ThemeToggle isDarkMode={isDarkMode} onToggle={onToggleTheme} />
-              </div>
               <div className="flex justify-center">
                 {isConnected ? (
                   <div className="w-full max-w-xs space-y-2">
@@ -168,9 +141,7 @@ const Navigation: React.FC<NavigationProps> = ({
                         onNavigate('profile');
                         setIsMenuOpen(false);
                       }}
-                      className={`flex items-center justify-center w-full px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
-                        isDarkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-200'
-                      }`}
+                      className="flex items-center justify-center w-full px-4 py-2 rounded-xl text-sm font-medium transition-colors text-gray-300 hover:bg-gray-700"
                     >
                       <User className="w-4 h-4 mr-2" />
                       Profile
@@ -180,9 +151,7 @@ const Navigation: React.FC<NavigationProps> = ({
                         handleClick();
                         setIsMenuOpen(false);
                       }}
-                      className={`flex items-center justify-center w-full px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
-                        isDarkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-200'
-                      }`}
+                      className="flex items-center justify-center w-full px-4 py-2 rounded-xl text-sm font-medium transition-colors text-gray-300 hover:bg-gray-700"
                     >
                       <LogOut className="w-4 h-4 mr-2" />
                       Disconnect Wallet

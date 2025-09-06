@@ -2,11 +2,9 @@
 
 import { Zap, BarChart3, Shield } from 'lucide-react';
 
-interface FeaturesSectionProps {
-  isDarkMode: boolean;
-}
+interface FeaturesSectionProps {}
 
-const FeaturesSection: React.FC<FeaturesSectionProps> = ({ isDarkMode }) => {
+const FeaturesSection: React.FC<FeaturesSectionProps> = () => {
   const features = [
     {
       icon: Zap,
@@ -32,10 +30,10 @@ const FeaturesSection: React.FC<FeaturesSectionProps> = ({ isDarkMode }) => {
     <section className="py-12 sm:py-16 lg:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 sm:mb-16">
-          <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 font-hind hover-light ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+          <h2 className="text-3xl sm:text-4xl lg:text-4xl font-bold mb-4 sm:mb-6 font-instrument-sans text-white">
             Why We&apos;re Different
           </h2>
-          <p className={`text-lg sm:text-xl font-hind animate-light-float px-4 sm:px-0 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+          <p className="text-lg sm:text-xl font-instrument-sans px-4 sm:px-0 text-gray-400">
             Three pillars that set us apart in the DeFi space
           </p>
         </div>
@@ -44,18 +42,16 @@ const FeaturesSection: React.FC<FeaturesSectionProps> = ({ isDarkMode }) => {
           {features.map((feature, index) => (
             <div 
               key={index}
-              className={`p-6 sm:p-8 lg:p-10 rounded-3xl hover-light animate-smooth-entrance transition-all duration-300 transform sm:hover:scale-105 ${
-                isDarkMode ? 'glass-3d-dark animate-light-float' : 'glass-3d-light animate-light-bounce'
-              }`}
+              className="p-6 sm:p-8 transition-all duration-200 transform sm:hover:scale-[1.02] asgard-card"
               style={{ animationDelay: `${index * 0.2}s` }}
             >
-              <div className={`w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r ${feature.gradient} rounded-full flex items-center justify-center mb-6 sm:mb-8 hover-light animate-gentle-rotate shadow-2xl`}>
-                <feature.icon className="text-white animate-light-float" size={24} />
+              <div className={`w-12 h-12 bg-gradient-to-r ${feature.gradient} rounded-lg flex items-center justify-center mb-4 shadow-lg`}>
+                <feature.icon className="text-white" size={20} />
               </div>
-              <h3 className={`text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 font-hind hover-light ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 font-instrument-sans text-white">
                 {feature.title}
               </h3>
-              <p className={`font-hind text-base sm:text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              <p className="font-instrument-sans text-sm sm:text-base text-gray-400">
                 {feature.description}
               </p>
             </div>

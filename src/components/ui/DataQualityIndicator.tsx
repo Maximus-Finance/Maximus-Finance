@@ -6,14 +6,12 @@ interface DataQualityIndicatorProps {
   quality: 'excellent' | 'good' | 'fair' | 'poor';
   systemHealth: number;
   alerts: string[];
-  isDarkMode: boolean;
 }
 
 const DataQualityIndicator: React.FC<DataQualityIndicatorProps> = ({ 
   quality, 
   systemHealth, 
-  alerts, 
-  isDarkMode 
+  alerts
 }) => {
   const getQualityConfig = () => {
     switch (quality) {
@@ -59,9 +57,7 @@ const DataQualityIndicator: React.FC<DataQualityIndicatorProps> = ({
   const config = getQualityConfig();
 
   return (
-    <div className={`inline-flex items-center space-x-3 px-4 py-2 rounded-xl border font-hind ${
-      isDarkMode ? 'glass-3d-dark' : 'glass-3d'
-    } ${config.bgColor} ${config.borderColor} hover-light animate-light-float`}>
+    <div className={`inline-flex items-center space-x-3 px-4 py-2 rounded-xl border font-hind glass-3d-dark ${config.bgColor} ${config.borderColor} hover-light animate-light-float`}>
       
       {/* Quality Indicator */}
       <div className="flex items-center space-x-2">
@@ -70,7 +66,7 @@ const DataQualityIndicator: React.FC<DataQualityIndicatorProps> = ({
           <span className={`font-semibold text-sm ${config.color}`}>
             {config.label} Data Quality
           </span>
-          <div className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+          <div className="text-xs text-gray-400">
             {config.description}
           </div>
         </div>
@@ -78,7 +74,7 @@ const DataQualityIndicator: React.FC<DataQualityIndicatorProps> = ({
 
       {/* Health Score */}
       <div className="flex items-center space-x-2">
-        <div className={`w-12 h-2 rounded-full overflow-hidden ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
+        <div className="w-12 h-2 rounded-full overflow-hidden bg-gray-700">
           <div 
             className={`h-full transition-all duration-500 ${
               systemHealth >= 80 ? 'bg-green-500' :
@@ -87,7 +83,7 @@ const DataQualityIndicator: React.FC<DataQualityIndicatorProps> = ({
             style={{ width: `${systemHealth}%` }}
           />
         </div>
-        <span className={`text-xs font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+        <span className="text-xs font-semibold text-gray-300">
           {systemHealth.toFixed(0)}%
         </span>
       </div>
@@ -100,9 +96,7 @@ const DataQualityIndicator: React.FC<DataQualityIndicatorProps> = ({
           }`} />
           
           {/* Tooltip */}
-          <div className={`absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50 ${
-            isDarkMode ? 'bg-gray-800 text-gray-200 border border-gray-700' : 'bg-white text-gray-800 border border-gray-200'
-          } shadow-lg`}>
+          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50 bg-gray-800 text-gray-200 border border-gray-700 shadow-lg">
             <div className="font-semibold mb-1">Data Alerts ({alerts.length})</div>
             {alerts.slice(0, 3).map((alert, idx) => (
               <div key={idx} className="text-xs opacity-80">

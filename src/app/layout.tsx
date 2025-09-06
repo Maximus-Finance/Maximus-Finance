@@ -15,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="font-space-grotesk">
+      <body className="font-instrument-sans">
         <WalletProvider>
           {children}
         </WalletProvider>

@@ -5,11 +5,10 @@ import Button from '@/components/ui/Button';
 import { useLiveProtocolData } from '@/hooks/useLiveProtocolData';
 import DataQualityIndicator from '@/components/ui/DataQualityIndicator';
 
-interface YieldsCardsProps {
-  isDarkMode: boolean;
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface YieldsCardsProps {}
 
-const YieldsCards: React.FC<YieldsCardsProps> = ({ isDarkMode }) => {
+const YieldsCards: React.FC<YieldsCardsProps> = () => {
   const [selectedFilter, setSelectedFilter] = useState('All');
   const { opportunities, isLoading, dataQuality, systemHealth, alerts } = useLiveProtocolData();
 
@@ -101,9 +100,7 @@ const YieldsCards: React.FC<YieldsCardsProps> = ({ isDarkMode }) => {
           {filters.map((filter, index) => (
             <div
               key={filter}
-              className={`px-6 py-3 rounded-xl h-12 w-32 animate-pulse shadow-lg ${
-                isDarkMode ? 'bg-gray-700' : 'bg-gray-300'
-              }`}
+              className="px-6 py-3 rounded-xl h-12 w-32 animate-pulse shadow-lg bg-gray-700"
               style={{ animationDelay: `${index * 0.1}s` }}
             />
           ))}
@@ -112,24 +109,22 @@ const YieldsCards: React.FC<YieldsCardsProps> = ({ isDarkMode }) => {
           {[1, 2, 3, 4, 5, 6].map(i => (
             <div 
               key={i} 
-              className={`rounded-3xl p-8 animate-pulse border shadow-lg ${
-                isDarkMode ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'
-              }`}
+              className="rounded-3xl p-8 animate-pulse border shadow-lg bg-gray-800 border-gray-600"
               style={{ animationDelay: `${i * 0.1}s` }}
             >
               <div className="flex items-center space-x-4 mb-6">
-                <div className={`w-12 h-12 rounded-full ${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}`} />
+                <div className="w-12 h-12 rounded-full bg-gray-700" />
                 <div className="flex-1">
-                  <div className={`h-6 rounded-lg mb-2 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}`} />
-                  <div className={`h-4 w-20 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}`} />
+                  <div className="h-6 rounded-lg mb-2 bg-gray-700" />
+                  <div className="h-4 w-20 rounded-lg bg-gray-700" />
                 </div>
               </div>
-              <div className={`h-24 rounded-2xl mb-6 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`} />
+              <div className="h-24 rounded-2xl mb-6 bg-gray-700" />
               <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className={`h-16 rounded-xl ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`} />
-                <div className={`h-16 rounded-xl ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`} />
+                <div className="h-16 rounded-xl bg-gray-700" />
+                <div className="h-16 rounded-xl bg-gray-700" />
               </div>
-              <div className={`h-12 rounded-2xl ${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}`} />
+              <div className="h-12 rounded-2xl bg-gray-700" />
             </div>
           ))}
         </div>
@@ -149,9 +144,7 @@ const YieldsCards: React.FC<YieldsCardsProps> = ({ isDarkMode }) => {
               relative px-6 py-3 rounded-2xl font-semibold transition-all duration-300 font-hind animate-smooth-entrance overflow-hidden group hover-light
               ${selectedFilter === filter
                 ? 'bg-blue-600 text-white shadow-lg'
-                : isDarkMode
-                ? 'bg-gray-700 text-gray-200 hover:bg-gray-600 hover:text-white shadow-lg'
-                : 'bg-gray-200 text-gray-800 hover:bg-gray-300 hover:text-gray-900 shadow-lg'
+                : 'bg-gray-700 text-gray-200 hover:bg-gray-600 hover:text-white shadow-lg'
               }
             `}
             style={{ animationDelay: `${index * 0.1}s` }}
@@ -168,17 +161,13 @@ const YieldsCards: React.FC<YieldsCardsProps> = ({ isDarkMode }) => {
           quality={dataQuality}
           systemHealth={systemHealth}
           alerts={alerts}
-          isDarkMode={isDarkMode}
         />
       </div>
 
       {/* Cards Grid */}
       {filteredData.length === 0 ? (
-        <div className={`
-          rounded-3xl p-12 text-center animate-smooth-entrance shadow-lg border
-          ${isDarkMode ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'}
-        `}>
-          <div className={`text-xl font-hind ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+        <div className="rounded-3xl p-12 text-center animate-smooth-entrance shadow-lg border bg-gray-800 border-gray-600">
+          <div className="text-xl font-hind text-gray-300">
             {isLoading ? 'Loading protocols...' : 'No protocols available for this filter'}
           </div>
         </div>
@@ -187,12 +176,7 @@ const YieldsCards: React.FC<YieldsCardsProps> = ({ isDarkMode }) => {
           {filteredData.map((item, index) => (
             <div
               key={item.id}
-              className={`
-                group relative rounded-3xl p-8 transition-all duration-500 animate-smooth-entrance hover-light
-                ${isDarkMode ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'}
-                hover:shadow-xl hover:-translate-y-2 hover:scale-[1.02]
-                border shadow-lg
-              `}
+              className="group relative rounded-3xl p-8 transition-all duration-500 animate-smooth-entrance hover-light bg-gray-800 border-gray-600 hover:shadow-xl hover:-translate-y-2 hover:scale-[1.02] border shadow-lg"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {/* Status indicator */}
@@ -201,14 +185,14 @@ const YieldsCards: React.FC<YieldsCardsProps> = ({ isDarkMode }) => {
                   {item.isLive ? (
                     <>
                       <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className={`text-xs font-semibold font-hind ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>
+                      <span className="text-xs font-semibold font-hind text-green-400">
                         Live
                       </span>
                     </>
                   ) : (
                     <>
                       <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                      <span className={`text-xs font-semibold font-hind ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      <span className="text-xs font-semibold font-hind text-gray-400">
                         Offline
                       </span>
                     </>
@@ -222,7 +206,7 @@ const YieldsCards: React.FC<YieldsCardsProps> = ({ isDarkMode }) => {
                   {item.icon}
                 </div>
                 <div className="flex-1">
-                  <h3 className={`font-bold text-2xl font-hind ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  <h3 className="font-bold text-2xl font-hind text-white">
                     {item.protocol}
                   </h3>
                   <div className="flex items-center mt-2">
@@ -234,18 +218,12 @@ const YieldsCards: React.FC<YieldsCardsProps> = ({ isDarkMode }) => {
               </div>
 
               {/* APY Highlight */}
-              <div className={`rounded-2xl p-6 mb-6 border ${
-                isDarkMode 
-                  ? 'bg-green-900/20 border-green-700/30' 
-                  : 'bg-green-50 border-green-200/30'
-              }`}>
+              <div className="rounded-2xl p-6 mb-6 border bg-green-900/20 border-green-700/30">
                 <div className="text-center">
-                  <div className={`font-bold text-4xl font-hind ${
-                    isDarkMode ? 'text-green-400' : 'text-green-600'
-                  }`}>
+                  <div className="font-bold text-4xl font-hind text-green-400">
                     {item.apy}
                   </div>
-                  <div className={`text-sm font-hind font-medium mt-1 ${isDarkMode ? 'text-green-300' : 'text-green-700'}`}>
+                  <div className="text-sm font-hind font-medium mt-1 text-green-300">
                     Annual Percentage Yield
                   </div>
                 </div>
@@ -253,19 +231,19 @@ const YieldsCards: React.FC<YieldsCardsProps> = ({ isDarkMode }) => {
 
               {/* Details Grid */}
               <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className={`p-4 rounded-xl overflow-hidden ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
-                  <div className={`text-sm font-hind mb-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                <div className="p-4 rounded-xl overflow-hidden bg-gray-800/50">
+                  <div className="text-sm font-hind mb-1 text-gray-400">
                     Pair/Asset
                   </div>
-                  <div className={`font-bold text-lg font-hind break-all leading-tight overflow-wrap-anywhere ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                  <div className="font-bold text-lg font-hind break-all leading-tight overflow-wrap-anywhere text-gray-200">
                     {item.pair}
                   </div>
                 </div>
-                <div className={`p-4 rounded-xl overflow-hidden ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
-                  <div className={`text-sm font-hind mb-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                <div className="p-4 rounded-xl overflow-hidden bg-gray-800/50">
+                  <div className="text-sm font-hind mb-1 text-gray-400">
                     TVL
                   </div>
-                  <div className={`font-bold text-lg font-hind break-all leading-tight overflow-wrap-anywhere min-w-0 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`} title={item.tvl}>
+                  <div className="font-bold text-lg font-hind break-all leading-tight overflow-wrap-anywhere min-w-0 text-gray-200" title={item.tvl}>
                     {formatTVL(item.tvl)}
                   </div>
                 </div>
@@ -285,22 +263,20 @@ const YieldsCards: React.FC<YieldsCardsProps> = ({ isDarkMode }) => {
               {/* Features */}
               {item.features && item.features.length > 0 && (
                 <div className="mb-6">
-                  <h4 className={`text-sm font-bold font-hind mb-3 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <h4 className="text-sm font-bold font-hind mb-3 text-gray-300">
                     Features
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {item.features.slice(0, 3).map((feature, idx) => (
                       <span 
                         key={idx}
-                        className={`text-xs px-3 py-1 rounded-lg font-hind transition-all duration-300 ${
-                          isDarkMode ? 'bg-gray-700/50 text-gray-300' : 'bg-gray-100 text-gray-600'
-                        }`}
+                        className="text-xs px-3 py-1 rounded-lg font-hind transition-all duration-300 bg-gray-700/50 text-gray-300"
                       >
                         {feature}
                       </span>
                     ))}
                     {item.features.length > 3 && (
-                      <span className={`text-xs px-3 py-1 rounded-lg font-hind ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      <span className="text-xs px-3 py-1 rounded-lg font-hind text-gray-400">
                         +{item.features.length - 3} more
                       </span>
                     )}

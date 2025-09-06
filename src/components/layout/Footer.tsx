@@ -2,11 +2,9 @@
 
 import Logo from '@/components/ui/Logo';
 
-interface FooterProps {
-  isDarkMode: boolean;
-}
+interface FooterProps {}
 
-const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
+const Footer: React.FC<FooterProps> = () => {
   const footerLinks = [
     { label: 'Documentation', href: '#' },
     { label: 'Twitter', href: '#' },
@@ -15,11 +13,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
   ];
 
   return (
-    <footer className={`py-12 sm:py-16 ${
-      isDarkMode 
-        ? 'glass-3d-dark animate-background-shift' 
-        : 'glass-3d-light animate-background-shift'
-    }`}>
+    <footer className="py-12 sm:py-16 glass-3d-dark animate-background-shift">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <Logo onNavigate={() => {}} />
@@ -28,20 +22,14 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
               <a
                 key={link.label}
                 href={link.href}
-                className={`${
-                  isDarkMode 
-                    ? 'text-gray-400 hover:text-white' 
-                    : 'text-gray-600 hover:text-gray-900'
-                } transition-all duration-300 font-hind font-semibold hover-light text-sm sm:text-base`}
+                className="text-gray-400 hover:text-white transition-all duration-300 font-hind font-semibold hover-light text-sm sm:text-base"
               >
                 {link.label}
               </a>
             ))}
           </div>
         </div>
-        <div className={`mt-6 sm:mt-8 pt-6 sm:pt-8 text-center font-hind animate-fade-in ${
-          isDarkMode ? 'text-gray-400' : 'text-gray-600'
-        }`}>
+        <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 text-center font-hind animate-fade-in text-gray-400">
           <p className="text-sm sm:text-base">&copy; 2025 Maximus Finance. All rights reserved. Built for the Avalanche ecosystem.</p>
         </div>
       </div>

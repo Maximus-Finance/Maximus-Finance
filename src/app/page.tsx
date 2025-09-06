@@ -9,11 +9,9 @@ import ExploreProtocolsPage from '@/components/pages/ExploreProtocolsPage';
 import ProfilePage from '@/components/pages/ProfilePage';
 import ParticleBackground from '@/components/ui/ParticleBackground';
 import WalletProvider from '@/context/WalletContext';
-import { useTheme } from '@/hooks/useTheme';
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState<'home' | 'yields' | 'protocols' | 'profile'>('home');
-  const { isDarkMode, toggleDarkMode } = useTheme();
 
   const renderCurrentPage = () => {
     switch (currentPage) {
@@ -32,21 +30,15 @@ export default function Home() {
 
   return (
     <WalletProvider>
-      <div className={`min-h-screen transition-all duration-500 font-hind relative ${
-        isDarkMode 
-          ? 'dark text-white bg-gray-900' 
-          : 'light-theme text-slate-900 bg-white'
-      }`}>
-        <ParticleBackground isDarkMode={isDarkMode} />
+      <div className="min-h-screen transition-all duration-300 font-instrument-sans relative asgard-dark">
+        <ParticleBackground />
         <div className="relative z-10">
           <Navigation 
             currentPage={currentPage}
             onNavigate={setCurrentPage}
-            isDarkMode={isDarkMode}
-            onToggleTheme={toggleDarkMode}
           />
           {renderCurrentPage()}
-          <Footer isDarkMode={isDarkMode} />
+          <Footer />
         </div>
       </div>
     </WalletProvider>

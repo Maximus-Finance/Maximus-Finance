@@ -6,11 +6,9 @@ import { useLiveProtocolData } from '@/hooks/useLiveProtocolData';
 import Button from '@/components/ui/Button';
 import StakingModal from '@/components/staking/StakingModal';
 
-interface ProtocolsGridProps {
-  isDarkMode: boolean;
-}
+interface ProtocolsGridProps {}
 
-const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
+const ProtocolsGrid: React.FC<ProtocolsGridProps> = () => {
   // const [selectedFilter, setSelectedFilter] = useState('All');
   const { opportunities, isLoading } = useLiveProtocolData();
   const [stakingModal, setStakingModal] = useState<{
@@ -87,7 +85,7 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
           {[1, 2].map(i => (
             <div key={i} className={`h-80 rounded-3xl animate-pulse hover-light ${
-              isDarkMode ? 'glass-3d-dark animate-light-float' : 'glass-3d animate-light-bounce'
+              'glass-3d-dark animate-light-float'
             }`} style={{ animationDelay: `${i * 0.1}s` }} />
           ))}
         </div>
@@ -122,9 +120,9 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
       {filteredData.length === 0 ? (
         <div className={`
           rounded-3xl p-12 text-center animate-smooth-entrance shadow-lg border
-          ${isDarkMode ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'}
+          ${'bg-gray-800 border-gray-600'}
         `}>
-          <div className={`text-xl font-hind ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+          <div className={`text-xl font-hind ${'text-gray-300'}`}>
             {isLoading ? 'Loading liquid staking strategies...' : 'No liquid staking strategies available for this asset'}
           </div>
         </div>
@@ -136,11 +134,7 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
             return (
               <div
                 key={item.id}
-                className={`relative overflow-hidden rounded-3xl transition-all duration-500 animate-card-entrance flex flex-col h-full p-8 ${
-                  isDarkMode 
-                    ? 'glass-3d-dark animate-float3d hover-light shadow-2xl hover:shadow-[0_0_50px_rgba(147,51,234,0.3)]' 
-                    : 'glass-3d-light animate-light-bounce hover-light-theme shadow-xl hover:shadow-[0_0_40px_rgba(59,130,246,0.2)]'
-                } transform sm:hover:scale-105`}
+                className="relative overflow-hidden rounded-3xl transition-all duration-500 animate-card-entrance flex flex-col h-full p-8 glass-3d-dark animate-float3d hover-light shadow-2xl hover:shadow-[0_0_50px_rgba(147,51,234,0.3)] transform sm:hover:scale-105"
                 style={{ animationDelay: `${index * 0.2}s` }}
               >
                 {/* Status indicator */}
@@ -149,14 +143,14 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
                     {item.isLive ? (
                       <>
                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                        <span className={`text-xs font-semibold font-hind ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>
+                        <span className={`text-xs font-semibold font-hind ${'text-green-400'}`}>
                           Live
                         </span>
                       </>
                     ) : (
                       <>
                         <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                        <span className={`text-xs font-semibold font-hind ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                        <span className={`text-xs font-semibold font-hind ${'text-gray-400'}`}>
                           Offline
                         </span>
                       </>
@@ -170,7 +164,7 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
                     {item.icon}
                   </div>
                   <div className="flex-1">
-                    <h3 className={`font-bold text-2xl font-hind ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <h3 className={`font-bold text-2xl font-hind ${'text-white'}`}>
                       {item.protocol}
                     </h3>
                   </div>
@@ -179,36 +173,28 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
                 {/* Dual APY Display */}
                 <div className="grid grid-cols-2 gap-3 mb-6">
                   {/* Protocol APY */}
-                  <div className={`rounded-2xl p-4 border ${
-                    isDarkMode 
-                      ? 'bg-blue-900/20 border-blue-700/30' 
-                      : 'bg-blue-50 border-blue-200/30'
-                  }`}>
+                  <div className="rounded-2xl p-4 border bg-blue-900/20 border-blue-700/30">
                     <div className="text-center">
                       <div className={`font-bold text-2xl font-hind ${
-                        isDarkMode ? 'text-blue-400' : 'text-blue-600'
+                        'text-blue-400'
                       }`}>
                         {item.apy}
                       </div>
-                      <div className={`text-xs font-hind font-medium mt-1 ${isDarkMode ? 'text-blue-300' : 'text-blue-700'}`}>
+                      <div className={`text-xs font-hind font-medium mt-1 ${'text-blue-300'}`}>
                         Protocol APY
                       </div>
                     </div>
                   </div>
                   
                   {/* Enhanced APY */}
-                  <div className={`rounded-2xl p-4 border ${
-                    isDarkMode 
-                      ? 'bg-green-900/20 border-green-700/30' 
-                      : 'bg-green-50 border-green-200/30'
-                  }`}>
+                  <div className="rounded-2xl p-4 border bg-green-900/20 border-green-700/30">
                     <div className="text-center">
                       <div className={`font-bold text-2xl font-hind ${
-                        isDarkMode ? 'text-green-400' : 'text-green-600'
+                        'text-green-400'
                       }`}>
                         {enhancedAPY.toFixed(1)}%
                       </div>
-                      <div className={`text-xs font-hind font-medium mt-1 ${isDarkMode ? 'text-green-300' : 'text-green-700'}`}>
+                      <div className={`text-xs font-hind font-medium mt-1 ${'text-green-300'}`}>
                         Enhanced APY
                       </div>
                     </div>
@@ -217,19 +203,19 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
 
                 {/* Details Grid - Fixed height */}
                 <div className="grid grid-cols-2 gap-4 mb-6 min-h-[120px]">
-                  <div className={`p-4 rounded-xl flex flex-col justify-start ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
-                    <div className={`text-sm font-hind mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  <div className={`p-4 rounded-xl flex flex-col justify-start ${'bg-gray-800/50'}`}>
+                    <div className={`text-sm font-hind mb-2 ${'text-gray-400'}`}>
                       Asset
                     </div>
-                    <div className={`font-bold text-lg font-hind ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                    <div className={`font-bold text-lg font-hind ${'text-gray-200'}`}>
                       {item.pair}
                     </div>
                   </div>
-                  <div className={`p-4 rounded-xl flex flex-col justify-start ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
-                    <div className={`text-sm font-hind mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  <div className={`p-4 rounded-xl flex flex-col justify-start ${'bg-gray-800/50'}`}>
+                    <div className={`text-sm font-hind mb-2 ${'text-gray-400'}`}>
                       TVL
                     </div>
-                    <div className={`font-bold text-lg font-hind ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                    <div className={`font-bold text-lg font-hind ${'text-gray-200'}`}>
                       {item.tvl}
                     </div>
                   </div>
@@ -274,7 +260,6 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = ({ isDarkMode }) => {
         protocol={stakingModal.protocol}
         baseAPY={stakingModal.baseAPY}
         enhancedAPY={stakingModal.enhancedAPY}
-        isDarkMode={isDarkMode}
       />
     </div>
   );
