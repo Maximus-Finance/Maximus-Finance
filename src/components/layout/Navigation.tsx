@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Menu, X, User, LogOut } from 'lucide-react';
 import Logo from '@/components/ui/Logo';
 import ThemeToggle from './ThemeToggle';
 import Button from '@/components/ui/Button';
@@ -15,13 +15,44 @@ const Navigation: React.FC<NavigationProps> = ({
   onToggleTheme,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { buttonText, handleClick } = useWalletConnect();
+  const [isWalletDropdownOpen, setIsWalletDropdownOpen] = useState(false);
+  const { buttonText, isConnected, address, handleClick } = useWalletConnect();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsWalletDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleWalletButtonClick = () => {
+    if (isConnected) {
+      setIsWalletDropdownOpen(!isWalletDropdownOpen);
+    } else {
+      handleClick();
+    }
+  };
+
+  const handleDisconnect = () => {
+    handleClick(); // This will disconnect since isConnected is true
+    setIsWalletDropdownOpen(false);
+  };
+
+  const handleProfileClick = () => {
+    onNavigate('profile');
+    setIsWalletDropdownOpen(false);
+  };
 
   const navItems = [
     { id: 'home' as const, label: 'Home' },
     { id: 'yields' as const, label: 'Explore Yields' },
     { id: 'protocols' as const, label: 'Yield Strategies' },
-    { id: 'profile' as const, label: 'Profile' },
   ];
 
   return (
@@ -56,8 +87,34 @@ const Navigation: React.FC<NavigationProps> = ({
             <div className="hidden sm:block">
               <ThemeToggle isDarkMode={isDarkMode} onToggle={onToggleTheme} />
             </div>
-            <div className="hidden sm:block">
-              <Button onClick={handleClick}>{buttonText}</Button>
+            <div className="hidden sm:block relative" ref={dropdownRef}>
+              <Button onClick={handleWalletButtonClick}>{buttonText}</Button>
+              {isConnected && isWalletDropdownOpen && (
+                <div className={`absolute right-0 mt-2 w-48 rounded-xl shadow-lg z-50 ${
+                  isDarkMode ? 'glass-3d-dark border border-gray-600' : 'glass-3d-light border border-gray-200'
+                }`}>
+                  <div className="py-2">
+                    <button
+                      onClick={handleProfileClick}
+                      className={`flex items-center w-full px-4 py-2 text-left hover:bg-opacity-80 transition-colors ${
+                        isDarkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      <User className="w-4 h-4 mr-3" />
+                      Profile
+                    </button>
+                    <button
+                      onClick={handleDisconnect}
+                      className={`flex items-center w-full px-4 py-2 text-left hover:bg-opacity-80 transition-colors ${
+                        isDarkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      <LogOut className="w-4 h-4 mr-3" />
+                      Disconnect Wallet
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
             
             <button
@@ -101,9 +158,41 @@ const Navigation: React.FC<NavigationProps> = ({
                 <ThemeToggle isDarkMode={isDarkMode} onToggle={onToggleTheme} />
               </div>
               <div className="flex justify-center">
-                <Button onClick={handleClick} size="sm" className="w-full max-w-xs">
-                  {buttonText}
-                </Button>
+                {isConnected ? (
+                  <div className="w-full max-w-xs space-y-2">
+                    <Button onClick={handleWalletButtonClick} size="sm" className="w-full">
+                      {buttonText}
+                    </Button>
+                    <button
+                      onClick={() => {
+                        onNavigate('profile');
+                        setIsMenuOpen(false);
+                      }}
+                      className={`flex items-center justify-center w-full px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+                        isDarkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      Profile
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleClick();
+                        setIsMenuOpen(false);
+                      }}
+                      className={`flex items-center justify-center w-full px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+                        isDarkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Disconnect Wallet
+                    </button>
+                  </div>
+                ) : (
+                  <Button onClick={handleClick} size="sm" className="w-full max-w-xs">
+                    {buttonText}
+                  </Button>
+                )}
               </div>
             </div>
           </div>
