@@ -2,6 +2,7 @@
 
 import { Zap, BarChart3, Shield } from 'lucide-react';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface FeaturesSectionProps {}
 
 const FeaturesSection: React.FC<FeaturesSectionProps> = () => {

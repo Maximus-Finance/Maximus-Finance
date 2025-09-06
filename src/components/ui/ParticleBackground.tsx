@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface ParticleBackgroundProps {}
 
 class Particle {

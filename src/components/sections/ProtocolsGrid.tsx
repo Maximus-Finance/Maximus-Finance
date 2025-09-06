@@ -6,6 +6,7 @@ import { useLiveProtocolData } from '@/hooks/useLiveProtocolData';
 import Button from '@/components/ui/Button';
 import StakingModal from '@/components/staking/StakingModal';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface ProtocolsGridProps {}
 
 const ProtocolsGrid: React.FC<ProtocolsGridProps> = () => {

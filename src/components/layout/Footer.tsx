@@ -2,6 +2,7 @@
 
 import Logo from '@/components/ui/Logo';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface FooterProps {}
 
 const Footer: React.FC<FooterProps> = () => {

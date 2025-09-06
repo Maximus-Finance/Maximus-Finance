@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Activity, AlertCircle, CheckCircle, Clock } from 'lucide-react';
-import { useTheme } from '@/hooks/useTheme';
 
 interface LiveDataIndicatorProps {
   lastUpdated: Date | null;
@@ -10,7 +9,6 @@ interface LiveDataIndicatorProps {
 
 export default function LiveDataIndicator({ lastUpdated, isLoading, error }: LiveDataIndicatorProps) {
   const [countdown, setCountdown] = useState(15);
-  const { isDarkMode } = useTheme();
 
   useEffect(() => {
     if (!lastUpdated || isLoading) return;
@@ -72,7 +70,7 @@ export default function LiveDataIndicator({ lastUpdated, isLoading, error }: Liv
   return (
     <div className={`
       inline-flex items-center gap-4 px-8 py-4 rounded-3xl transition-all duration-300 hover-light animate-smooth-entrance
-      ${isDarkMode ? 'glass-3d-dark' : 'glass-3d'} ${status.bgColor} ${status.borderColor}
+      glass-3d-dark ${status.bgColor} ${status.borderColor}
     `}>
       {/* Status Section */}
       <div className="flex items-center gap-3">

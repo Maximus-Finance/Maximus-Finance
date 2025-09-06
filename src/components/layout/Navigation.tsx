@@ -13,7 +13,7 @@ const Navigation: React.FC<NavigationProps> = ({
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isWalletDropdownOpen, setIsWalletDropdownOpen] = useState(false);
-  const { buttonText, isConnected, address, handleClick } = useWalletConnect();
+  const { buttonText, isConnected, handleClick } = useWalletConnect();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
