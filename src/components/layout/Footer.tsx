@@ -7,8 +7,8 @@ interface FooterProps {}
 
 const Footer: React.FC<FooterProps> = () => {
   const footerLinks = [
-    { label: 'Documentation', href: '#' },
-    { label: 'Twitter', href: '#' },
+    { label: 'Documentation', href: 'https://maxfidocs.vercel.app/' },
+    { label: 'Twitter', href: 'https://x.com/0xMaxFi'},
     { label: 'Discord', href: '#' },
     { label: 'GitHub', href: '#' },
   ];
