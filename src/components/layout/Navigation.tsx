@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Menu, X, User, LogOut } from 'lucide-react';
 import Logo from '@/components/ui/Logo';
 import Button from '@/components/ui/Button';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 import { NavigationProps } from '@/types';
 import { useWalletConnect } from '@/hooks/useWalletConnect';
 
@@ -53,7 +54,7 @@ const Navigation: React.FC<NavigationProps> = ({
   ];
 
   return (
-    <nav className="fixed top-0 w-full z-50 transition-all duration-300 asgard-card border-b border-gray-700">
+    <nav className="fixed top-0 w-full z-50 transition-all duration-300 glass-nav">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Logo onNavigate={onNavigate} />
@@ -63,10 +64,10 @@ const Navigation: React.FC<NavigationProps> = ({
               <button
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
-                className={`px-4 py-2 rounded-lg transition-all duration-200 font-instrument-sans font-medium ${
+                className={`px-4 py-2 rounded-xl transition-all duration-300 font-instrument-sans font-medium nav-link ${
                   currentPage === item.id
-                    ? 'asgard-button-primary' 
-                    : 'text-gray-300 hover:text-white hover:bg-gray-700 bg-transparent'
+                    ? 'glass-button-primary text-white' 
+                    : 'glass-button hover:glass-button'
                 }`}
               >
                 {item.label}
@@ -75,21 +76,22 @@ const Navigation: React.FC<NavigationProps> = ({
           </div>
 
           <div className="flex items-center space-x-2 sm:space-x-4">
+            <ThemeToggle />
             <div className="hidden sm:block relative" ref={dropdownRef}>
               <Button onClick={handleWalletButtonClick}>{buttonText}</Button>
               {isConnected && isWalletDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 rounded-lg shadow-lg z-50 asgard-card">
+                <div className="absolute right-0 mt-2 w-48 rounded-xl shadow-lg z-50 glass-card">
                   <div className="py-2">
                     <button
                       onClick={handleProfileClick}
-                      className="flex items-center w-full px-4 py-2 text-left hover:bg-opacity-80 transition-colors text-gray-300 hover:bg-gray-700"
+                      className="flex items-center w-full px-4 py-2 text-left hover:bg-opacity-80 transition-colors nav-dropdown-item"
                     >
                       <User className="w-4 h-4 mr-3" />
                       Profile
                     </button>
                     <button
                       onClick={handleDisconnect}
-                      className="flex items-center w-full px-4 py-2 text-left hover:bg-opacity-80 transition-colors text-gray-300 hover:bg-gray-700"
+                      className="flex items-center w-full px-4 py-2 text-left hover:bg-opacity-80 transition-colors nav-dropdown-item"
                     >
                       <LogOut className="w-4 h-4 mr-3" />
                       Disconnect Wallet
@@ -101,7 +103,7 @@ const Navigation: React.FC<NavigationProps> = ({
             
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 sm:p-3 rounded-2xl transition-all duration-300 hover-light glass-3d-dark"
+              className="md:hidden p-2 sm:p-3 rounded-xl transition-all duration-300 glass-button"
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -110,7 +112,7 @@ const Navigation: React.FC<NavigationProps> = ({
       </div>
 
       {isMenuOpen && (
-        <div className="md:hidden transition-all duration-300 animate-smooth-entrance glass-3d-dark">
+        <div className="md:hidden transition-all duration-300 animate-smooth-entrance glass-nav">
           <div className="px-4 pt-4 pb-4 space-y-3">
             {navItems.map((item) => (
               <button
@@ -119,10 +121,10 @@ const Navigation: React.FC<NavigationProps> = ({
                   onNavigate(item.id); 
                   setIsMenuOpen(false); 
                 }}
-                className={`block w-full text-left px-4 py-3 rounded-2xl font-hind font-medium transition-all duration-300 hover-light ${
+                className={`block w-full text-left px-4 py-3 rounded-xl font-hind font-medium transition-all duration-300 nav-mobile-link ${
                   currentPage === item.id 
-                    ? 'bg-blue-600 text-white shadow-lg' 
-                    : 'text-gray-300 hover:text-white hover:bg-gray-700'
+                    ? 'glass-button-primary text-white' 
+                    : 'glass-button'
                 }`}
               >
                 {item.label}
@@ -130,6 +132,9 @@ const Navigation: React.FC<NavigationProps> = ({
             ))}
             
             <div className="pt-3 border-t border-gray-200/20 space-y-2">
+              <div className="flex justify-center mb-3">
+                <ThemeToggle />
+              </div>
               <div className="flex justify-center">
                 {isConnected ? (
                   <div className="w-full max-w-xs space-y-2">
@@ -141,7 +146,7 @@ const Navigation: React.FC<NavigationProps> = ({
                         onNavigate('profile');
                         setIsMenuOpen(false);
                       }}
-                      className="flex items-center justify-center w-full px-4 py-2 rounded-xl text-sm font-medium transition-colors text-gray-300 hover:bg-gray-700"
+                      className="flex items-center justify-center w-full px-4 py-2 rounded-xl text-sm font-medium transition-colors nav-mobile-dropdown"
                     >
                       <User className="w-4 h-4 mr-2" />
                       Profile
@@ -151,7 +156,7 @@ const Navigation: React.FC<NavigationProps> = ({
                         handleClick();
                         setIsMenuOpen(false);
                       }}
-                      className="flex items-center justify-center w-full px-4 py-2 rounded-xl text-sm font-medium transition-colors text-gray-300 hover:bg-gray-700"
+                      className="flex items-center justify-center w-full px-4 py-2 rounded-xl text-sm font-medium transition-colors nav-mobile-dropdown"
                     >
                       <LogOut className="w-4 h-4 mr-2" />
                       Disconnect Wallet

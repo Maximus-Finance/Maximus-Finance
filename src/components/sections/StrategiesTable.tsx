@@ -126,7 +126,7 @@ const StrategiesCards: React.FC<StrategiesCardsProps> = () => {
           {filters.map((filter, index) => (
             <div
               key={filter}
-              className="px-6 py-3 rounded-xl h-12 w-32 animate-pulse shadow-lg bg-gray-700"
+              className="px-6 py-3 rounded-xl h-12 w-32 animate-pulse shadow-lg glass-card"
               style={{ animationDelay: `${index * 0.1}s` }}
             />
           ))}
@@ -135,7 +135,7 @@ const StrategiesCards: React.FC<StrategiesCardsProps> = () => {
           {[1, 2, 3, 4, 5, 6].map(i => (
             <div 
               key={i} 
-              className="rounded-3xl p-8 animate-pulse border shadow-lg bg-gray-800 border-gray-600"
+              className="rounded-3xl p-8 animate-pulse border shadow-lg glass-card"
               style={{ animationDelay: `${i * 0.1}s` }}
             >
               <div className="flex items-center space-x-4 mb-6">
@@ -170,7 +170,7 @@ const StrategiesCards: React.FC<StrategiesCardsProps> = () => {
               relative px-6 py-3 rounded-2xl font-semibold transition-all duration-300 font-hind animate-smooth-entrance overflow-hidden group hover-light
               ${selectedFilter === filter
                 ? 'bg-blue-600 text-white shadow-lg'
-                : 'bg-gray-700 text-gray-200 hover:bg-gray-600 hover:text-white shadow-lg'
+                : 'glass-button text-white shadow-lg'
               }
             `}
             style={{ animationDelay: `${index * 0.1}s` }}
@@ -196,7 +196,7 @@ const StrategiesCards: React.FC<StrategiesCardsProps> = () => {
 
       {/* Cards Grid */}
       {filteredData.length === 0 ? (
-        <div className="rounded-3xl p-12 text-center animate-smooth-entrance shadow-lg border bg-gray-800 border-gray-600">
+        <div className="rounded-3xl p-12 text-center animate-smooth-entrance glass-card">
           <div className="text-xl font-hind text-gray-300">
             {isLoading ? 'Loading liquid staking strategies...' : 'No liquid staking strategies available for this asset'}
           </div>
@@ -209,7 +209,7 @@ const StrategiesCards: React.FC<StrategiesCardsProps> = () => {
             return (
               <div
                 key={item.id}
-                className="group relative rounded-3xl p-8 transition-all duration-500 animate-smooth-entrance hover-light flex flex-col h-full bg-gray-800 border-gray-600 hover:shadow-xl hover:-translate-y-2 hover:scale-[1.02] border shadow-lg"
+                className="group relative rounded-3xl p-8 transition-all duration-500 animate-smooth-entrance flex flex-col h-full glass-card hover:shadow-xl hover:-translate-y-2 hover:scale-[1.02]"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 {/* Status indicator */}

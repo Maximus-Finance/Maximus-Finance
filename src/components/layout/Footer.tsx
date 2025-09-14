@@ -23,14 +23,14 @@ const Footer: React.FC<FooterProps> = () => {
               <a
                 key={link.label}
                 href={link.href}
-                className="text-gray-400 hover:text-white transition-all duration-300 font-hind font-semibold hover-light text-sm sm:text-base"
+                className="footer-link transition-all duration-300 font-hind font-semibold hover-light text-sm sm:text-base"
               >
                 {link.label}
               </a>
             ))}
           </div>
         </div>
-        <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 text-center font-hind animate-fade-in text-gray-400">
+        <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 text-center font-hind animate-fade-in footer-text">
           <p className="text-sm sm:text-base">&copy; 2025 Maximus Finance. All rights reserved. Built for the Avalanche ecosystem.</p>
         </div>
       </div>

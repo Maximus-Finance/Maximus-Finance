@@ -259,14 +259,10 @@ const StakingModal: React.FC<StakingModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className={`relative max-w-md w-full rounded-3xl p-8 ${
-        'glass-3d-dark'
-      }`}>
+      <div className="relative max-w-md w-full rounded-3xl p-8 glass-card shadow-2xl">
         <button
           onClick={onClose}
-          className={`absolute top-4 right-4 p-2 rounded-full hover:bg-gray-200 ${
-            'text-white hover:bg-gray-700'
-          }`}
+          className="absolute top-4 right-4 p-2 rounded-full glass-button"
         >
           <X size={20} />
         </button>
@@ -386,9 +382,7 @@ const StakingModal: React.FC<StakingModalProps> = ({
                 min="0.01"
                 max="1000"
                 disabled={!isOnFuji}
-                className={`w-full p-3 rounded-xl border ${
-                    'bg-gray-800 border-gray-600 text-white placeholder-gray-400'
-                } ${!isOnFuji ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`w-full p-3 rounded-xl glass-input text-white placeholder-gray-400 ${!isOnFuji ? 'opacity-50 cursor-not-allowed' : ''}`}
               />
               <div className={`text-xs mt-1 ${'text-gray-400'}`}>
                 Minimum: 0.01 AVAX • Maximum: 1000 AVAX

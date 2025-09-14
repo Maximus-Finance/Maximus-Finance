@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useTheme } from '@/context/ThemeContext';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface ParticleBackgroundProps {}
@@ -59,28 +60,46 @@ class Particle {
     this.opacity = Math.max(0.05, this.baseOpacity * scale);
   }
 
-  draw(ctx: CanvasRenderingContext2D) {
+  draw(ctx: CanvasRenderingContext2D, isDark: boolean = true) {
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.rotationX);
     
-    // Main particle - always dark mode
-    ctx.fillStyle = `rgba(147, 197, 253, ${this.opacity})`;
-    
     const size = this.size;
-    ctx.fillRect(-size/2, -size/2, size, size);
     
-    // Add glow effect
-    ctx.shadowColor = '#93c5fd';
-    ctx.shadowBlur = size * 2;
-    ctx.fillRect(-size/2, -size/2, size, size);
-    
-    // Reset shadow
-    ctx.shadowBlur = 0;
-    
-    // Add inner highlight
-    ctx.fillStyle = `rgba(219, 234, 254, ${this.opacity * 0.8})`;
-    ctx.fillRect(-size/2 + 1, -size/2 + 1, size - 2, size - 2);
+    if (isDark) {
+      // Dark theme particles
+      ctx.fillStyle = `rgba(147, 197, 253, ${this.opacity})`;
+      ctx.fillRect(-size/2, -size/2, size, size);
+      
+      // Add glow effect
+      ctx.shadowColor = '#93c5fd';
+      ctx.shadowBlur = size * 2;
+      ctx.fillRect(-size/2, -size/2, size, size);
+      
+      // Reset shadow
+      ctx.shadowBlur = 0;
+      
+      // Add inner highlight
+      ctx.fillStyle = `rgba(219, 234, 254, ${this.opacity * 0.8})`;
+      ctx.fillRect(-size/2 + 1, -size/2 + 1, size - 2, size - 2);
+    } else {
+      // Light theme particles - subtle but visible
+      ctx.fillStyle = `rgba(99, 102, 241, ${this.opacity * 0.4})`;
+      ctx.fillRect(-size/2, -size/2, size, size);
+      
+      // Add subtle glow effect
+      ctx.shadowColor = '#6366f1';
+      ctx.shadowBlur = size * 1.2;
+      ctx.fillRect(-size/2, -size/2, size, size);
+      
+      // Reset shadow
+      ctx.shadowBlur = 0;
+      
+      // Add inner highlight for depth
+      ctx.fillStyle = `rgba(129, 140, 248, ${this.opacity * 0.3})`;
+      ctx.fillRect(-size/2 + 1, -size/2 + 1, size - 2, size - 2);
+    }
     
     ctx.restore();
   }
@@ -90,6 +109,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | undefined>(undefined);
   const particlesRef = useRef<Particle[]>([]);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -124,6 +144,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = () => {
 
       // Draw connections between nearby particles
       ctx.lineWidth = 1;
+      const isDark = theme === 'dark';
       particlesRef.current.forEach((particle, i) => {
         particlesRef.current.slice(i + 1, i + 6).forEach(otherParticle => {
           const dx = particle.x - otherParticle.x;
@@ -132,7 +153,11 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = () => {
           
           if (distance < 120) {
             const opacity = 0.15 * (1 - distance / 120);
-            ctx.strokeStyle = `rgba(147, 197, 253, ${opacity})`;
+            if (isDark) {
+              ctx.strokeStyle = `rgba(147, 197, 253, ${opacity})`;
+            } else {
+              ctx.strokeStyle = `rgba(99, 102, 241, ${opacity * 0.5})`;
+            }
             ctx.beginPath();
             ctx.moveTo(particle.x, particle.y);
             ctx.lineTo(otherParticle.x, otherParticle.y);
@@ -144,7 +169,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = () => {
       // Update and draw particles
       particlesRef.current.forEach(particle => {
         particle.update(canvas.width, canvas.height);
-        particle.draw(ctx);
+        particle.draw(ctx, isDark);
       });
 
       animationRef.current = requestAnimationFrame(animate);
@@ -159,14 +184,14 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = () => {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, []);
+  }, [theme]);
 
   return (
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0"
       style={{
-        background: '#1f2937'
+        background: theme === 'dark' ? '#1f2125' : '#f8fafc'
       }}
     />
   );

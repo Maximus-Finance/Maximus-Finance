@@ -17,7 +17,7 @@ const StatsSection: React.FC<StatsSectionProps> = () => {
           {stats.map((stat, index) => (
             <div 
               key={index}
-              className="p-6 sm:p-8 text-center transition-all duration-200 asgard-card transform sm:hover:scale-[1.02]"
+              className="p-6 sm:p-8 text-center transition-all duration-300 glass-card rounded-2xl transform sm:hover:scale-[1.02]"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className={`text-3xl sm:text-4xl lg:text-4xl font-bold ${stat.color} mb-3 sm:mb-4 font-instrument-sans`}>

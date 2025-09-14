@@ -16,21 +16,22 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       <StatsSection />
       <FeaturesSection />
       
-      <section className="py-12 sm:py-16 lg:py-20 bg-gray-900">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 sm:mb-6 font-space-grotesk">
-          While others give you <span className="text-gray-400">data</span>, we give you the {" "} <span className="text-blue-400">decision</span>.
+      <section className="py-12 sm:py-16 lg:py-20 relative">
+        <div className="absolute inset-0 glass-card"></div>
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 font-space-grotesk hero-cta-title">
+          While others give you <span className="hero-cta-data">data</span>, we give you the {" "} <span className="hero-cta-decision">decision</span>.
           </h2>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
               onClick={() => onNavigate('yields')}
-              className="bg-white text-blue-600 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 font-space-grotesk"
+              className="glass-button-primary text-white px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-300 transform hover:scale-105 font-space-grotesk"
             >
               Start Optimizing Now
             </button>
             <button 
               onClick={() => onNavigate('protocols')}
-              className="border-2 border-white text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300 transform hover:scale-105 font-space-grotesk"
+              className="glass-button border-2 border-white/20 hover:border-white/30 px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-300 transform hover:scale-105 font-space-grotesk"
             >
               Explore Protocols
             </button>

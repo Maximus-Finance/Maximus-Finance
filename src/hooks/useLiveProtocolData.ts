@@ -194,11 +194,24 @@ export function useLiveProtocolData(refreshInterval: number = 3600000) { // 1 ho
         }
       }
 
-      // Calculate metrics
-      const totalTVL = allOpportunities.reduce((sum, opp) => {
-        const tvlValue = parseFloat(opp.tvl.replace(/[$M,]/g, '')) * 1000000;
-        return sum + tvlValue;
-      }, 0);
+      // Calculate metrics - cap at reasonable maximum
+      const totalTVL = Math.min(allOpportunities.reduce((sum, opp) => {
+        const tvlString = opp.tvl.replace('$', '');
+        let tvlValue = 0;
+
+        if (tvlString.includes('M')) {
+          tvlValue = parseFloat(tvlString.replace('M', '')) * 1000000;
+        } else if (tvlString.includes('B')) {
+          tvlValue = parseFloat(tvlString.replace('B', '')) * 1000000000;
+        } else if (tvlString.includes('K')) {
+          tvlValue = parseFloat(tvlString.replace('K', '')) * 1000;
+        } else {
+          tvlValue = parseFloat(tvlString.replace(/,/g, ''));
+        }
+
+        console.log(`TVL Debug: ${opp.protocol} - ${opp.tvl} -> ${tvlValue}`);
+        return sum + (isNaN(tvlValue) ? 0 : tvlValue);
+      }, 0), 999000000000); // Cap at 999B max
 
       const totalAPY = allOpportunities.reduce((sum, opp) => {
         return sum + parseFloat(opp.apy.replace('%', ''));

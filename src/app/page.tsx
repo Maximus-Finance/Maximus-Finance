@@ -9,6 +9,7 @@ import ExploreProtocolsPage from '@/components/pages/ExploreProtocolsPage';
 import ProfilePage from '@/components/pages/ProfilePage';
 import ParticleBackground from '@/components/ui/ParticleBackground';
 import WalletProvider from '@/context/WalletContext';
+import { ThemeProvider } from '@/context/ThemeContext';
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState<'home' | 'yields' | 'protocols' | 'profile'>('home');
@@ -29,18 +30,20 @@ export default function Home() {
   };
 
   return (
-    <WalletProvider>
-      <div className="min-h-screen transition-all duration-300 font-instrument-sans relative asgard-dark">
-        <ParticleBackground />
-        <div className="relative z-10">
-          <Navigation 
-            currentPage={currentPage}
-            onNavigate={setCurrentPage}
-          />
-          {renderCurrentPage()}
-          <Footer />
+    <ThemeProvider>
+      <WalletProvider>
+        <div className="min-h-screen transition-all duration-300 font-instrument-sans relative asgard-dark">
+          <ParticleBackground />
+          <div className="relative z-10">
+            <Navigation 
+              currentPage={currentPage}
+              onNavigate={setCurrentPage}
+            />
+            {renderCurrentPage()}
+            <Footer />
+          </div>
         </div>
-      </div>
-    </WalletProvider>
+      </WalletProvider>
+    </ThemeProvider>
   );
 }

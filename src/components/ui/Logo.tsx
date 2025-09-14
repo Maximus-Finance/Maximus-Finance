@@ -27,10 +27,10 @@ const Logo: React.FC<LogoProps> = ({ onNavigate }) => {
       
       {/* Company Name */}
       <div className="flex flex-col items-start">
-        <span className="text-lg font-bold tracking-tight font-sans transition-colors duration-300 text-white">
+        <span className="text-lg font-bold tracking-tight font-sans transition-colors duration-300 logo-text">
           Maximus Finance
         </span>
-        <span className="text-xs tracking-wide font-medium text-blue-400">
+        <span className="text-xs tracking-wide font-medium logo-subtitle">
           DeFi Yield Optimization
         </span>
       </div>

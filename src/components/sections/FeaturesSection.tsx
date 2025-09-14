@@ -31,10 +31,10 @@ const FeaturesSection: React.FC<FeaturesSectionProps> = () => {
     <section className="py-12 sm:py-16 lg:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-4xl font-bold mb-4 sm:mb-6 font-instrument-sans text-white">
+          <h2 className="text-3xl sm:text-4xl lg:text-4xl font-bold mb-4 sm:mb-6 font-instrument-sans feature-title">
             Why We&apos;re Different
           </h2>
-          <p className="text-lg sm:text-xl font-instrument-sans px-4 sm:px-0 text-gray-400">
+          <p className="text-lg sm:text-xl font-instrument-sans px-4 sm:px-0 feature-subtitle">
             Three pillars that set us apart in the DeFi space
           </p>
         </div>
@@ -43,16 +43,16 @@ const FeaturesSection: React.FC<FeaturesSectionProps> = () => {
           {features.map((feature, index) => (
             <div 
               key={index}
-              className="p-6 sm:p-8 transition-all duration-200 transform sm:hover:scale-[1.02] asgard-card"
+              className="p-6 sm:p-8 transition-all duration-300 transform sm:hover:scale-[1.02] glass-card rounded-2xl"
               style={{ animationDelay: `${index * 0.2}s` }}
             >
               <div className={`w-12 h-12 ${feature.color} rounded-lg flex items-center justify-center mb-4 shadow-lg`}>
                 <feature.icon className="text-white" size={20} />
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 font-instrument-sans text-white">
+              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 font-instrument-sans feature-card-title">
                 {feature.title}
               </h3>
-              <p className="font-instrument-sans text-sm sm:text-base text-gray-400">
+              <p className="font-instrument-sans text-sm sm:text-base feature-card-description">
                 {feature.description}
               </p>
             </div>

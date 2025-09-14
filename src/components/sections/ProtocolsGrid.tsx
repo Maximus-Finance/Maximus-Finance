@@ -119,10 +119,7 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = () => {
       </div> */}
 
       {filteredData.length === 0 ? (
-        <div className={`
-          rounded-3xl p-12 text-center animate-smooth-entrance shadow-lg border
-          ${'bg-gray-800 border-gray-600'}
-        `}>
+        <div className="rounded-3xl p-12 text-center animate-smooth-entrance glass-card">
           <div className={`text-xl font-hind ${'text-gray-300'}`}>
             {isLoading ? 'Loading liquid staking strategies...' : 'No liquid staking strategies available for this asset'}
           </div>
@@ -135,7 +132,7 @@ const ProtocolsGrid: React.FC<ProtocolsGridProps> = () => {
             return (
               <div
                 key={item.id}
-                className="relative overflow-hidden rounded-3xl transition-all duration-500 animate-card-entrance flex flex-col h-full p-8 glass-3d-dark animate-float3d hover-light shadow-2xl hover:shadow-[0_0_50px_rgba(147,51,234,0.3)] transform sm:hover:scale-105"
+                className="relative overflow-hidden rounded-3xl transition-all duration-500 animate-card-entrance flex flex-col h-full p-8 glass-card shadow-2xl hover:shadow-[0_0_50px_rgba(147,51,234,0.3)] transform sm:hover:scale-105"
                 style={{ animationDelay: `${index * 0.2}s` }}
               >
                 {/* Status indicator */}
