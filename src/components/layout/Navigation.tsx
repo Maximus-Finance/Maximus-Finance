@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Menu, X, User, LogOut } from 'lucide-react';
+import { Menu, X, LogOut } from 'lucide-react';
 import Logo from '@/components/ui/Logo';
 import Button from '@/components/ui/Button';
 import ThemeToggle from '@/components/ui/ThemeToggle';
@@ -42,15 +42,12 @@ const Navigation: React.FC<NavigationProps> = ({
     setIsWalletDropdownOpen(false);
   };
 
-  const handleProfileClick = () => {
-    onNavigate('profile');
-    setIsWalletDropdownOpen(false);
-  };
 
   const navItems = [
     { id: 'home' as const, label: 'Home' },
     { id: 'yields' as const, label: 'Explore Yields' },
     { id: 'protocols' as const, label: 'Yield Strategies' },
+    { id: 'dashboard' as const, label: 'Dashboard' },
   ];
 
   return (
@@ -82,13 +79,6 @@ const Navigation: React.FC<NavigationProps> = ({
               {isConnected && isWalletDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 rounded-xl shadow-lg z-50 glass-card">
                   <div className="py-2">
-                    <button
-                      onClick={handleProfileClick}
-                      className="flex items-center w-full px-4 py-2 text-left hover:bg-opacity-80 transition-colors nav-dropdown-item"
-                    >
-                      <User className="w-4 h-4 mr-3" />
-                      Profile
-                    </button>
                     <button
                       onClick={handleDisconnect}
                       className="flex items-center w-full px-4 py-2 text-left hover:bg-opacity-80 transition-colors nav-dropdown-item"
@@ -141,16 +131,6 @@ const Navigation: React.FC<NavigationProps> = ({
                     <Button onClick={handleWalletButtonClick} size="sm" className="w-full">
                       {buttonText}
                     </Button>
-                    <button
-                      onClick={() => {
-                        onNavigate('profile');
-                        setIsMenuOpen(false);
-                      }}
-                      className="flex items-center justify-center w-full px-4 py-2 rounded-xl text-sm font-medium transition-colors nav-mobile-dropdown"
-                    >
-                      <User className="w-4 h-4 mr-2" />
-                      Profile
-                    </button>
                     <button
                       onClick={() => {
                         handleClick();

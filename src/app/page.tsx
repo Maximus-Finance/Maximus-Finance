@@ -12,7 +12,7 @@ import WalletProvider from '@/context/WalletContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 
 export default function Home() {
-  const [currentPage, setCurrentPage] = useState<'home' | 'yields' | 'protocols' | 'profile'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'yields' | 'protocols' | 'dashboard'>('home');
 
   const renderCurrentPage = () => {
     switch (currentPage) {
@@ -22,7 +22,7 @@ export default function Home() {
         return <ExploreYieldsPage />;
       case 'protocols':
         return <ExploreProtocolsPage onNavigate={setCurrentPage} />;
-      case 'profile':
+      case 'dashboard':
         return <ProfilePage onNavigate={setCurrentPage} />;
       default:
         return <HomePage onNavigate={setCurrentPage} />;

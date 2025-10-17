@@ -19,7 +19,7 @@ export interface YieldData {
     icon: string;
   }
   
-  export type PageType = 'home' | 'yields' | 'protocols' | 'profile';
+  export type PageType = 'home' | 'yields' | 'protocols' | 'dashboard';
   
   export interface NavigationProps {
     currentPage: PageType;
