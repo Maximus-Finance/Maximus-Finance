@@ -1,93 +1,101 @@
 'use client';
 
-import YieldsCards from '@/components/sections/YieldsTable';
-import { useLiveProtocolData } from '@/hooks/useLiveProtocolData';
-
-const formatTVL = (value: number): string => {
-  if (value >= 1000000000000) {
-    const formatted = (value / 1000000000000);
-    return formatted >= 100 ? `$${formatted.toFixed(0)}T` : `$${formatted.toFixed(1)}T`;
-  } else if (value >= 1000000000) {
-    const formatted = (value / 1000000000);
-    return formatted >= 100 ? `$${formatted.toFixed(0)}B` : `$${formatted.toFixed(1)}B`;
-  } else if (value >= 1000000) {
-    const formatted = (value / 1000000);
-    return formatted >= 100 ? `$${formatted.toFixed(0)}M` : `$${formatted.toFixed(1)}M`;
-  } else if (value >= 1000) {
-    const formatted = (value / 1000);
-    return formatted >= 100 ? `$${formatted.toFixed(0)}K` : `$${formatted.toFixed(1)}K`;
-  } else {
-    return `$${Math.round(value)}`;
-  }
-};
+import { Filter, Download, TrendingUp } from 'lucide-react';
 
 const ExploreYieldsPage: React.FC = () => {
-  const { isLoading, lastUpdated, totalTVL, averageAPY, activeProtocols, systemHealth } = useLiveProtocolData();
+  const yields = [
+    { protocol: 'Aave', token: 'AVAX', apy: '12.5%', tvl: '$450M', risk: 'Low', riskColor: 'bg-green-500/20 text-green-700 dark:text-green-400' },
+    { protocol: 'Curve', token: 'USDC', apy: '18.3%', tvl: '$320M', risk: 'Low', riskColor: 'bg-green-500/20 text-green-700 dark:text-green-400' },
+    { protocol: 'Benqi', token: 'AVAX', apy: '15.8%', tvl: '$280M', risk: 'Medium', riskColor: 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400' },
+    { protocol: 'Trader Joe', token: 'JOE', apy: '22.1%', tvl: '$210M', risk: 'Medium', riskColor: 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400' },
+    { protocol: 'Platypus', token: 'PTP', apy: '28.5%', tvl: '$180M', risk: 'High', riskColor: 'bg-red-500/20 text-red-700 dark:text-red-400' },
+    { protocol: 'Balancer', token: 'BAL', apy: '16.2%', tvl: '$150M', risk: 'Low', riskColor: 'bg-green-500/20 text-green-700 dark:text-green-400' },
+  ];
 
   return (
-    <div className="pt-16 font-hind">
-      <section className="min-h-screen py-12 sm:py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12">
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 font-hind animate-smooth-entrance hover-light leading-tight page-title">
-              Explore <span className="page-accent">Live Yields</span>
+    <main className="min-h-screen bg-background">
+      <section className="py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-12 animate-fade-in-up">
+            <h1 className="text-5xl font-bold text-foreground mb-4">
+              Available Yields
             </h1>
-            <p className="text-lg sm:text-xl font-hind animate-light-float px-4 sm:px-0 page-subtitle">
-              Real-time yield opportunities across the Avalanche ecosystem
+            <p className="text-lg text-muted-foreground">
+              Explore the best yield opportunities across Avalanche DeFi
+              protocols
             </p>
-            
-            <div className="flex flex-col sm:flex-row items-center justify-center mt-4 sm:mt-6 space-y-3 sm:space-y-0 sm:space-x-6 animate-light-bounce">
-              {lastUpdated && (
-                <span className="text-sm sm:text-base font-hind text-gray-400">
-                  Last updated: {lastUpdated.toLocaleTimeString()}
-                </span>
-              )}
-              <div className={`text-xs px-2 py-1 rounded-lg ${
-                systemHealth >= 80 ? 'bg-green-500/20 text-green-400' :
-                systemHealth >= 60 ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'
-              }`}>
-                {systemHealth.toFixed(0)}% Health
-              </div>
-            </div>
           </div>
-
-          <YieldsCards />
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12">
-            {[
-              {
-                value: formatTVL(totalTVL),
-                label: 'Total Value Locked',
-                color: 'text-green-400'
-              },
-              {
-                value: `${averageAPY.toFixed(1)}%`,
-                label: 'Average APY',
-                color: 'text-blue-400'
-              },
-              {
-                value: activeProtocols.toString(),
-                label: 'Active Protocols',
-                color: 'text-purple-400'
-              },
-            ].map((stat, index) => (
-              <div 
-                key={index}
-                className="p-6 sm:p-8 lg:p-10 rounded-3xl text-center hover-light animate-smooth-entrance shadow-2xl transform sm:hover:scale-105 transition-all duration-300 glass-3d-dark animate-light-float"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className={`text-3xl sm:text-4xl lg:text-5xl font-bold ${stat.color} mb-3 sm:mb-4 font-hind hover-light break-words`}>
-                  {isLoading ? '...' : stat.value}
-                </div>
-                <div className="font-hind text-base sm:text-lg font-semibold text-gray-300">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
+          <div className="flex flex-col sm:flex-row gap-4 mb-8">
+            <button className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-lg hover:bg-secondary transition-colors">
+              <Filter size={20} />
+              Filter by Risk
+            </button>
+            <button className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-lg hover:bg-secondary transition-colors">
+              <Download size={20} />
+              Export Data
+            </button>
+          </div>
+          <div className="bg-card border border-border rounded-xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-secondary-50 border-b border-border">
+                  <tr>
+                    <th className="px-6 py-4 text-left font-semibold text-foreground">
+                      Protocol
+                    </th>
+                    <th className="px-6 py-4 text-left font-semibold text-foreground">
+                      Token
+                    </th>
+                    <th className="px-6 py-4 text-left font-semibold text-foreground">
+                      APY
+                    </th>
+                    <th className="px-6 py-4 text-left font-semibold text-foreground">
+                      TVL
+                    </th>
+                    <th className="px-6 py-4 text-left font-semibold text-foreground">
+                      Risk Level
+                    </th>
+                    <th className="px-6 py-4 text-left font-semibold text-foreground">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {yields.map((item, index) => (
+                    <tr
+                      key={index}
+                      className="border-b border-border hover:bg-secondary/30 transition-colors"
+                    >
+                      <td className="px-6 py-4 font-semibold text-foreground">
+                        {item.protocol}
+                      </td>
+                      <td className="px-6 py-4 text-muted-foreground">{item.token}</td>
+                      <td className="px-6 py-4">
+                        <span className="flex items-center gap-1 text-primary font-semibold">
+                          <TrendingUp size={16} />
+                          {item.apy}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-muted-foreground">{item.tvl}</td>
+                      <td className="px-6 py-4">
+                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${item.riskColor}`}>
+                          {item.risk}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover-lift text-sm">
+                          Invest
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
-    </div>
+    </main>
   );
 };
 

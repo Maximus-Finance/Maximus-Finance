@@ -17,21 +17,15 @@ interface ThemeProviderProps {
 }
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>('dark');
+  const [theme, setTheme] = useState<Theme>('light');
   const [isLoading, setIsLoading] = useState(true);
 
-  // Initialize theme from localStorage or system preference
+  // Initialize theme - always default to light to match v0 design
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as Theme | null;
-    
-    if (savedTheme) {
-      setTheme(savedTheme);
-    } else {
-      // Check system preference
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme(systemPrefersDark ? 'dark' : 'light');
-    }
-    
+    // Force light theme on initial load
+    setTheme('light');
+    // Clear any old dark theme preference
+    localStorage.setItem('theme', 'light');
     setIsLoading(false);
   }, []);
 
@@ -66,20 +60,19 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
 
-  // Listen for system theme changes
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
-    const handleChange = (e: MediaQueryListEvent) => {
-      // Only auto-switch if user hasn't manually set a preference
-      if (!localStorage.getItem('theme')) {
-        setTheme(e.matches ? 'dark' : 'light');
-      }
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
+  // Disabled system theme auto-switching to maintain consistent light theme
+  // useEffect(() => {
+  //   const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  //   
+  //   const handleChange = (e: MediaQueryListEvent) => {
+  //     if (!localStorage.getItem('theme')) {
+  //       setTheme(e.matches ? 'dark' : 'light');
+  //     }
+  //   };
+  //
+  //   mediaQuery.addEventListener('change', handleChange);
+  //   return () => mediaQuery.removeEventListener('change', handleChange);
+  // }, []);
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme, isLoading }}>

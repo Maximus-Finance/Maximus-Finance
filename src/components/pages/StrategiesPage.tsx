@@ -1,84 +1,196 @@
 'use client';
 
-import StrategiesCards from '@/components/sections/StrategiesTable';
-import { useLiveProtocolData } from '@/hooks/useLiveProtocolData';
+import { CircleAlert, Users } from 'lucide-react';
 
 const StrategiesPage: React.FC = () => {
-  const { isLoading, lastUpdated, totalTVL, averageAPY, activeProtocols, dataQuality, systemHealth } = useLiveProtocolData();
+  const strategies = [
+    {
+      name: 'Conservative Growth',
+      description: 'Low-risk strategy focused on stable yields',
+      apy: '12.3',
+      riskScore: 2,
+      riskColor: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+      investors: '1,240',
+      allocations: [
+        { name: 'Aave', percentage: 40 },
+        { name: 'Curve', percentage: 35 },
+        { name: 'Benqi', percentage: 25 },
+      ],
+    },
+    {
+      name: 'Balanced Yield',
+      description: 'Medium-risk strategy balancing growth and stability',
+      apy: '22.8',
+      riskScore: 5,
+      riskColor: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+      investors: '856',
+      allocations: [
+        { name: 'Trader Joe', percentage: 35 },
+        { name: 'Aave', percentage: 30 },
+        { name: 'Balancer', percentage: 20 },
+        { name: 'Platypus', percentage: 15 },
+      ],
+    },
+    {
+      name: 'Aggressive Farming',
+      description: 'High-risk strategy targeting maximum returns',
+      apy: '38.5',
+      riskScore: 8,
+      riskColor: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+      investors: '423',
+      allocations: [
+        { name: 'Pangolin', percentage: 40 },
+        { name: 'Yield Yak', percentage: 35 },
+        { name: 'Trader Joe', percentage: 25 },
+      ],
+    },
+    {
+      name: 'Stablecoin Optimizer',
+      description: 'Specialized strategy for stablecoin yields',
+      apy: '9.7',
+      riskScore: 1,
+      riskColor: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+      investors: '2,103',
+      allocations: [
+        { name: 'Curve', percentage: 45 },
+        { name: 'Platypus', percentage: 35 },
+        { name: 'Aave', percentage: 20 },
+      ],
+    },
+    {
+      name: 'Multi-Asset Diversification',
+      description: 'Diversified across multiple asset types',
+      apy: '18.9',
+      riskScore: 4,
+      riskColor: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+      investors: '1,567',
+      allocations: [
+        { name: 'Aave', percentage: 25 },
+        { name: 'Trader Joe', percentage: 25 },
+        { name: 'Balancer', percentage: 25 },
+        { name: 'Curve', percentage: 25 },
+      ],
+    },
+    {
+      name: 'Premium Yield Stack',
+      description: 'Curated selection of top-performing protocols',
+      apy: '31.2',
+      riskScore: 6,
+      riskColor: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+      investors: '678',
+      allocations: [
+        { name: 'Yield Yak', percentage: 30 },
+        { name: 'Trader Joe', percentage: 30 },
+        { name: 'Balancer', percentage: 20 },
+        { name: 'Benqi', percentage: 20 },
+      ],
+    },
+  ];
 
   return (
-    <div className="pt-16 font-hind">
-      <section className="min-h-screen py-12 sm:py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12">
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 font-hind animate-smooth-entrance hover-light leading-tight text-white">
-              Yield <span className="text-purple-400">Strategies</span>
+    <main className="min-h-screen bg-background">
+      <section className="py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-12 animate-fade-in-up">
+            <h1 className="text-5xl font-bold text-foreground mb-4">
+              Investment Strategies
             </h1>
-            <p className="text-lg sm:text-xl font-hind animate-light-float px-4 sm:px-0 text-gray-300">
-              Enhanced yield opportunities with our advanced looping strategies
+            <p className="text-lg text-muted-foreground">
+              Choose a strategy that matches your risk tolerance and investment
+              goals
             </p>
-            
-            <div className="flex flex-col sm:flex-row items-center justify-center mt-4 sm:mt-6 space-y-3 sm:space-y-0 sm:space-x-6 animate-light-bounce">
-              <div className="flex items-center space-x-3">
-                <div className={`w-3 h-3 rounded-full animate-pulse ${
-                  systemHealth >= 80 ? 'bg-green-400' :
-                  systemHealth >= 60 ? 'bg-yellow-400' : 'bg-red-400'
-                }`}></div>
-                <span className="text-sm sm:text-base font-hind font-semibold text-gray-400">
-                  {isLoading ? 'Updating...' : `${dataQuality} Data Quality`}
-                </span>
-              </div>
-              {lastUpdated && (
-                <span className="text-sm sm:text-base font-hind text-gray-400">
-                  Last updated: {lastUpdated.toLocaleTimeString()}
-                </span>
-              )}
-              <div className={`text-xs px-2 py-1 rounded-lg ${
-                systemHealth >= 80 ? 'bg-green-500/20 text-green-400' :
-                systemHealth >= 60 ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'
-              }`}>
-                {systemHealth.toFixed(0)}% Health
-              </div>
-            </div>
           </div>
-
-          <StrategiesCards />
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12">
-            {[
-              { 
-                value: `$${(totalTVL / 1000000).toFixed(1)}M`, 
-                label: 'Total Value Locked', 
-                color: 'text-green-400' 
-              },
-              { 
-                value: `${(averageAPY * 1.7).toFixed(1)}%`, 
-                label: 'Enhanced Average APY', 
-                color: 'text-blue-400' 
-              },
-              { 
-                value: activeProtocols.toString(), 
-                label: 'Strategy Protocols', 
-                color: 'text-purple-400' 
-              },
-            ].map((stat, index) => (
-              <div 
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {strategies.map((strategy, index) => (
+              <div
                 key={index}
-                className="p-6 sm:p-8 lg:p-10 rounded-3xl text-center hover-light animate-smooth-entrance shadow-2xl transform sm:hover:scale-105 transition-all duration-300 glass-3d-dark animate-light-float"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="animate-fade-in-up"
+                style={{ animationDelay: `${index * 50}ms` }}
               >
-                <div className={`text-4xl sm:text-5xl lg:text-6xl font-bold ${stat.color} mb-3 sm:mb-4 font-hind hover-light`}>
-                  {isLoading ? '...' : stat.value}
-                </div>
-                <div className="font-hind text-base sm:text-lg font-semibold text-gray-300">
-                  {stat.label}
+                <div className="bg-card border border-border rounded-xl p-6 hover-lift group h-full flex flex-col">
+                  <div className="mb-4">
+                    <h3 className="text-xl font-bold text-foreground mb-2">
+                      {strategy.name}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {strategy.description}
+                    </p>
+                  </div>
+                  <div className="mb-4 p-4 bg-primary-5 rounded-lg">
+                    <div className="text-2xl font-bold text-primary">
+                      {strategy.apy}%
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Expected Annual Yield
+                    </p>
+                  </div>
+                  <div className="mb-4 pb-4 border-b border-border">
+                    <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase">
+                      Allocation
+                    </p>
+                    <div className="space-y-2">
+                      {strategy.allocations.map((allocation, idx) => (
+                        <div key={idx} className="flex items-center justify-between">
+                          <span className="text-sm text-foreground">
+                            {allocation.name}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <div className="w-24 h-2 bg-secondary rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-primary transition-all duration-500"
+                                style={{ width: `${allocation.percentage}%` }}
+                              />
+                            </div>
+                            <span className="text-xs font-semibold text-foreground w-8 text-right">
+                              {allocation.percentage}%
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-2 mb-4 pb-4 border-b border-border">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <CircleAlert
+                          className="text-muted-foreground"
+                          size={16}
+                        />
+                        <span className="text-sm text-muted-foreground">
+                          Risk Score
+                        </span>
+                      </div>
+                      <span
+                        className={`text-xs font-bold px-2 py-1 rounded ${strategy.riskColor}`}
+                      >
+                        {strategy.riskScore}/10
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Users
+                          className="text-muted-foreground"
+                          size={16}
+                        />
+                        <span className="text-sm text-muted-foreground">
+                          Investors
+                        </span>
+                      </div>
+                      <span className="font-semibold text-foreground">
+                        {strategy.investors}
+                      </span>
+                    </div>
+                  </div>
+                  <button className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover-lift transition-all duration-300 mt-auto">
+                    Deploy Strategy
+                  </button>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </section>
-    </div>
+    </main>
   );
 };
 

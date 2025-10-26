@@ -5,11 +5,9 @@ import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
 import HomePage from '@/components/pages/HomePage';
 import ExploreYieldsPage from '@/components/pages/ExploreYieldsPage';
-import ExploreProtocolsPage from '@/components/pages/ExploreProtocolsPage';
+import StrategiesPage from '@/components/pages/StrategiesPage';
 import ProfilePage from '@/components/pages/ProfilePage';
-import ParticleBackground from '@/components/ui/ParticleBackground';
-import WalletProvider from '@/context/WalletContext';
-import { ThemeProvider } from '@/context/ThemeContext';
+import { WalletProvider } from '@/providers/WalletProvider';
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState<'home' | 'yields' | 'protocols' | 'dashboard'>('home');
@@ -21,7 +19,7 @@ export default function Home() {
       case 'yields':
         return <ExploreYieldsPage />;
       case 'protocols':
-        return <ExploreProtocolsPage onNavigate={setCurrentPage} />;
+        return <StrategiesPage />;
       case 'dashboard':
         return <ProfilePage onNavigate={setCurrentPage} />;
       default:
@@ -30,20 +28,15 @@ export default function Home() {
   };
 
   return (
-    <ThemeProvider>
-      <WalletProvider>
-        <div className="min-h-screen transition-all duration-300 font-instrument-sans relative asgard-dark">
-          <ParticleBackground />
-          <div className="relative z-10">
-            <Navigation 
-              currentPage={currentPage}
-              onNavigate={setCurrentPage}
-            />
-            {renderCurrentPage()}
-            <Footer />
-          </div>
-        </div>
-      </WalletProvider>
-    </ThemeProvider>
+    <WalletProvider>
+      <div className="min-h-screen bg-background font-sans antialiased">
+        <Navigation 
+          currentPage={currentPage}
+          onNavigate={setCurrentPage}
+        />
+        {renderCurrentPage()}
+        <Footer />
+      </div>
+    </WalletProvider>
   );
 }
