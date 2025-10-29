@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { AvantService, HyphaService } from '@/services/avantAndHyphaService';
-import { BenqiService } from '@/services/BenqiService';
-import { LfjService } from '@/services/LfjService';
+import { DefiLlamaService } from '@/services/DefiLlamaService';
 import { YieldOpportunity } from '@/components/protocols/ProtocolAggregator';
 
 export interface LiveProtocolData {
@@ -36,182 +34,80 @@ export function useLiveProtocolData(refreshInterval: number = 3600000) { // 1 ho
   const fetchData = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, isLoading: true, error: null }));
-      
-      console.log('🔄 Fetching live protocol data... (refreshes hourly)');
-      
-      // Fetch data from all live services in parallel
-      const avantService = new AvantService();
-      const hyphaService = new HyphaService();
-      const benqiService = new BenqiService();
-      const lfjService = new LfjService();
-      
-      const [avantData, hyphaData, benqiData, lfjData] = await Promise.allSettled([
-        avantService.fetchData(),
-        hyphaService.fetchData(),
-        benqiService.fetchData(),
-        lfjService.fetchData()
-      ]);
 
+      console.log('🔄 Fetching live protocol data from DeFiLlama... (refreshes hourly)');
+
+      // Initialize DeFiLlama service
+      const defiLlamaService = new DefiLlamaService();
+
+      // Fetch Avalanche pools from DeFiLlama
+      const pools = await defiLlamaService.fetchAvalanchePools();
 
       const allOpportunities: YieldOpportunity[] = [];
-      
-      // Convert Avant data to YieldOpportunity format
-      if (avantData.status === 'fulfilled') {
-        const data = avantData.value;
-        
-        // avUSD opportunity (basic token info)
-        if (data.avUSD && data.avUSD.marketCap > 0) {
-          allOpportunities.push({
-            id: 'avant-avusd',
-            protocol: 'Avant Finance',
-            category: 'Yield Farming',
-            pair: 'avUSD',
-            apy: '3.2%', // Base rate for holding avUSD
-            tvl: `$${(data.avUSD.marketCap / 1000000).toFixed(1)}M`,
-            risk: 'Low',
-            icon: '💰',
-            url: 'https://app.avantprotocol.com',
-            isLive: true,
-            features: ['ERC-4626 Vault', 'Stable Asset', 'Delta-Neutral']
-          });
+
+      // Transform DeFiLlama pools to YieldOpportunity format
+      pools.forEach((pool, index) => {
+        const apy = pool.apy || pool.apyBase || 0;
+        const tvl = pool.tvlUsd || 0;
+
+        // Skip pools with invalid data
+        if (apy <= 0 || tvl <= 0) return;
+
+        const protocolDisplayName = defiLlamaService.getProtocolDisplayName(pool.project);
+        const risk = defiLlamaService.calculateRiskLevel(apy, tvl);
+        const icon = defiLlamaService.getProtocolIcon(pool.project);
+        const url = pool.url || defiLlamaService.getProtocolUrl(pool.project);
+
+        // Determine category based on pool characteristics
+        let category = 'Yield Farming';
+        const symbol = pool.symbol?.toLowerCase() || '';
+        if (symbol.includes('savax') || symbol.includes('ggavax') || symbol.includes('staking')) {
+          category = 'Liquid Staking';
+        } else if (symbol.includes('lend') || symbol.includes('borrow') || symbol.includes('supply')) {
+          category = 'Lending';
         }
-        
-        // savUSD opportunity (the vault with yield)
-        if (data.savUSD && data.savUSD.apy > 0) {
-          allOpportunities.push({
-            id: 'avant-savusd',
-            protocol: 'Avant Finance',
-            category: 'Yield Farming', 
-            pair: 'avUSD → savUSD',
-            apy: `${data.savUSD.apy.toFixed(2)}%`,
-            tvl: `$${(data.savUSD.tvl * (data.prices.avUSD || 1) / 1000000).toFixed(1)}M`,
-            risk: 'Low',
-            icon: '💰',
-            url: 'https://app.avantprotocol.com',
-            isLive: true,
-            features: ['Live Rate', 'ERC-4626 Vault', 'Real-time APY']
-          });
+
+        // Format TVL
+        let tvlFormatted = '';
+        if (tvl >= 1000000000) {
+          tvlFormatted = `$${(tvl / 1000000000).toFixed(2)}B`;
+        } else if (tvl >= 1000000) {
+          tvlFormatted = `$${(tvl / 1000000).toFixed(1)}M`;
+        } else if (tvl >= 1000) {
+          tvlFormatted = `$${(tvl / 1000).toFixed(1)}K`;
+        } else {
+          tvlFormatted = `$${tvl.toFixed(0)}`;
         }
-        
-        // avBTC opportunity (basic token info)
-        if (data.avBTC && data.avBTC.marketCap > 0) {
-          allOpportunities.push({
-            id: 'avant-avbtc',
-            protocol: 'Avant Finance',
-            category: 'Yield Farming',
-            pair: 'avBTC',
-            apy: '2.1%', // Base rate for holding avBTC
-            tvl: `$${(data.avBTC.marketCap / 1000000).toFixed(1)}M`,
-            risk: 'Medium',
-            icon: '₿',
-            url: 'https://app.avantprotocol.com',
-            isLive: true,
-            features: ['Bitcoin Exposure', 'ERC-4626 Vault', 'Live Rate']
-          });
+
+        // Build features array
+        const features: string[] = ['DeFiLlama Data'];
+        if (pool.apyReward && pool.apyReward > 0) {
+          features.push(`+${pool.apyReward.toFixed(2)}% Rewards`);
         }
-        
-        // savBTC opportunity (the vault with yield)
-        if (data.savBTC && data.savBTC.apy > 0) {
-          allOpportunities.push({
-            id: 'avant-savbtc',
-            protocol: 'Avant Finance',
-            category: 'Yield Farming',
-            pair: 'avBTC → savBTC', 
-            apy: `${data.savBTC.apy.toFixed(2)}%`,
-            tvl: `$${(data.savBTC.tvl * (data.prices.avBTC || 65000) / 1000000).toFixed(1)}M`,
-            risk: 'Medium',
-            icon: '₿',
-            url: 'https://app.avantprotocol.com',
-            isLive: true,
-            features: ['Bitcoin Yield', 'ERC-4626 Vault', 'Real-time APY']
-          });
+        if (pool.rewardTokens && pool.rewardTokens.length > 0) {
+          features.push('Multi-Token Rewards');
         }
-      }
-      
-      // Convert Hypha data to YieldOpportunity format
-      if (hyphaData.status === 'fulfilled') {
-        const data = hyphaData.value;
-        
-        // stAVAX/ggAVAX opportunity
-        if (data.stAVAX.apy > 0) {
-          allOpportunities.push({
-            id: 'gogopool-stavax',
-            protocol: 'GoGoPool',
-            category: 'Liquid Staking',
-            pair: 'AVAX → stAVAX',
-            apy: `${data.stAVAX.apy.toFixed(2)}%`,
-            tvl: `$${(data.stAVAX.tvlAVAX * 42 / 1000000).toFixed(1)}M`, // AVAX price estimate
-            risk: 'Low',
-            icon: '⚡',
-            url: 'https://app.gogopool.com/liquid-staking/',
-            isLive: true,
-            features: ['Official API', 'Live Data', 'Minipool Network']
-          });
-        }
-      }
-      
-      // Convert BENQI data to YieldOpportunity format
-      if (benqiData.status === 'fulfilled') {
-        const data = benqiData.value;
-        
-        // sAVAX opportunity (BENQI only provides sAVAX liquid staking)
-        if (data.sAVAX.apy > 0) {
-          allOpportunities.push({
-            id: 'benqi-savax',
-            protocol: 'BENQI',
-            category: 'Liquid Staking',
-            pair: 'sAVAX',
-            apy: `${data.sAVAX.apy.toFixed(2)}%`,
-            tvl: `$${(data.sAVAX.tvl / 1000000).toFixed(1)}M`,
-            risk: 'Low',
-            icon: '🏔️',
-            url: 'https://app.benqi.fi/savax',
-            isLive: true,
-            features: ['Liquid Staking', 'Live APY', 'Official Contract']
-          });
-        }
-      }
-      
-      // Convert LFJ data to YieldOpportunity format
-      if (lfjData.status === 'fulfilled') {
-        const data = lfjData.value;
-        
-        // jAVAX lending opportunity
-        if (data.jAVAX.apy > 0) {
-          allOpportunities.push({
-            id: 'lfj-javax',
-            protocol: 'Trader Joe',
-            category: 'Lending',
-            pair: 'AVAX (Supply)',
-            apy: `${data.jAVAX.apy.toFixed(2)}%`,
-            tvl: `$${(data.jAVAX.tvl / 1000000).toFixed(1)}M`,
-            risk: data.jAVAX.utilization > 80 ? 'High' : data.jAVAX.utilization > 60 ? 'Medium' : 'Low',
-            icon: '🔺',
-            url: 'https://lfj.gg/avalanche/stake/sjoe',
-            isLive: true,
-            features: ['Banker Joe', 'Compound Protocol', `${data.jAVAX.utilization.toFixed(1)}% Util`]
-          });
-        }
-      }
+
+        allOpportunities.push({
+          id: pool.pool || `defillama-${index}`,
+          protocol: protocolDisplayName,
+          category,
+          pair: pool.symbol || 'Unknown',
+          apy: `${apy.toFixed(2)}%`,
+          tvl: tvlFormatted,
+          risk,
+          icon,
+          url,
+          isLive: true,
+          features
+        });
+      });
 
       // Calculate metrics - cap at reasonable maximum
-      const totalTVL = Math.min(allOpportunities.reduce((sum, opp) => {
-        const tvlString = opp.tvl.replace('$', '');
-        let tvlValue = 0;
-
-        if (tvlString.includes('M')) {
-          tvlValue = parseFloat(tvlString.replace('M', '')) * 1000000;
-        } else if (tvlString.includes('B')) {
-          tvlValue = parseFloat(tvlString.replace('B', '')) * 1000000000;
-        } else if (tvlString.includes('K')) {
-          tvlValue = parseFloat(tvlString.replace('K', '')) * 1000;
-        } else {
-          tvlValue = parseFloat(tvlString.replace(/,/g, ''));
-        }
-
-        console.log(`TVL Debug: ${opp.protocol} - ${opp.tvl} -> ${tvlValue}`);
-        return sum + (isNaN(tvlValue) ? 0 : tvlValue);
-      }, 0), 999000000000); // Cap at 999B max
+      const totalTVL = Math.min(
+        pools.reduce((sum, pool) => sum + (pool.tvlUsd || 0), 0),
+        999000000000
+      ); // Cap at 999B max
 
       const totalAPY = allOpportunities.reduce((sum, opp) => {
         return sum + parseFloat(opp.apy.replace('%', ''));
@@ -219,17 +115,19 @@ export function useLiveProtocolData(refreshInterval: number = 3600000) { // 1 ho
 
       const averageAPY = allOpportunities.length > 0 ? totalAPY / allOpportunities.length : 0;
       const activeProtocols = new Set(allOpportunities.map(opp => opp.protocol)).size;
-      
-      // Determine data quality based on successful service calls
-      const successfulServices = [avantData, hyphaData, benqiData, lfjData].filter(result => result.status === 'fulfilled').length;
-      const dataQuality = successfulServices >= 3 ? 'excellent' : successfulServices >= 2 ? 'good' : successfulServices >= 1 ? 'fair' : 'poor';
-      const systemHealth = (successfulServices / 4) * 100;
+
+      // Data quality based on number of opportunities found
+      const dataQuality = allOpportunities.length >= 10 ? 'excellent' :
+                          allOpportunities.length >= 5 ? 'good' :
+                          allOpportunities.length >= 1 ? 'fair' : 'poor';
+      const systemHealth = Math.min((allOpportunities.length / 10) * 100, 100);
 
       const alerts: string[] = [];
-      if (avantData.status === 'rejected') alerts.push('Avant Protocol data unavailable');
-      if (hyphaData.status === 'rejected') alerts.push('GoGoPool/Hypha data unavailable');
-      if (benqiData.status === 'rejected') alerts.push('BENQI data unavailable');
-      if (lfjData.status === 'rejected') alerts.push('Trader Joe data unavailable');
+      if (allOpportunities.length === 0) {
+        alerts.push('No pools found matching criteria');
+      } else if (allOpportunities.length < 5) {
+        alerts.push('Limited pool data available');
+      }
 
       setState({
         opportunities: allOpportunities,
@@ -243,14 +141,14 @@ export function useLiveProtocolData(refreshInterval: number = 3600000) { // 1 ho
         systemHealth,
         alerts
       });
-      
-      console.log(`✅ Live data updated: ${allOpportunities.length} opportunities from ${activeProtocols} protocols (${dataQuality} quality)`);
+
+      console.log(`✅ DeFiLlama data updated: ${allOpportunities.length} opportunities from ${activeProtocols} protocols (${dataQuality} quality)`);
     } catch (error) {
-      console.error('❌ Failed to fetch live protocol data:', error);
+      console.error('❌ Failed to fetch DeFiLlama protocol data:', error);
       setState(prev => ({
         ...prev,
         isLoading: false,
-        error: error instanceof Error ? error.message : 'Failed to fetch live protocol data'
+        error: error instanceof Error ? error.message : 'Failed to fetch DeFiLlama protocol data'
       }));
     }
   }, []);

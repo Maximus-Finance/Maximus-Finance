@@ -1,88 +1,91 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { CircleAlert, Users } from 'lucide-react';
+import { ethers } from 'ethers';
+import BenqiDepositModal from '@/components/modals/BenqiDepositModal';
+import { useBenqiStats } from '@/hooks/benqi/useBenqiStats';
+import type { BenqiStats } from '@/types/benqi';
 
 const StrategiesPage: React.FC = () => {
+  const [isBenqiModalOpen, setIsBenqiModalOpen] = useState(false);
+  const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null);
+  const [activeUsers, setActiveUsers] = useState<number | null>(null); // null = loading, number = actual count
+  const [fetchError, setFetchError] = useState<string | null>(null);
+
+  // Initialize provider and fetch stats directly
+  useEffect(() => {
+    const fetchInvestorCount = async () => {
+      try {
+        if (typeof window !== 'undefined' && window.ethereum) {
+          console.log('StrategiesPage: Initializing provider...');
+          const web3Provider = new ethers.providers.Web3Provider(window.ethereum as ethers.providers.ExternalProvider);
+          setProvider(web3Provider);
+
+          // Get network
+          const network = await web3Provider.getNetwork();
+          console.log('StrategiesPage: Network:', network.chainId);
+
+          if (network.chainId !== 43114) {
+            console.log('StrategiesPage: Wrong network (not Avalanche mainnet)');
+            setFetchError('Wrong network - switch to Avalanche mainnet');
+            setActiveUsers(0);
+            return;
+          }
+
+          // Get vault contract
+          const vaultAddress = '0x4d950c6a58314867327e22C2dc7FcD04dA52C5BD';
+          const VaultABI = (await import('@/contracts/benqi/abis/VaultMainnetV2.json')).default;
+          const vaultContract = new ethers.Contract(vaultAddress, VaultABI, web3Provider);
+
+          console.log('StrategiesPage: Calling activeUserCount() on vault:', vaultAddress);
+          const count = await vaultContract.activeUserCount();
+          console.log('StrategiesPage: Raw response:', count);
+          console.log('StrategiesPage: Converted to number:', Number(count));
+
+          const userCount = Number(count);
+          setActiveUsers(userCount);
+          console.log('StrategiesPage: ✅ Successfully set activeUsers to:', userCount);
+        } else {
+          console.log('StrategiesPage: No ethereum provider found');
+          setFetchError('No wallet connected');
+          setActiveUsers(0);
+        }
+      } catch (error: any) {
+        console.error('StrategiesPage: ❌ Error fetching investor count:', error);
+        console.error('StrategiesPage: Error message:', error?.message);
+        console.error('StrategiesPage: Error code:', error?.code);
+        setFetchError(error?.message || 'Failed to fetch');
+        setActiveUsers(0);
+      }
+    };
+
+    fetchInvestorCount();
+  }, []);
+
   const strategies = [
     {
       name: 'Conservative Growth',
-      description: 'Low-risk strategy focused on stable yields',
-      apy: '12.3',
-      riskScore: 2,
+      description: 'BENQI Leveraged Yield Strategy - Automated leveraged staking',
+      apy: '12.5',
+      riskLevel: 'Low',
       riskColor: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      investors: '1,240',
+      investors: activeUsers === null ? 'Loading...' : activeUsers.toLocaleString(),
       allocations: [
-        { name: 'Aave', percentage: 40 },
-        { name: 'Curve', percentage: 35 },
-        { name: 'Benqi', percentage: 25 },
-      ],
-    },
-    {
-      name: 'Balanced Yield',
-      description: 'Medium-risk strategy balancing growth and stability',
-      apy: '22.8',
-      riskScore: 5,
-      riskColor: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-      investors: '856',
-      allocations: [
-        { name: 'Trader Joe', percentage: 35 },
-        { name: 'Aave', percentage: 30 },
-        { name: 'Balancer', percentage: 20 },
-        { name: 'Platypus', percentage: 15 },
-      ],
-    },
-    {
-      name: 'Aggressive Farming',
-      description: 'High-risk strategy targeting maximum returns',
-      apy: '38.5',
-      riskScore: 8,
-      riskColor: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
-      investors: '423',
-      allocations: [
-        { name: 'Pangolin', percentage: 40 },
-        { name: 'Yield Yak', percentage: 35 },
-        { name: 'Trader Joe', percentage: 25 },
+        { name: 'BENQI', percentage: 100 },
       ],
     },
     {
       name: 'Stablecoin Optimizer',
       description: 'Specialized strategy for stablecoin yields',
       apy: '9.7',
-      riskScore: 1,
+      riskLevel: 'Low',
       riskColor: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      investors: '2,103',
+      investors: '0',
       allocations: [
         { name: 'Curve', percentage: 45 },
         { name: 'Platypus', percentage: 35 },
         { name: 'Aave', percentage: 20 },
-      ],
-    },
-    {
-      name: 'Multi-Asset Diversification',
-      description: 'Diversified across multiple asset types',
-      apy: '18.9',
-      riskScore: 4,
-      riskColor: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-      investors: '1,567',
-      allocations: [
-        { name: 'Aave', percentage: 25 },
-        { name: 'Trader Joe', percentage: 25 },
-        { name: 'Balancer', percentage: 25 },
-        { name: 'Curve', percentage: 25 },
-      ],
-    },
-    {
-      name: 'Premium Yield Stack',
-      description: 'Curated selection of top-performing protocols',
-      apy: '31.2',
-      riskScore: 6,
-      riskColor: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-      investors: '678',
-      allocations: [
-        { name: 'Yield Yak', percentage: 30 },
-        { name: 'Trader Joe', percentage: 30 },
-        { name: 'Balancer', percentage: 20 },
-        { name: 'Benqi', percentage: 20 },
       ],
     },
   ];
@@ -157,13 +160,13 @@ const StrategiesPage: React.FC = () => {
                           size={16}
                         />
                         <span className="text-sm text-muted-foreground">
-                          Risk Score
+                          Risk Level
                         </span>
                       </div>
                       <span
                         className={`text-xs font-bold px-2 py-1 rounded ${strategy.riskColor}`}
                       >
-                        {strategy.riskScore}/10
+                        {strategy.riskLevel}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
@@ -181,7 +184,14 @@ const StrategiesPage: React.FC = () => {
                       </span>
                     </div>
                   </div>
-                  <button className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover-lift transition-all duration-300 mt-auto">
+                  <button
+                    onClick={() => {
+                      if (strategy.name === 'Conservative Growth') {
+                        setIsBenqiModalOpen(true);
+                      }
+                    }}
+                    className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover-lift transition-all duration-300 mt-auto"
+                  >
                     Deploy Strategy
                   </button>
                 </div>
@@ -190,6 +200,11 @@ const StrategiesPage: React.FC = () => {
           </div>
         </div>
       </section>
+
+      <BenqiDepositModal
+        isOpen={isBenqiModalOpen}
+        onClose={() => setIsBenqiModalOpen(false)}
+      />
     </main>
   );
 };

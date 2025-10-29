@@ -1,16 +1,23 @@
 'use client';
 
 import { Filter, Download, TrendingUp } from 'lucide-react';
+import { useLiveProtocolData } from '@/hooks/useLiveProtocolData';
 
 const ExploreYieldsPage: React.FC = () => {
-  const yields = [
-    { protocol: 'Aave', token: 'AVAX', apy: '12.5%', tvl: '$450M', risk: 'Low', riskColor: 'bg-green-500/20 text-green-700 dark:text-green-400' },
-    { protocol: 'Curve', token: 'USDC', apy: '18.3%', tvl: '$320M', risk: 'Low', riskColor: 'bg-green-500/20 text-green-700 dark:text-green-400' },
-    { protocol: 'Benqi', token: 'AVAX', apy: '15.8%', tvl: '$280M', risk: 'Medium', riskColor: 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400' },
-    { protocol: 'Trader Joe', token: 'JOE', apy: '22.1%', tvl: '$210M', risk: 'Medium', riskColor: 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400' },
-    { protocol: 'Platypus', token: 'PTP', apy: '28.5%', tvl: '$180M', risk: 'High', riskColor: 'bg-red-500/20 text-red-700 dark:text-red-400' },
-    { protocol: 'Balancer', token: 'BAL', apy: '16.2%', tvl: '$150M', risk: 'Low', riskColor: 'bg-green-500/20 text-green-700 dark:text-green-400' },
-  ];
+  const { opportunities, isLoading, error } = useLiveProtocolData();
+
+  const getRiskColor = (risk: 'Low' | 'Medium' | 'High') => {
+    switch (risk) {
+      case 'Low':
+        return 'bg-green-500/20 text-green-700 dark:text-green-400';
+      case 'Medium':
+        return 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400';
+      case 'High':
+        return 'bg-red-500/20 text-red-700 dark:text-red-400';
+      default:
+        return 'bg-gray-500/20 text-gray-700 dark:text-gray-400';
+    }
+  };
 
   return (
     <main className="min-h-screen bg-background">
@@ -61,34 +68,60 @@ const ExploreYieldsPage: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {yields.map((item, index) => (
-                    <tr
-                      key={index}
-                      className="border-b border-border hover:bg-secondary/30 transition-colors"
-                    >
-                      <td className="px-6 py-4 font-semibold text-foreground">
-                        {item.protocol}
-                      </td>
-                      <td className="px-6 py-4 text-muted-foreground">{item.token}</td>
-                      <td className="px-6 py-4">
-                        <span className="flex items-center gap-1 text-primary font-semibold">
-                          <TrendingUp size={16} />
-                          {item.apy}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-muted-foreground">{item.tvl}</td>
-                      <td className="px-6 py-4">
-                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${item.riskColor}`}>
-                          {item.risk}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover-lift text-sm">
-                          Invest
-                        </button>
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan={6} className="px-6 py-12 text-center text-muted-foreground">
+                        Loading yield opportunities...
                       </td>
                     </tr>
-                  ))}
+                  ) : error ? (
+                    <tr>
+                      <td colSpan={6} className="px-6 py-12 text-center text-red-500">
+                        {error}
+                      </td>
+                    </tr>
+                  ) : opportunities.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="px-6 py-12 text-center text-muted-foreground">
+                        No yield opportunities available at the moment.
+                      </td>
+                    </tr>
+                  ) : (
+                    opportunities.map((item, index) => (
+                      <tr
+                        key={item.id || index}
+                        className="border-b border-border hover:bg-secondary/30 transition-colors"
+                      >
+                        <td className="px-6 py-4 font-semibold text-foreground">
+                          {item.protocol}
+                        </td>
+                        <td className="px-6 py-4 text-muted-foreground">{item.pair}</td>
+                        <td className="px-6 py-4">
+                          <span className="flex items-center gap-1 text-primary font-semibold">
+                            <TrendingUp size={16} />
+                            {item.apy}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-muted-foreground">{item.tvl}</td>
+                        <td className="px-6 py-4">
+                          <span className={`px-3 py-1 rounded-full text-sm font-medium ${getRiskColor(item.risk)}`}>
+                            {item.risk}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <a
+                            href={item.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover-lift text-sm">
+                              Invest
+                            </button>
+                          </a>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>

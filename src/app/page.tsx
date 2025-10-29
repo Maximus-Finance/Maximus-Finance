@@ -7,7 +7,6 @@ import HomePage from '@/components/pages/HomePage';
 import ExploreYieldsPage from '@/components/pages/ExploreYieldsPage';
 import StrategiesPage from '@/components/pages/StrategiesPage';
 import ProfilePage from '@/components/pages/ProfilePage';
-import { WalletProvider } from '@/providers/WalletProvider';
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState<'home' | 'yields' | 'protocols' | 'dashboard'>('home');
@@ -28,15 +27,13 @@ export default function Home() {
   };
 
   return (
-    <WalletProvider>
-      <div className="min-h-screen bg-background font-sans antialiased">
-        <Navigation 
-          currentPage={currentPage}
-          onNavigate={setCurrentPage}
-        />
-        {renderCurrentPage()}
-        <Footer />
-      </div>
-    </WalletProvider>
+    <div className="min-h-screen bg-background font-sans antialiased">
+      <Navigation
+        currentPage={currentPage}
+        onNavigate={setCurrentPage}
+      />
+      {renderCurrentPage()}
+      <Footer />
+    </div>
   );
 }
