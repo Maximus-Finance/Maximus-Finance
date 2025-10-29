@@ -205,19 +205,6 @@ const BenqiDepositModal: React.FC<BenqiDepositModalProps> = ({
           </div>
         </div>
 
-        {/* Strategy Info */}
-        <div className="p-4 rounded-lg bg-secondary/30 border border-border mb-6">
-          <div className="text-sm font-semibold text-foreground mb-2">
-            Strategy Details:
-          </div>
-          <ul className="text-xs space-y-1 text-muted-foreground">
-            <li>• 6-loop leverage strategy on BENQI</li>
-            <li>• 30-day cooldown period for withdrawals</li>
-            <li>• Target LTV: 65% with 5% safety buffer</li>
-            <li>• Minimum deposit: 0.1 AVAX</li>
-          </ul>
-        </div>
-
         {/* Account Info */}
         <div className="p-4 rounded-lg bg-secondary/30 border border-border mb-4">
           <div className="text-sm text-muted-foreground mb-1">

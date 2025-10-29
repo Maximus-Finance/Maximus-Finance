@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Menu } from 'lucide-react';
+import Image from 'next/image';
 import { NavigationProps } from '@/types';
 import { useWalletConnect } from '@/hooks/useWalletConnect';
 
@@ -24,28 +25,28 @@ const Navigation: React.FC<NavigationProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <button onClick={() => onNavigate('home')} className="flex items-center gap-2 group">
-            <div className="w-8 h-8 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-              <svg viewBox="0 0 200 200" className="w-8 h-8" fill="none">
-                <path
-                  d="M60 140 L100 60 L140 140 M100 60 L160 140"
-                  stroke="#EF4444"
-                  strokeWidth="16"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
+          <Image
+            src="/logo.png"
+            alt="Maximus Finance Logo"
+            width={32}
+            height={32}
+            className="object-contain group-hover:scale-110 transition-transform duration-300"
+          />
             <span className="font-bold text-lg text-foreground hidden sm:inline">
               Maximus Finance
             </span>
           </button>
-          
+
           <div className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
-                className="text-foreground hover:text-primary transition-colors duration-300"
+                className={`transition-colors duration-300 ${
+                  currentPage === item.id
+                    ? 'text-primary font-semibold'
+                    : 'text-foreground hover:text-primary'
+                }`}
               >
                 {item.label}
               </button>

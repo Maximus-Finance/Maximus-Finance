@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Settings, Wallet, TrendingUp, ChartColumn } from 'lucide-react';
+import { Settings, Wallet, TrendingUp, ChartColumn, X } from 'lucide-react';
 import { PageType } from '@/types';
 import { useAccount } from 'wagmi';
 import { ethers } from 'ethers';
@@ -14,6 +14,7 @@ interface ProfilePageProps {
 
 const ProfilePage: React.FC<ProfilePageProps> = () => {
   const { address: account } = useAccount();
+  const [showWithdrawPopup, setShowWithdrawPopup] = useState(false);
   const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null);
 
   // Initialize provider
@@ -201,7 +202,7 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
             <button className="px-6 py-4 bg-primary text-primary-foreground rounded-lg font-semibold hover-lift">
               Deposit More
             </button>
-            <button className="px-6 py-4 border-2 border-primary text-primary rounded-lg font-semibold hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+            <button className="px-6 py-4 border-2 border-primary text-primary rounded-lg font-semibold hover:bg-primary hover:text-primary-foreground transition-all duration-300" onClick={() => setShowWithdrawPopup(true)}>
               Withdraw
             </button>
             <button className="px-6 py-4 border-2 border-border text-foreground rounded-lg font-semibold hover:bg-secondary transition-colors">
@@ -210,6 +211,26 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
           </div>
         </div>
       </section>
+      {showWithdrawPopup && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card border border-border rounded-xl p-8 max-w-md w-full relative animate-fade-in-up">
+            <button
+              onClick={() => setShowWithdrawPopup(false)}
+              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <X size={24} />
+            </button>
+            <h2 className="text-2xl font-bold text-foreground mb-4">Withdraw</h2>
+            <p className="text-muted-foreground mb-6">This feature is coming soon</p>
+            <button
+              onClick={() => setShowWithdrawPopup(false)}
+              className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:opacity-90 transition-opacity"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 };

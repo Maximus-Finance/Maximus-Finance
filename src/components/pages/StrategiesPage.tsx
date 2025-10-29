@@ -4,14 +4,10 @@ import { useState, useEffect } from 'react';
 import { CircleAlert, Users } from 'lucide-react';
 import { ethers } from 'ethers';
 import BenqiDepositModal from '@/components/modals/BenqiDepositModal';
-import { useBenqiStats } from '@/hooks/benqi/useBenqiStats';
-import type { BenqiStats } from '@/types/benqi';
 
 const StrategiesPage: React.FC = () => {
   const [isBenqiModalOpen, setIsBenqiModalOpen] = useState(false);
-  const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null);
   const [activeUsers, setActiveUsers] = useState<number | null>(null); // null = loading, number = actual count
-  const [fetchError, setFetchError] = useState<string | null>(null);
 
   // Initialize provider and fetch stats directly
   useEffect(() => {
@@ -20,7 +16,6 @@ const StrategiesPage: React.FC = () => {
         if (typeof window !== 'undefined' && window.ethereum) {
           console.log('StrategiesPage: Initializing provider...');
           const web3Provider = new ethers.providers.Web3Provider(window.ethereum as ethers.providers.ExternalProvider);
-          setProvider(web3Provider);
 
           // Get network
           const network = await web3Provider.getNetwork();
@@ -28,7 +23,6 @@ const StrategiesPage: React.FC = () => {
 
           if (network.chainId !== 43114) {
             console.log('StrategiesPage: Wrong network (not Avalanche mainnet)');
-            setFetchError('Wrong network - switch to Avalanche mainnet');
             setActiveUsers(0);
             return;
           }
@@ -48,14 +42,12 @@ const StrategiesPage: React.FC = () => {
           console.log('StrategiesPage: ✅ Successfully set activeUsers to:', userCount);
         } else {
           console.log('StrategiesPage: No ethereum provider found');
-          setFetchError('No wallet connected');
           setActiveUsers(0);
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('StrategiesPage: ❌ Error fetching investor count:', error);
-        console.error('StrategiesPage: Error message:', error?.message);
-        console.error('StrategiesPage: Error code:', error?.code);
-        setFetchError(error?.message || 'Failed to fetch');
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch';
+        console.error('StrategiesPage: Error message:', errorMessage);
         setActiveUsers(0);
       }
     };
