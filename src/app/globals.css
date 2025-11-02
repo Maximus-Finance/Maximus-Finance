@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Hind:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 
 * {
   box-sizing: border-box;
@@ -10,26 +10,70 @@
   margin: 0;
 }
 
-:root {
-  /* Light theme variables */
-  --bg-primary-light: #f8fafc;
-  --bg-secondary-light: #ffffff;
-  --bg-card-light: rgba(255, 255, 255, 0.9);
-  --text-primary-light: #0f172a;
-  --text-secondary-light: #334155;
-  --text-accent-light:  #6366f1;
-  --border-light: rgba(203, 213, 225, 0.4);
-  --shadow-light: rgba(148, 163, 184, 0.1);
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 0 84% 60%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 84% 60%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+  }
+}
+
+@layer utilities {
+  .hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
   
-  /* Dark theme variables */
-  --bg-primary-dark: #1f2125;
-  --bg-secondary-dark: #31333b;
-  --bg-card-dark: rgba(49, 51, 59, 0.9);
-  --text-primary-dark: #ffffff;
-  --text-secondary-dark: #d1d5db;
-  --text-accent-dark: #6366f1;
-  --border-dark: rgba(64, 68, 76, 0.8);
-  --shadow-dark: rgba(0, 0, 0, 0.3);
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .hover-scale {
+    transition: transform 0.3s ease;
+  }
+  
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
 }
 
 html,
@@ -41,9 +85,13 @@ body {
 }
 
 body {
-  font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif !important;
   color: var(--text-primary-dark);
   background: var(--bg-primary-dark);
+}
+
+* {
+  font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif !important;
 }
 
 /* Light theme styles */
@@ -332,16 +380,36 @@ a {
   color: #475569 !important;
 }
 
-.light .text-gray-300 {
-  color: #334155 !important;
-}
 
 .light .text-gray-200 {
   color: #1e293b !important;
 }
 
 .light .text-white {
-  color: #0f172a !important;
+  color: #ffffff !important;
+}
+
+.bg-primary{
+  background-color: #0b0b0b !important;
+}
+
+.text-primary-foreground{
+  color: #f8f8f8 !important;
+}
+
+.border-primary-foreground-20{
+  border-color: rgba(248, 248, 248, 0.2) !important;
+}
+
+.bg-above-footer {
+  background-image: linear-gradient(
+    to right,
+    #0B0C0E 0%,
+    #2B2D30 50%,
+    #3A3C3F 100%
+  );
+  /* optional: for rounded hero like your screenshot */
+  border-radius: 16px;
 }
 
 /* Additional light mode text improvements */
@@ -510,6 +578,30 @@ a {
   border-color: var(--text-accent-dark);
   outline: none;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.bg-card{
+  background-color: #ffffff !important;
+}
+
+.bg-secondary-50 {
+  background-color: #e4e4e4 !important;
+}
+
+.bg-secondary-30 {
+  background-color: rgba(228, 228, 228, 0.3)!important;
+}
+
+.border-primary{
+  border-color: rgb(11, 11, 11) !important;
+}
+
+.bg-primary-5{
+  background-color: rgba(228, 228, 228, 0.5)!important;
+}
+
+.bg-secondary{
+  background-color: rgba(228, 228, 228)!important;
 }
 
 /* Light theme input styles */

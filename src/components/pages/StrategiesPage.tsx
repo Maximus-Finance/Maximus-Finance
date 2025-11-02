@@ -1,84 +1,203 @@
 'use client';
 
-import StrategiesCards from '@/components/sections/StrategiesTable';
-import { useLiveProtocolData } from '@/hooks/useLiveProtocolData';
+import { useState, useEffect } from 'react';
+import { CircleAlert, Users } from 'lucide-react';
+import { ethers } from 'ethers';
+import BenqiDepositModal from '@/components/modals/BenqiDepositModal';
 
 const StrategiesPage: React.FC = () => {
-  const { isLoading, lastUpdated, totalTVL, averageAPY, activeProtocols, dataQuality, systemHealth } = useLiveProtocolData();
+  const [isBenqiModalOpen, setIsBenqiModalOpen] = useState(false);
+  const [activeUsers, setActiveUsers] = useState<number | null>(null); // null = loading, number = actual count
+
+  // Initialize provider and fetch stats directly
+  useEffect(() => {
+    const fetchInvestorCount = async () => {
+      try {
+        if (typeof window !== 'undefined' && window.ethereum) {
+          console.log('StrategiesPage: Initializing provider...');
+          const web3Provider = new ethers.providers.Web3Provider(window.ethereum as ethers.providers.ExternalProvider);
+
+          // Get network
+          const network = await web3Provider.getNetwork();
+          console.log('StrategiesPage: Network:', network.chainId);
+
+          if (network.chainId !== 43114) {
+            console.log('StrategiesPage: Wrong network (not Avalanche mainnet)');
+            setActiveUsers(0);
+            return;
+          }
+
+          // Get vault contract
+          const vaultAddress = '0x4d950c6a58314867327e22C2dc7FcD04dA52C5BD';
+          const VaultABI = (await import('@/contracts/benqi/abis/VaultMainnetV2.json')).default;
+          const vaultContract = new ethers.Contract(vaultAddress, VaultABI, web3Provider);
+
+          console.log('StrategiesPage: Calling activeUserCount() on vault:', vaultAddress);
+          const count = await vaultContract.activeUserCount();
+          console.log('StrategiesPage: Raw response:', count);
+          console.log('StrategiesPage: Converted to number:', Number(count));
+
+          const userCount = Number(count);
+          setActiveUsers(userCount);
+          console.log('StrategiesPage: ✅ Successfully set activeUsers to:', userCount);
+        } else {
+          console.log('StrategiesPage: No ethereum provider found');
+          setActiveUsers(0);
+        }
+      } catch (error: unknown) {
+        console.error('StrategiesPage: ❌ Error fetching investor count:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch';
+        console.error('StrategiesPage: Error message:', errorMessage);
+        setActiveUsers(0);
+      }
+    };
+
+    fetchInvestorCount();
+  }, []);
+
+  const strategies = [
+    {
+      name: 'Conservative Growth',
+      description: 'BENQI Leveraged Yield Strategy - Automated leveraged staking',
+      apy: '12.5',
+      riskLevel: 'Low',
+      riskColor: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+      investors: activeUsers === null ? 'Loading...' : activeUsers.toLocaleString(),
+      allocations: [
+        { name: 'BENQI', percentage: 100 },
+      ],
+    },
+    {
+      name: 'Stablecoin Optimizer',
+      description: 'Specialized strategy for stablecoin yields',
+      apy: '9.7',
+      riskLevel: 'Low',
+      riskColor: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+      investors: '0',
+      allocations: [
+        { name: 'Curve', percentage: 45 },
+        { name: 'Platypus', percentage: 35 },
+        { name: 'Aave', percentage: 20 },
+      ],
+    },
+  ];
 
   return (
-    <div className="pt-16 font-hind">
-      <section className="min-h-screen py-12 sm:py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12">
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 font-hind animate-smooth-entrance hover-light leading-tight text-white">
-              Yield <span className="text-purple-400">Strategies</span>
+    <main className="min-h-screen bg-background">
+      <section className="py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-12 animate-fade-in-up">
+            <h1 className="text-5xl font-bold text-foreground mb-4">
+              Investment Strategies
             </h1>
-            <p className="text-lg sm:text-xl font-hind animate-light-float px-4 sm:px-0 text-gray-300">
-              Enhanced yield opportunities with our advanced looping strategies
+            <p className="text-lg text-muted-foreground">
+              Choose a strategy that matches your risk tolerance and investment
+              goals
             </p>
-            
-            <div className="flex flex-col sm:flex-row items-center justify-center mt-4 sm:mt-6 space-y-3 sm:space-y-0 sm:space-x-6 animate-light-bounce">
-              <div className="flex items-center space-x-3">
-                <div className={`w-3 h-3 rounded-full animate-pulse ${
-                  systemHealth >= 80 ? 'bg-green-400' :
-                  systemHealth >= 60 ? 'bg-yellow-400' : 'bg-red-400'
-                }`}></div>
-                <span className="text-sm sm:text-base font-hind font-semibold text-gray-400">
-                  {isLoading ? 'Updating...' : `${dataQuality} Data Quality`}
-                </span>
-              </div>
-              {lastUpdated && (
-                <span className="text-sm sm:text-base font-hind text-gray-400">
-                  Last updated: {lastUpdated.toLocaleTimeString()}
-                </span>
-              )}
-              <div className={`text-xs px-2 py-1 rounded-lg ${
-                systemHealth >= 80 ? 'bg-green-500/20 text-green-400' :
-                systemHealth >= 60 ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'
-              }`}>
-                {systemHealth.toFixed(0)}% Health
-              </div>
-            </div>
           </div>
-
-          <StrategiesCards />
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12">
-            {[
-              { 
-                value: `$${(totalTVL / 1000000).toFixed(1)}M`, 
-                label: 'Total Value Locked', 
-                color: 'text-green-400' 
-              },
-              { 
-                value: `${(averageAPY * 1.7).toFixed(1)}%`, 
-                label: 'Enhanced Average APY', 
-                color: 'text-blue-400' 
-              },
-              { 
-                value: activeProtocols.toString(), 
-                label: 'Strategy Protocols', 
-                color: 'text-purple-400' 
-              },
-            ].map((stat, index) => (
-              <div 
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {strategies.map((strategy, index) => (
+              <div
                 key={index}
-                className="p-6 sm:p-8 lg:p-10 rounded-3xl text-center hover-light animate-smooth-entrance shadow-2xl transform sm:hover:scale-105 transition-all duration-300 glass-3d-dark animate-light-float"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="animate-fade-in-up"
+                style={{ animationDelay: `${index * 50}ms` }}
               >
-                <div className={`text-4xl sm:text-5xl lg:text-6xl font-bold ${stat.color} mb-3 sm:mb-4 font-hind hover-light`}>
-                  {isLoading ? '...' : stat.value}
-                </div>
-                <div className="font-hind text-base sm:text-lg font-semibold text-gray-300">
-                  {stat.label}
+                <div className="bg-card border border-border rounded-xl p-6 hover-lift group h-full flex flex-col">
+                  <div className="mb-4">
+                    <h3 className="text-xl font-bold text-foreground mb-2">
+                      {strategy.name}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {strategy.description}
+                    </p>
+                  </div>
+                  <div className="mb-4 p-4 bg-primary-5 rounded-lg">
+                    <div className="text-2xl font-bold text-primary">
+                      {strategy.apy}%
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Expected Annual Yield
+                    </p>
+                  </div>
+                  <div className="mb-4 pb-4 border-b border-border">
+                    <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase">
+                      Allocation
+                    </p>
+                    <div className="space-y-2">
+                      {strategy.allocations.map((allocation, idx) => (
+                        <div key={idx} className="flex items-center justify-between">
+                          <span className="text-sm text-foreground">
+                            {allocation.name}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <div className="w-24 h-2 bg-secondary rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-primary transition-all duration-500"
+                                style={{ width: `${allocation.percentage}%` }}
+                              />
+                            </div>
+                            <span className="text-xs font-semibold text-foreground w-8 text-right">
+                              {allocation.percentage}%
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-2 mb-4 pb-4 border-b border-border">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <CircleAlert
+                          className="text-muted-foreground"
+                          size={16}
+                        />
+                        <span className="text-sm text-muted-foreground">
+                          Risk Level
+                        </span>
+                      </div>
+                      <span
+                        className={`text-xs font-bold px-2 py-1 rounded ${strategy.riskColor}`}
+                      >
+                        {strategy.riskLevel}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Users
+                          className="text-muted-foreground"
+                          size={16}
+                        />
+                        <span className="text-sm text-muted-foreground">
+                          Investors
+                        </span>
+                      </div>
+                      <span className="font-semibold text-foreground">
+                        {strategy.investors}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      if (strategy.name === 'Conservative Growth') {
+                        setIsBenqiModalOpen(true);
+                      }
+                    }}
+                    className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover-lift transition-all duration-300 mt-auto"
+                  >
+                    Deploy Strategy
+                  </button>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </section>
-    </div>
+
+      <BenqiDepositModal
+        isOpen={isBenqiModalOpen}
+        onClose={() => setIsBenqiModalOpen(false)}
+      />
+    </main>
   );
 };
 

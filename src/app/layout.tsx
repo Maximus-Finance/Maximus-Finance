@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="font-instrument-sans">
+      <body className="antialiased">
         <ThemeProvider>
           <WalletProvider>
             {children}
