@@ -115,7 +115,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Website**: [maximus-finance.vercel.app](https://maximus-finance.vercel.app)
 - **Documentation**: Coming Soon
 - **Discord**: Community Support
-- **Twitter**: Coming Soon
+- **Twitter**: [https://x.com/0xMaxFi](https://x.com/0xMaxFi)
 
 ## ⚠️ Disclaimer
 
